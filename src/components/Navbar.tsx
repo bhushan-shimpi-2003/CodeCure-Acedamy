@@ -38,7 +38,7 @@ export default function Navbar() {
           <Link to="/contact" className="text-sm text-slate-400 hover:text-emerald-400 transition-colors">./contact</Link>
           <Link to="/signup">
             <Button variant="default" className="bg-emerald-500 text-black hover:bg-emerald-400 rounded-none font-bold border border-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.3)]">
-              INIT_ENROLL
+              INIT_LOGIN
             </Button>
           </Link>
         </nav>
