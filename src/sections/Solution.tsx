@@ -1,5 +1,6 @@
 import { motion } from "motion/react";
 import { Check, TerminalSquare } from "lucide-react";
+import { Link } from "react-router-dom";
 import { Button } from "../components/ui/button";
 
 const solutions = [
@@ -46,9 +47,11 @@ export default function Solution() {
               ))}
             </div>
 
-            <Button size="lg" className="mt-2 md:mt-4 w-full sm:w-auto bg-transparent border border-emerald-500 text-emerald-500 hover:bg-emerald-500 hover:text-black rounded-none shadow-[0_0_15px_rgba(16,185,129,0.2)] whitespace-normal h-auto py-3">
-              &gt; VIEW_SOURCE_CODE
-            </Button>
+            <Link to="/courses" className="w-full sm:w-auto">
+              <Button size="lg" className="mt-2 md:mt-4 w-full bg-transparent border border-emerald-500 text-emerald-500 hover:bg-emerald-500 hover:text-black rounded-none shadow-[0_0_15px_rgba(16,185,129,0.2)] whitespace-normal h-auto py-3">
+                &gt; VIEW_SOURCE_CODE
+              </Button>
+            </Link>
           </motion.div>
 
           <motion.div

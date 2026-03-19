@@ -1,5 +1,6 @@
 import { motion } from "motion/react";
 import { Calendar, Clock, Users, ArrowRight, Terminal } from "lucide-react";
+import { Link } from "react-router-dom";
 import { Button } from "../components/ui/button";
 
 export default function BatchDetails() {
@@ -68,10 +69,12 @@ export default function BatchDetails() {
                 <p className="text-xs text-emerald-400/70 font-medium uppercase">Early Bird Protocol (Valid till 10th Oct)</p>
               </div>
               
-              <Button size="lg" className="w-full h-14 text-sm bg-emerald-500 text-black hover:bg-emerald-400 rounded-none font-bold uppercase shadow-[0_0_15px_rgba(16,185,129,0.3)] group mb-4">
-                EXECUTE_PAYMENT
-                <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
-              </Button>
+              <Link to="/checkout" className="w-full block mb-4">
+                <Button size="lg" className="w-full h-14 text-sm bg-emerald-500 text-black hover:bg-emerald-400 rounded-none font-bold uppercase shadow-[0_0_15px_rgba(16,185,129,0.3)] group">
+                  EXECUTE_PAYMENT
+                  <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                </Button>
+              </Link>
               
               <p className="text-xs text-slate-500">EMI options available. 7-day rollback guarantee.</p>
             </div>

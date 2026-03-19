@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { motion } from "motion/react";
 import { Terminal, ChevronRight, Play } from "lucide-react";
+import { Link } from "react-router-dom";
 import { Button } from "../components/ui/button";
 
 export default function Hero() {
@@ -44,14 +45,18 @@ export default function Hero() {
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4 mb-10 font-mono w-full">
-              <Button size="lg" className="w-full sm:w-auto text-sm sm:text-base h-12 sm:h-14 px-4 sm:px-8 bg-emerald-500 text-black hover:bg-emerald-400 rounded-none border border-emerald-500 shadow-[0_0_20px_rgba(16,185,129,0.4)] group whitespace-normal py-2">
-                <ChevronRight className="mr-1 sm:mr-2 w-4 h-4 sm:w-5 sm:h-5 shrink-0 group-hover:translate-x-1 transition-transform" />
-                EXECUTE_ENROLLMENT
-              </Button>
-              <Button size="lg" variant="outline" className="w-full sm:w-auto text-sm sm:text-base h-12 sm:h-14 px-4 sm:px-8 bg-black text-emerald-500 border-emerald-500/50 hover:bg-emerald-500/10 rounded-none whitespace-normal py-2">
-                <Play className="mr-1 sm:mr-2 w-4 h-4 sm:w-5 sm:h-5 shrink-0" />
-                RUN_DEMO
-              </Button>
+              <Link to="/signup" className="w-full sm:w-auto">
+                <Button size="lg" className="w-full text-sm sm:text-base h-12 sm:h-14 px-4 sm:px-8 bg-emerald-500 text-black hover:bg-emerald-400 rounded-none border border-emerald-500 shadow-[0_0_20px_rgba(16,185,129,0.4)] group whitespace-normal py-2">
+                  <ChevronRight className="mr-1 sm:mr-2 w-4 h-4 sm:w-5 sm:h-5 shrink-0 group-hover:translate-x-1 transition-transform" />
+                  EXECUTE_ENROLLMENT
+                </Button>
+              </Link>
+              <Link to="/courses" className="w-full sm:w-auto">
+                <Button size="lg" variant="outline" className="w-full text-sm sm:text-base h-12 sm:h-14 px-4 sm:px-8 bg-black text-emerald-500 border-emerald-500/50 hover:bg-emerald-500/10 rounded-none whitespace-normal py-2">
+                  <Play className="mr-1 sm:mr-2 w-4 h-4 sm:w-5 sm:h-5 shrink-0" />
+                  RUN_DEMO
+                </Button>
+              </Link>
             </div>
           </motion.div>
 

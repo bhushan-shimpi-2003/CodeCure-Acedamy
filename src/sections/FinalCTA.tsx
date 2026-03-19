@@ -1,5 +1,6 @@
 import { motion } from "motion/react";
 import { ArrowRight, Terminal } from "lucide-react";
+import { Link } from "react-router-dom";
 import { Button } from "../components/ui/button";
 
 export default function FinalCTA() {
@@ -31,10 +32,12 @@ export default function FinalCTA() {
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-            <Button size="lg" className="h-16 px-10 text-sm bg-emerald-500 text-black hover:bg-emerald-400 rounded-none font-bold uppercase shadow-[0_0_20px_rgba(16,185,129,0.4)] group w-full sm:w-auto">
-              SUDO_JOIN_CODUCURE
-              <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
-            </Button>
+            <Link to="/signup" className="w-full sm:w-auto">
+              <Button size="lg" className="h-16 px-10 text-sm bg-emerald-500 text-black hover:bg-emerald-400 rounded-none font-bold uppercase shadow-[0_0_20px_rgba(16,185,129,0.4)] group w-full">
+                SUDO_JOIN_CODUCURE
+                <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              </Button>
+            </Link>
             <p className="text-xs text-emerald-500/70 mt-4 sm:mt-0 sm:ml-4 text-left">
               &gt; Next batch starts soon.<br/>&gt; Limited seats available.
             </p>

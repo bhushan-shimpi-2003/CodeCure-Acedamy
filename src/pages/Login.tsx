@@ -50,10 +50,12 @@ export default function Login() {
             />
           </div>
           
-          <Button className="w-full h-12 bg-emerald-500 text-black hover:bg-emerald-400 rounded-none font-bold uppercase shadow-[0_0_15px_rgba(16,185,129,0.3)] group">
-            EXECUTE_AUTH
-            <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
-          </Button>
+          <Link to="/dashboard" className="w-full block">
+            <Button className="w-full h-12 bg-emerald-500 text-black hover:bg-emerald-400 rounded-none font-bold uppercase shadow-[0_0_15px_rgba(16,185,129,0.3)] group">
+              EXECUTE_AUTH
+              <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
+            </Button>
+          </Link>
         </form>
         
         <div className="mt-8 text-center text-sm text-slate-500">

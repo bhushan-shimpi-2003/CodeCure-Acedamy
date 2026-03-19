@@ -34,10 +34,8 @@ export default function Navbar() {
         {/* Desktop Nav */}
         <nav className="hidden lg:flex items-center gap-6 xl:gap-8">
           <Link to="/courses" className="text-sm text-slate-400 hover:text-emerald-400 transition-colors">./courses</Link>
-          <a href="/#curriculum" className="text-sm text-slate-400 hover:text-emerald-400 transition-colors">./curriculum</a>
           <Link to="/about" className="text-sm text-slate-400 hover:text-emerald-400 transition-colors">./about</Link>
           <Link to="/contact" className="text-sm text-slate-400 hover:text-emerald-400 transition-colors">./contact</Link>
-          <Link to="/login" className="text-sm text-emerald-500 hover:text-emerald-400 transition-colors font-bold">./login</Link>
           <Link to="/signup">
             <Button variant="default" className="bg-emerald-500 text-black hover:bg-emerald-400 rounded-none font-bold border border-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.3)]">
               INIT_ENROLL
@@ -60,10 +58,8 @@ export default function Navbar() {
       {isMobileMenuOpen && (
         <div className="lg:hidden absolute top-full left-0 right-0 bg-[#050505] border-b border-emerald-500/30 p-4 flex flex-col gap-2 shadow-xl font-mono">
           <Link to="/courses" className="text-sm text-emerald-500 hover:text-emerald-400 p-2 border border-emerald-500/20 bg-emerald-950/20" onClick={() => setIsMobileMenuOpen(false)}>&gt; courses</Link>
-          <a href="/#curriculum" className="text-sm text-emerald-500 hover:text-emerald-400 p-2 border border-emerald-500/20 bg-emerald-950/20" onClick={() => setIsMobileMenuOpen(false)}>&gt; curriculum</a>
           <Link to="/about" className="text-sm text-emerald-500 hover:text-emerald-400 p-2 border border-emerald-500/20 bg-emerald-950/20" onClick={() => setIsMobileMenuOpen(false)}>&gt; about</Link>
           <Link to="/contact" className="text-sm text-emerald-500 hover:text-emerald-400 p-2 border border-emerald-500/20 bg-emerald-950/20" onClick={() => setIsMobileMenuOpen(false)}>&gt; contact</Link>
-          <Link to="/login" className="text-sm text-emerald-500 hover:text-emerald-400 p-2 border border-emerald-500/20 bg-emerald-950/20 font-bold" onClick={() => setIsMobileMenuOpen(false)}>&gt; login</Link>
           <Link to="/signup" onClick={() => setIsMobileMenuOpen(false)}>
             <Button variant="default" className="w-full mt-2 bg-emerald-500 text-black rounded-none font-bold">
               INIT_ENROLL
