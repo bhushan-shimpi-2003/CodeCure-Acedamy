@@ -32,10 +32,11 @@ export default function Navbar() {
         </Link>
 
         {/* Desktop Nav */}
-        <nav className="hidden md:flex items-center gap-8">
+        <nav className="hidden lg:flex items-center gap-6 xl:gap-8">
+          <Link to="/courses" className="text-sm text-slate-400 hover:text-emerald-400 transition-colors">./courses</Link>
           <a href="/#curriculum" className="text-sm text-slate-400 hover:text-emerald-400 transition-colors">./curriculum</a>
-          <a href="/#projects" className="text-sm text-slate-400 hover:text-emerald-400 transition-colors">./projects</a>
-          <a href="/#trainer" className="text-sm text-slate-400 hover:text-emerald-400 transition-colors">./trainer</a>
+          <Link to="/about" className="text-sm text-slate-400 hover:text-emerald-400 transition-colors">./about</Link>
+          <Link to="/contact" className="text-sm text-slate-400 hover:text-emerald-400 transition-colors">./contact</Link>
           <Link to="/login" className="text-sm text-emerald-500 hover:text-emerald-400 transition-colors font-bold">./login</Link>
           <Link to="/signup">
             <Button variant="default" className="bg-emerald-500 text-black hover:bg-emerald-400 rounded-none font-bold border border-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.3)]">
@@ -46,8 +47,10 @@ export default function Navbar() {
 
         {/* Mobile Menu Toggle */}
         <button
-          className="md:hidden text-emerald-500 hover:text-emerald-400"
+          className="lg:hidden p-2 -mr-2 text-emerald-500 hover:text-emerald-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 rounded-none transition-colors"
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          aria-label="Toggle menu"
+          aria-expanded={isMobileMenuOpen}
         >
           {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
         </button>
@@ -55,10 +58,11 @@ export default function Navbar() {
 
       {/* Mobile Nav */}
       {isMobileMenuOpen && (
-        <div className="md:hidden absolute top-full left-0 right-0 bg-[#050505] border-b border-emerald-500/30 p-4 flex flex-col gap-4 shadow-xl font-mono">
+        <div className="lg:hidden absolute top-full left-0 right-0 bg-[#050505] border-b border-emerald-500/30 p-4 flex flex-col gap-2 shadow-xl font-mono">
+          <Link to="/courses" className="text-sm text-emerald-500 hover:text-emerald-400 p-2 border border-emerald-500/20 bg-emerald-950/20" onClick={() => setIsMobileMenuOpen(false)}>&gt; courses</Link>
           <a href="/#curriculum" className="text-sm text-emerald-500 hover:text-emerald-400 p-2 border border-emerald-500/20 bg-emerald-950/20" onClick={() => setIsMobileMenuOpen(false)}>&gt; curriculum</a>
-          <a href="/#projects" className="text-sm text-emerald-500 hover:text-emerald-400 p-2 border border-emerald-500/20 bg-emerald-950/20" onClick={() => setIsMobileMenuOpen(false)}>&gt; projects</a>
-          <a href="/#trainer" className="text-sm text-emerald-500 hover:text-emerald-400 p-2 border border-emerald-500/20 bg-emerald-950/20" onClick={() => setIsMobileMenuOpen(false)}>&gt; trainer</a>
+          <Link to="/about" className="text-sm text-emerald-500 hover:text-emerald-400 p-2 border border-emerald-500/20 bg-emerald-950/20" onClick={() => setIsMobileMenuOpen(false)}>&gt; about</Link>
+          <Link to="/contact" className="text-sm text-emerald-500 hover:text-emerald-400 p-2 border border-emerald-500/20 bg-emerald-950/20" onClick={() => setIsMobileMenuOpen(false)}>&gt; contact</Link>
           <Link to="/login" className="text-sm text-emerald-500 hover:text-emerald-400 p-2 border border-emerald-500/20 bg-emerald-950/20 font-bold" onClick={() => setIsMobileMenuOpen(false)}>&gt; login</Link>
           <Link to="/signup" onClick={() => setIsMobileMenuOpen(false)}>
             <Button variant="default" className="w-full mt-2 bg-emerald-500 text-black rounded-none font-bold">

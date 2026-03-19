@@ -34,10 +34,10 @@ export default function Footer() {
           <div>
             <h3 className="font-bold text-emerald-500 mb-4 uppercase text-sm">&gt; Quick_Links</h3>
             <ul className="space-y-3">
-              <li><a href="/#curriculum" className="text-slate-400 hover:text-emerald-400 text-sm transition-colors flex items-center gap-2"><span className="text-emerald-500/50">-</span> Course Curriculum</a></li>
-              <li><a href="/#projects" className="text-slate-400 hover:text-emerald-400 text-sm transition-colors flex items-center gap-2"><span className="text-emerald-500/50">-</span> Real Projects</a></li>
-              <li><a href="/#placement" className="text-slate-400 hover:text-emerald-400 text-sm transition-colors flex items-center gap-2"><span className="text-emerald-500/50">-</span> Placement Support</a></li>
-              <li><a href="/#faq" className="text-slate-400 hover:text-emerald-400 text-sm transition-colors flex items-center gap-2"><span className="text-emerald-500/50">-</span> FAQs</a></li>
+              <li><Link to="/courses" className="text-slate-400 hover:text-emerald-400 text-sm transition-colors flex items-center gap-2"><span className="text-emerald-500/50">-</span> Course Catalog</Link></li>
+              <li><Link to="/about" className="text-slate-400 hover:text-emerald-400 text-sm transition-colors flex items-center gap-2"><span className="text-emerald-500/50">-</span> About Us</Link></li>
+              <li><Link to="/contact" className="text-slate-400 hover:text-emerald-400 text-sm transition-colors flex items-center gap-2"><span className="text-emerald-500/50">-</span> Contact</Link></li>
+              <li><a href="/#curriculum" className="text-slate-400 hover:text-emerald-400 text-sm transition-colors flex items-center gap-2"><span className="text-emerald-500/50">-</span> Curriculum</a></li>
             </ul>
           </div>
 
@@ -45,9 +45,9 @@ export default function Footer() {
           <div>
             <h3 className="font-bold text-emerald-500 mb-4 uppercase text-sm">&gt; Legal_Docs</h3>
             <ul className="space-y-3">
-              <li><a href="#" className="text-slate-400 hover:text-emerald-400 text-sm transition-colors flex items-center gap-2"><span className="text-emerald-500/50">-</span> Terms & Conditions</a></li>
-              <li><a href="#" className="text-slate-400 hover:text-emerald-400 text-sm transition-colors flex items-center gap-2"><span className="text-emerald-500/50">-</span> Privacy Policy</a></li>
-              <li><a href="#" className="text-slate-400 hover:text-emerald-400 text-sm transition-colors flex items-center gap-2"><span className="text-emerald-500/50">-</span> Refund Policy</a></li>
+              <li><Link to="/terms" className="text-slate-400 hover:text-emerald-400 text-sm transition-colors flex items-center gap-2"><span className="text-emerald-500/50">-</span> Terms & Conditions</Link></li>
+              <li><Link to="/privacy" className="text-slate-400 hover:text-emerald-400 text-sm transition-colors flex items-center gap-2"><span className="text-emerald-500/50">-</span> Privacy Policy</Link></li>
+              <li><Link to="/refund" className="text-slate-400 hover:text-emerald-400 text-sm transition-colors flex items-center gap-2"><span className="text-emerald-500/50">-</span> Refund Policy</Link></li>
             </ul>
           </div>
 
