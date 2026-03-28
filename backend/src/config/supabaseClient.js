@@ -1,8 +1,9 @@
 const { createClient } = require('@supabase/supabase-js');
+const path = require('path');
 const dotenv = require('dotenv');
 
-// Make sure env is loaded
-dotenv.config();
+// Load .env from project root (backend/.env)
+dotenv.config({ path: path.resolve(__dirname, '../../.env') });
 
 const supabaseUrl = process.env.SUPABASE_URL;
 // Critical: Always use Service Role Key for backend admin-level operations that bypass RLS
