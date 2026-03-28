@@ -1,36 +1,33 @@
 import { motion } from "motion/react";
-import { Terminal, Home } from "lucide-react";
+import { GraduationCap, Home } from "lucide-react";
 import { Link } from "react-router-dom";
 
 export default function NotFound() {
   return (
-    <div className="min-h-screen bg-[#050505] flex items-center justify-center px-4 font-mono matrix-bg scanlines relative overflow-hidden">
-      <div className="absolute inset-0 bg-black/50 z-0"></div>
+    <div className="min-h-screen bg-slate-50 flex items-center justify-center px-4 relative overflow-hidden">
       
       <motion.div 
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="relative z-10 bg-[#0a0a0a] border border-emerald-500/50 p-8 md:p-12 max-w-2xl w-full text-center shadow-[0_0_30px_rgba(16,185,129,0.1)]"
+        className="relative z-10 bg-white border border-slate-200 p-8 md:p-12 max-w-2xl w-full text-center shadow-xl rounded-3xl"
       >
         <div className="flex justify-center mb-6">
-          <div className="w-20 h-20 bg-red-500/10 border border-red-500 flex items-center justify-center rounded-none animate-pulse">
-            <Terminal className="w-10 h-10 text-red-500" />
+          <div className="w-20 h-20 bg-blue-50 flex items-center justify-center rounded-2xl">
+            <GraduationCap className="w-10 h-10 text-blue-600" />
           </div>
         </div>
         
-        <h1 className="text-6xl md:text-8xl font-bold text-red-500 mb-4 tracking-tighter">404</h1>
-        <h2 className="text-xl md:text-2xl font-bold text-white mb-6 uppercase">ERR_FILE_NOT_FOUND</h2>
+        <h1 className="text-6xl md:text-8xl font-bold text-slate-900 mb-4 tracking-tighter">404</h1>
+        <h2 className="text-xl md:text-2xl font-bold text-slate-700 mb-6">Page Not Found</h2>
         
-        <div className="bg-[#050505] border border-emerald-900/50 p-4 text-left mb-8">
-          <p className="text-emerald-500 text-sm mb-2">&gt; System diagnostic initiated...</p>
-          <p className="text-emerald-500 text-sm mb-2">&gt; Locating requested sector...</p>
-          <p className="text-red-500 text-sm font-bold">&gt; FATAL: Sector does not exist or access denied.</p>
-          <p className="text-emerald-500 text-sm mt-4 animate-pulse">&gt; _</p>
+        <div className="bg-slate-50 border border-slate-200 p-6 rounded-2xl text-left mb-8">
+          <p className="text-slate-600 text-sm mb-2">Oops! The page you are looking for doesn't exist.</p>
+          <p className="text-slate-600 text-sm mb-2">It might have been moved or deleted.</p>
         </div>
 
         <Link to="/">
-          <button className="bg-emerald-500 text-black px-8 py-3 font-bold uppercase hover:bg-emerald-400 transition-all shadow-[0_0_15px_rgba(16,185,129,0.3)] flex items-center justify-center gap-2 mx-auto">
-            <Home className="w-4 h-4" /> Return_To_Base
+          <button className="bg-blue-600 text-white px-8 py-4 rounded-xl font-bold hover:bg-blue-700 transition-all shadow-lg shadow-blue-600/20 flex items-center justify-center gap-2 mx-auto hover:scale-[1.02]">
+            <Home className="w-5 h-5" /> Back to Home
           </button>
         </Link>
       </motion.div>

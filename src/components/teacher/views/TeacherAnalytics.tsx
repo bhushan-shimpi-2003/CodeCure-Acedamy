@@ -1,56 +1,56 @@
 import { motion } from "motion/react";
-import { BarChart3, TrendingUp, Users, Terminal } from "lucide-react";
+import { BarChart3, TrendingUp, Users, GraduationCap } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 export default function TeacherAnalytics() {
   const engagementData = [
-    { name: 'MOD_1', views: 95, completion: 90 },
-    { name: 'MOD_2', views: 88, completion: 85 },
-    { name: 'MOD_3', views: 92, completion: 78 },
-    { name: 'MOD_4', views: 85, completion: 70 },
-    { name: 'MOD_5', views: 80, completion: 65 },
+    { name: 'Mod 1', views: 95, completion: 90 },
+    { name: 'Mod 2', views: 88, completion: 85 },
+    { name: 'Mod 3', views: 92, completion: 78 },
+    { name: 'Mod 4', views: 85, completion: 70 },
+    { name: 'Mod 5', views: 80, completion: 65 },
   ];
 
   return (
-    <div className="space-y-6 max-w-7xl mx-auto pb-12 font-mono">
-      <div className="border-b border-emerald-500/30 pb-4">
-        <h1 className="text-2xl font-bold text-white mb-1 uppercase flex items-center gap-2">
-          <Terminal className="w-6 h-6 text-emerald-500" /> Teaching_Stats
+    <div className="space-y-6 max-w-7xl mx-auto pb-12">
+      <div className="border-b border-slate-200 pb-4">
+        <h1 className="text-2xl font-bold text-slate-900 mb-1 flex items-center gap-2">
+          <GraduationCap className="w-6 h-6 text-blue-600" /> Teaching Stats
         </h1>
-        <p className="text-emerald-600 text-sm uppercase">&gt; Course completion % and student engagement stats.</p>
+        <p className="text-slate-500 text-sm">Course completion % and student engagement stats.</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-[#0a0a0a] border border-emerald-500/30 rounded-none p-6 text-center relative overflow-hidden"
+          className="bg-white border border-slate-200 rounded-2xl p-6 text-center relative overflow-hidden shadow-sm"
         >
-          <div className="absolute top-0 left-0 w-full h-1 bg-emerald-500"></div>
-          <div className="text-4xl font-bold text-emerald-400 mb-2">78%</div>
-          <div className="text-[10px] font-bold text-emerald-600 uppercase">Avg_Course_Completion</div>
+          <div className="absolute top-0 left-0 w-full h-1.5 bg-blue-600"></div>
+          <div className="text-4xl font-bold text-slate-900 mb-2 mt-2">78%</div>
+          <div className="text-sm font-semibold text-slate-500">Avg Course Completion</div>
         </motion.div>
         
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="bg-[#0a0a0a] border border-emerald-500/30 rounded-none p-6 text-center relative overflow-hidden"
+          className="bg-white border border-slate-200 rounded-2xl p-6 text-center relative overflow-hidden shadow-sm"
         >
-          <div className="absolute top-0 left-0 w-full h-1 bg-emerald-500"></div>
-          <div className="text-4xl font-bold text-emerald-400 mb-2">88%</div>
-          <div className="text-[10px] font-bold text-emerald-600 uppercase">Avg_Video_Views</div>
+          <div className="absolute top-0 left-0 w-full h-1.5 bg-indigo-600"></div>
+          <div className="text-4xl font-bold text-slate-900 mb-2 mt-2">88%</div>
+          <div className="text-sm font-semibold text-slate-500">Avg Video Views</div>
         </motion.div>
 
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="bg-[#0a0a0a] border border-emerald-500/30 rounded-none p-6 text-center relative overflow-hidden"
+          className="bg-white border border-slate-200 rounded-2xl p-6 text-center relative overflow-hidden shadow-sm"
         >
-          <div className="absolute top-0 left-0 w-full h-1 bg-emerald-500"></div>
-          <div className="text-4xl font-bold text-emerald-400 mb-2">4.8/5</div>
-          <div className="text-[10px] font-bold text-emerald-600 uppercase">Instructor_Rating</div>
+          <div className="absolute top-0 left-0 w-full h-1.5 bg-violet-600"></div>
+          <div className="text-4xl font-bold text-slate-900 mb-2 mt-2">4.8/5</div>
+          <div className="text-sm font-semibold text-slate-500">Instructor Rating</div>
         </motion.div>
       </div>
 
@@ -58,22 +58,22 @@ export default function TeacherAnalytics() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.3 }}
-        className="bg-[#0a0a0a] border border-emerald-500/30 rounded-none p-6"
+        className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm"
       >
-        <h2 className="text-sm font-bold text-emerald-500 mb-6 uppercase border-b border-emerald-500/20 pb-2">Engagement_Metrics</h2>
+        <h2 className="text-lg font-bold text-slate-800 mb-6 border-b border-slate-100 pb-3">Engagement Metrics</h2>
         <div className="h-80 w-full">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={engagementData}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#064e3b" vertical={false} />
-              <XAxis dataKey="name" stroke="#059669" fontSize={10} tickLine={false} axisLine={false} fontFamily="monospace" />
-              <YAxis stroke="#059669" fontSize={10} tickLine={false} axisLine={false} fontFamily="monospace" />
+              <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" vertical={false} />
+              <XAxis dataKey="name" stroke="#64748b" fontSize={12} tickLine={false} axisLine={false} />
+              <YAxis stroke="#64748b" fontSize={12} tickLine={false} axisLine={false} />
               <Tooltip 
-                cursor={{ fill: '#064e3b' }}
-                contentStyle={{ backgroundColor: '#050505', borderColor: '#10b981', borderRadius: '0', color: '#10b981', fontFamily: 'monospace', fontSize: '12px', textTransform: 'uppercase' }}
-                itemStyle={{ color: '#34d399' }}
+                cursor={{ fill: '#f1f5f9' }}
+                contentStyle={{ backgroundColor: '#ffffff', borderColor: '#e2e8f0', borderRadius: '12px', color: '#0f172a', fontSize: '14px', fontWeight: '500', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
+                itemStyle={{ color: '#0f172a' }}
               />
-              <Bar dataKey="views" fill="#10b981" radius={[0, 0, 0, 0]} name="Views %" />
-              <Bar dataKey="completion" fill="#059669" radius={[0, 0, 0, 0]} name="Completion %" />
+              <Bar dataKey="views" fill="#3b82f6" radius={[4, 4, 0, 0]} name="Views %" />
+              <Bar dataKey="completion" fill="#818cf8" radius={[4, 4, 0, 0]} name="Completion %" />
             </BarChart>
           </ResponsiveContainer>
         </div>

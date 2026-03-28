@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { ChevronDown, Terminal } from "lucide-react";
+import { ChevronDown, HelpCircle } from "lucide-react";
 
 const faqs = [
   {
@@ -33,18 +33,18 @@ export default function FAQ() {
   const [openFaq, setOpenFaq] = useState<number | null>(0);
 
   return (
-    <section id="faq" className="py-24 border-y border-emerald-500/20 bg-emerald-950/5 font-mono">
+    <section id="faq" className="py-24 bg-slate-50 border-y border-slate-200">
       <div className="container mx-auto px-4 md:px-6 max-w-3xl">
         <div className="text-center mb-16">
-          <div className="inline-flex items-center gap-2 px-3 py-1 bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-sm mb-4">
-            <Terminal className="w-4 h-4" />
-            <span>man coducure</span>
+          <div className="inline-flex items-center gap-2 px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm font-semibold mb-4">
+            <HelpCircle className="w-4 h-4" />
+            <span>Got Questions?</span>
           </div>
-          <h2 className="text-3xl md:text-5xl font-bold text-white mb-6 uppercase">
-            System <span className="text-emerald-500">Manual</span>
+          <h2 className="text-3xl md:text-5xl font-bold text-slate-900 mb-6">
+            Frequently Asked <span className="text-blue-600">Questions</span>
           </h2>
-          <p className="text-lg text-slate-400">
-            Find answers to common queries in our documentation.
+          <p className="text-lg text-slate-600">
+            Find answers to common queries about our program, schedule, and placement support.
           </p>
         </div>
 
@@ -56,16 +56,16 @@ export default function FAQ() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: index * 0.05 }}
-              className="border border-emerald-500/30 bg-[#0a0a0a] rounded-none"
+              className="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden"
             >
               <button
                 onClick={() => setOpenFaq(openFaq === index ? null : index)}
-                className="w-full flex items-center justify-between p-6 text-left hover:bg-emerald-950/30 transition-colors"
+                className="w-full flex items-center justify-between p-6 text-left hover:bg-slate-50 transition-colors"
               >
-                <span className="font-bold text-sm text-emerald-500 pr-8 uppercase">&gt; {faq.question}</span>
+                <span className="font-semibold text-lg text-slate-900 pr-8">{faq.question}</span>
                 <ChevronDown
-                  className={`w-5 h-5 text-emerald-500 shrink-0 transition-transform duration-300 ${
-                    openFaq === index ? "rotate-180" : ""
+                  className={`w-5 h-5 text-slate-400 shrink-0 transition-transform duration-300 ${
+                    openFaq === index ? "rotate-180 text-blue-600" : ""
                   }`}
                 />
               </button>
@@ -77,9 +77,8 @@ export default function FAQ() {
                     exit={{ height: 0, opacity: 0 }}
                     className="overflow-hidden"
                   >
-                    <div className="p-6 pt-0 border-t border-emerald-500/20 bg-black">
-                      <p className="text-slate-400 text-sm leading-relaxed mt-4">
-                        <span className="text-emerald-500/50 mr-2">~</span>
+                    <div className="p-6 pt-0 bg-slate-50">
+                      <p className="text-slate-600 leading-relaxed mt-2">
                         {faq.answer}
                       </p>
                     </div>

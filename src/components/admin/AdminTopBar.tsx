@@ -1,37 +1,37 @@
-import { Menu, Bell, Search, ShieldAlert } from "lucide-react";
+import { Menu, Bell, Search, User } from "lucide-react";
 
 export default function AdminTopBar({ setIsSidebarOpen }: any) {
   return (
-    <header className="h-16 bg-[#0a0a0a]/90 backdrop-blur-md border-b border-emerald-500/30 flex items-center justify-between px-4 md:px-8 sticky top-0 z-30 font-mono">
+    <header className="h-16 bg-white/80 backdrop-blur-md border-b border-slate-200 flex items-center justify-between px-4 md:px-8 sticky top-0 z-30">
       <div className="flex items-center gap-4">
         <button 
-          className="md:hidden text-emerald-500 hover:text-emerald-400"
+          className="md:hidden text-slate-500 hover:text-slate-700 p-2 hover:bg-slate-100 rounded-lg transition-colors"
           onClick={() => setIsSidebarOpen(true)}
         >
           <Menu className="w-6 h-6" />
         </button>
-        <div className="hidden md:flex items-center gap-2 bg-[#050505] border border-emerald-500/30 rounded-none px-4 py-2 w-64 focus-within:border-emerald-500 focus-within:shadow-[0_0_10px_rgba(16,185,129,0.2)] transition-all">
-          <span className="text-emerald-500 font-bold">&gt;</span>
+        <div className="hidden md:flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 w-80 focus-within:border-blue-500 focus-within:ring-1 focus-within:ring-blue-500 transition-all">
+          <Search className="w-4 h-4 text-slate-400" />
           <input 
             type="text" 
-            placeholder="grep -r 'admin_query'..." 
-            className="bg-transparent border-none outline-none text-sm text-emerald-400 w-full placeholder:text-emerald-900"
+            placeholder="Search students, courses, or settings..." 
+            className="bg-transparent border-none outline-none text-sm text-slate-900 w-full placeholder:text-slate-400"
           />
         </div>
       </div>
 
       <div className="flex items-center gap-4">
-        <button className="relative p-2 text-emerald-500 hover:text-emerald-400 transition-colors rounded-none hover:bg-emerald-950/30 border border-transparent hover:border-emerald-500/30">
+        <button className="relative p-2 text-slate-500 hover:text-slate-700 transition-colors rounded-full hover:bg-slate-100">
           <Bell className="w-5 h-5" />
-          <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full border border-[#0a0a0a] animate-pulse"></span>
+          <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
         </button>
-        <div className="flex items-center gap-3 pl-4 border-l border-emerald-500/30">
+        <div className="flex items-center gap-3 pl-4 border-l border-slate-200">
           <div className="hidden md:block text-right">
-            <p className="text-sm font-bold text-emerald-400 uppercase">Super_Admin</p>
-            <p className="text-xs text-red-500 uppercase">Level_0_Clearance</p>
+            <p className="text-sm font-bold text-slate-900">Admin User</p>
+            <p className="text-xs text-slate-500">Super Administrator</p>
           </div>
-          <div className="w-9 h-9 rounded-none bg-red-500/20 flex items-center justify-center text-red-500 font-bold shadow-[0_0_10px_rgba(239,68,68,0.4)] border border-red-500">
-            <ShieldAlert className="w-5 h-5" />
+          <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 border border-blue-200">
+            <User className="w-5 h-5" />
           </div>
         </div>
       </div>

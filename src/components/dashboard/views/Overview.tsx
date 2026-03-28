@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion } from "motion/react";
-import { Play, Calendar, Users, Terminal, Youtube, BookOpen, CheckCircle } from "lucide-react";
+import { Play, Calendar, Users, Terminal, Youtube, BookOpen, CheckCircle, GraduationCap } from "lucide-react";
 
 export default function Overview() {
   const [featuredVideoId, setFeaturedVideoId] = useState<string | null>(null);
@@ -41,35 +41,35 @@ export default function Overview() {
   };
 
   return (
-    <div className="space-y-6 max-w-6xl mx-auto pb-12 font-mono">
+    <div className="space-y-8 max-w-6xl mx-auto pb-12">
       {/* Welcome Section */}
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-[#0a0a0a] border border-emerald-500/30 rounded-none p-6 md:p-8 relative overflow-hidden shadow-[0_0_15px_rgba(16,185,129,0.1)]"
+        className="bg-white border border-slate-200 rounded-2xl p-6 md:p-8 relative overflow-hidden shadow-sm"
       >
-        <div className="absolute top-0 left-0 w-full h-1 bg-emerald-500"></div>
+        <div className="absolute top-0 left-0 w-full h-1 bg-blue-600"></div>
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div>
-            <h1 className="text-2xl md:text-3xl font-bold text-white mb-2 uppercase flex items-center gap-2">
-              <Terminal className="w-6 h-6 text-emerald-500" /> SYS_LOGIN: ALEX_DEV
+            <h1 className="text-2xl md:text-3xl font-bold text-slate-900 mb-2 flex items-center gap-2">
+              Welcome back, Alex! 👋
             </h1>
-            <p className="text-emerald-600 text-sm md:text-base max-w-xl">
-              &gt; "Success is not final, failure is not fatal: it is the courage to continue that counts."<br/>
-              &gt; Executing Playwright Automation Master Program...
+            <p className="text-slate-500 text-sm md:text-base max-w-xl">
+              "Success is not final, failure is not fatal: it is the courage to continue that counts."<br/>
+              Ready to continue your Playwright Automation Master Program?
             </p>
           </div>
-          <div className="bg-[#050505] border border-emerald-500/30 p-4 rounded-none min-w-[200px]">
-            <div className="flex justify-between items-end mb-2">
-              <span className="text-xs text-emerald-500 font-bold uppercase">Overall_Progress</span>
-              <span className="text-xl font-bold text-emerald-400">42%</span>
+          <div className="bg-slate-50 border border-slate-100 p-5 rounded-xl min-w-[240px]">
+            <div className="flex justify-between items-end mb-3">
+              <span className="text-sm font-medium text-slate-500">Overall Progress</span>
+              <span className="text-2xl font-bold text-blue-600">42%</span>
             </div>
-            <div className="w-full bg-[#111] rounded-none h-2 overflow-hidden border border-emerald-900">
+            <div className="w-full bg-slate-200 rounded-full h-2.5 overflow-hidden">
               <motion.div 
                 initial={{ width: 0 }}
                 animate={{ width: "42%" }}
                 transition={{ duration: 1, delay: 0.5 }}
-                className="bg-emerald-500 h-2 rounded-none shadow-[0_0_10px_rgba(16,185,129,0.8)]"
+                className="bg-blue-600 h-2.5 rounded-full"
               ></motion.div>
             </div>
           </div>
@@ -81,11 +81,13 @@ export default function Overview() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1 }}
-        className="space-y-4"
+        className="space-y-6"
       >
-        <div className="flex items-center gap-2 mb-4">
-          <Terminal className="w-5 h-5 text-emerald-500" />
-          <h2 className="text-lg font-bold text-white uppercase">Course_Catalog</h2>
+        <div className="flex items-center gap-2 mb-2">
+          <div className="bg-blue-100 p-2 rounded-lg">
+            <BookOpen className="w-5 h-5 text-blue-600" />
+          </div>
+          <h2 className="text-xl font-bold text-slate-900">Course Catalog</h2>
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -99,32 +101,34 @@ export default function Overview() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.1 }}
-                className="bg-[#0a0a0a] border border-emerald-500/30 p-6 flex flex-col justify-between shadow-[0_0_15px_rgba(16,185,129,0.05)] hover:border-emerald-500/60 transition-colors"
+                className="bg-white border border-slate-200 rounded-xl p-6 flex flex-col justify-between shadow-sm hover:shadow-md hover:border-blue-200 transition-all"
               >
                 <div>
                   <div className="flex items-center gap-3 mb-4">
-                    <BookOpen className="w-6 h-6 text-emerald-500" />
-                    <h3 className="text-lg font-bold text-white uppercase">{course}</h3>
+                    <div className="bg-blue-50 p-3 rounded-xl">
+                      <GraduationCap className="w-6 h-6 text-blue-600" />
+                    </div>
+                    <h3 className="text-lg font-bold text-slate-900">{course}</h3>
                   </div>
-                  <p className="text-sm text-emerald-600 mb-6">
+                  <p className="text-sm text-slate-500 mb-6 leading-relaxed">
                     Master the concepts of {course} with our comprehensive video lectures, assignments, and real-world projects.
                   </p>
                 </div>
                 
                 {isAssigned ? (
-                  <div className="flex items-center justify-center gap-2 w-full py-3 bg-emerald-500/20 border border-emerald-500 text-emerald-400 text-sm font-bold uppercase">
+                  <div className="flex items-center justify-center gap-2 w-full py-3 bg-emerald-50 text-emerald-700 rounded-xl text-sm font-semibold">
                     <CheckCircle className="w-4 h-4" /> Enrolled
                   </div>
                 ) : isRequested ? (
-                  <div className="flex items-center justify-center gap-2 w-full py-3 bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-sm font-bold uppercase">
-                    <CheckCircle className="w-4 h-4" /> Request_Pending
+                  <div className="flex items-center justify-center gap-2 w-full py-3 bg-amber-50 text-amber-700 rounded-xl text-sm font-semibold">
+                    <CheckCircle className="w-4 h-4" /> Request Pending
                   </div>
                 ) : (
                   <button 
                     onClick={() => handleRequestEnrollment(course)}
-                    className="w-full py-3 bg-[#050505] border border-emerald-500 text-emerald-500 hover:bg-emerald-500 hover:text-black transition-colors text-sm font-bold uppercase"
+                    className="w-full py-3 bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 hover:text-blue-600 hover:border-blue-200 rounded-xl transition-all text-sm font-semibold"
                   >
-                    Request_Enrollment
+                    Request Enrollment
                   </button>
                 )}
               </motion.div>

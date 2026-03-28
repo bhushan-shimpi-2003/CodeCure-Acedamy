@@ -1,5 +1,5 @@
 import { motion } from "motion/react";
-import { Terminal, Lock, Mail, User, ArrowRight } from "lucide-react";
+import { GraduationCap, Lock, Mail, User, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "../components/ui/button";
 
@@ -9,68 +9,67 @@ export default function Signup() {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="flex flex-col items-center justify-center min-h-screen w-full overflow-hidden scanlines matrix-bg selection:bg-emerald-500/30 selection:text-emerald-200 pt-20 pb-10"
+      className="flex flex-col items-center justify-center min-h-screen w-full overflow-hidden bg-slate-50 selection:bg-blue-100 selection:text-blue-900 pt-20 pb-10"
     >
-      <div className="w-full max-w-md p-8 bg-[#0a0a0a] border border-emerald-500/30 shadow-[0_0_30px_rgba(16,185,129,0.15)] relative font-mono z-10">
-        <div className="absolute top-0 left-0 w-full h-1 bg-emerald-500"></div>
+      <div className="w-full max-w-md p-8 bg-white border border-slate-200 shadow-xl rounded-2xl relative z-10">
         
         <div className="flex items-center justify-center mb-8">
-          <div className="bg-emerald-950/50 w-16 h-16 flex items-center justify-center border border-emerald-500/50">
-            <Terminal className="w-8 h-8 text-emerald-400" />
+          <div className="bg-blue-50 w-16 h-16 flex items-center justify-center rounded-2xl">
+            <GraduationCap className="w-8 h-8 text-blue-600" />
           </div>
         </div>
         
-        <h2 className="text-2xl font-bold text-center text-white mb-2 uppercase">
-          Create <span className="text-emerald-500">Profile</span>
+        <h2 className="text-2xl font-bold text-center text-slate-900 mb-2">
+          Create <span className="text-blue-600">Account</span>
         </h2>
-        <p className="text-center text-slate-400 text-sm mb-8">
-          Register a new node in the Coducure network.
+        <p className="text-center text-slate-500 text-sm mb-8">
+          Join our learning platform and start your journey.
         </p>
         
         <form className="space-y-6">
           <div className="space-y-2">
-            <label className="text-xs text-emerald-500 uppercase font-bold flex items-center gap-2">
-              <User className="w-4 h-4" /> NODE_ALIAS
+            <label className="text-sm text-slate-700 font-semibold flex items-center gap-2">
+              <User className="w-4 h-4 text-slate-400" /> Full Name
             </label>
             <input 
               type="text" 
-              className="w-full bg-[#050505] border border-emerald-500/30 p-3 text-emerald-400 focus:outline-none focus:border-emerald-500 transition-colors placeholder:text-emerald-900"
+              className="w-full bg-white border border-slate-200 rounded-xl p-3 text-slate-900 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all placeholder:text-slate-400"
               placeholder="John Doe"
             />
           </div>
 
           <div className="space-y-2">
-            <label className="text-xs text-emerald-500 uppercase font-bold flex items-center gap-2">
-              <Mail className="w-4 h-4" /> USER_EMAIL
+            <label className="text-sm text-slate-700 font-semibold flex items-center gap-2">
+              <Mail className="w-4 h-4 text-slate-400" /> Email Address
             </label>
             <input 
               type="email" 
-              className="w-full bg-[#050505] border border-emerald-500/30 p-3 text-emerald-400 focus:outline-none focus:border-emerald-500 transition-colors placeholder:text-emerald-900"
-              placeholder="admin@coducure.com"
+              className="w-full bg-white border border-slate-200 rounded-xl p-3 text-slate-900 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all placeholder:text-slate-400"
+              placeholder="student@example.com"
             />
           </div>
           
           <div className="space-y-2">
-            <label className="text-xs text-emerald-500 uppercase font-bold flex items-center gap-2">
-              <Lock className="w-4 h-4" /> PASSWORD_KEY
+            <label className="text-sm text-slate-700 font-semibold flex items-center gap-2">
+              <Lock className="w-4 h-4 text-slate-400" /> Password
             </label>
             <input 
               type="password" 
-              className="w-full bg-[#050505] border border-emerald-500/30 p-3 text-emerald-400 focus:outline-none focus:border-emerald-500 transition-colors placeholder:text-emerald-900"
+              className="w-full bg-white border border-slate-200 rounded-xl p-3 text-slate-900 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all placeholder:text-slate-400"
               placeholder="••••••••"
             />
           </div>
           
           <Link to="/dashboard" className="w-full block">
-            <Button className="w-full h-12 bg-emerald-500 text-black hover:bg-emerald-400 rounded-none font-bold uppercase shadow-[0_0_15px_rgba(16,185,129,0.3)] group">
-              INIT_REGISTRATION
+            <Button className="w-full h-12 bg-blue-600 text-white hover:bg-blue-700 rounded-xl font-bold shadow-lg shadow-blue-600/20 group transition-all">
+              Sign Up
               <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </Button>
           </Link>
         </form>
         
-        <div className="mt-8 text-center text-sm text-slate-500">
-          Already have access? <Link to="/login" className="text-emerald-500 hover:text-emerald-400 underline decoration-emerald-500/30 underline-offset-4">Execute login</Link>.
+        <div className="mt-8 text-center text-sm text-slate-500 font-medium">
+          Already have an account? <Link to="/login" className="text-blue-600 hover:text-blue-700 font-bold underline decoration-blue-200 underline-offset-4 transition-colors">Sign in here</Link>.
         </div>
       </div>
     </motion.div>

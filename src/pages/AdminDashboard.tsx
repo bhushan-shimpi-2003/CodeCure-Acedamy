@@ -34,7 +34,7 @@ export default function AdminDashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-[#050505] text-emerald-50 flex overflow-hidden font-mono selection:bg-emerald-500/30 selection:text-emerald-200 matrix-bg scanlines">
+    <div className="min-h-screen bg-slate-50 text-slate-900 flex overflow-hidden selection:bg-blue-100 selection:text-blue-900">
       <AdminSidebar activeTab={activeTab} setActiveTab={setActiveTab} isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen} />
       <div className="flex-1 flex flex-col h-screen overflow-hidden relative z-10">
         <AdminTopBar setIsSidebarOpen={setIsSidebarOpen} />

@@ -19,7 +19,7 @@ export default function LandingPage() {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="flex flex-col w-full overflow-hidden scanlines matrix-bg min-h-screen selection:bg-emerald-500/30 selection:text-emerald-200"
+      className="flex flex-col w-full overflow-hidden bg-slate-50 min-h-screen selection:bg-blue-100 selection:text-blue-900"
     >
       <Hero />
       <TrustBar />

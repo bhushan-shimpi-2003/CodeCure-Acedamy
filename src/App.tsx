@@ -22,7 +22,7 @@ import WhatsAppButton from "./components/WhatsAppButton";
 
 // Layout for public pages
 const PublicLayout = ({ children }: { children: React.ReactNode }) => (
-  <div className="min-h-screen bg-[#050505] text-slate-50 font-sans selection:bg-emerald-500/30 selection:text-emerald-200">
+  <div className="min-h-screen bg-slate-50 text-slate-900 font-sans selection:bg-blue-100 selection:text-blue-900">
     <Navbar />
     <main>{children}</main>
     <Footer />

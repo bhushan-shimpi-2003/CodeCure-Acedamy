@@ -1,5 +1,5 @@
 import { motion } from "motion/react";
-import { Terminal, Clock, Star, BookOpen, CheckCircle, Play, Shield, ArrowRight } from "lucide-react";
+import { Clock, Star, BookOpen, CheckCircle, Play, Shield, ArrowRight, ChevronLeft, GraduationCap, LayoutList } from "lucide-react";
 import { Link, useParams } from "react-router-dom";
 
 export default function CourseDetail() {
@@ -7,7 +7,7 @@ export default function CourseDetail() {
   
   // Mock data based on ID
   const course = {
-    title: id?.split('-').join(' ').toUpperCase() || "PLAYWRIGHT MASTER PROGRAM",
+    title: id?.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ') || "Playwright Master Program",
     description: "Master modern web automation with Playwright. Learn to build robust, scalable, and fast test automation frameworks from scratch.",
     level: "Advanced",
     duration: "12 Weeks",
@@ -35,10 +35,10 @@ export default function CourseDetail() {
   };
 
   return (
-    <div className="pt-24 pb-20 px-4 md:px-6 max-w-7xl mx-auto font-mono">
+    <div className="pt-24 pb-20 px-4 md:px-6 max-w-7xl mx-auto">
       <div className="mb-8">
-        <Link to="/courses" className="text-emerald-500 hover:text-emerald-400 text-sm font-bold uppercase flex items-center gap-2 transition-colors">
-          &lt; Back_To_Catalog
+        <Link to="/courses" className="text-blue-600 hover:text-blue-700 text-sm font-semibold flex items-center gap-2 transition-colors w-fit">
+          <ChevronLeft className="w-4 h-4" /> Back to Catalog
         </Link>
       </div>
 
@@ -49,70 +49,70 @@ export default function CourseDetail() {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="inline-flex items-center gap-2 px-3 py-1 rounded-none bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-bold uppercase tracking-wider mb-6"
+              className="inline-flex items-center gap-2 px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm font-semibold mb-6"
             >
-              <Terminal className="w-4 h-4" />
-              <span>{course.level}_Track</span>
+              <GraduationCap className="w-4 h-4" />
+              <span>{course.level} Track</span>
             </motion.div>
             <motion.h1 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
-              className="text-3xl md:text-5xl font-bold text-white mb-6 uppercase tracking-tight"
+              className="text-3xl md:text-5xl font-bold text-slate-900 mb-6 tracking-tight"
             >
-              {course.title}<span className="text-emerald-500">_</span>
+              {course.title}
             </motion.h1>
             <motion.p 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
-              className="text-slate-400 text-lg leading-relaxed"
+              className="text-slate-600 text-lg leading-relaxed"
             >
               {course.description}
             </motion.p>
           </div>
 
-          <div className="flex flex-wrap gap-6 py-6 border-y border-emerald-900/50">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-[#0a0a0a] border border-emerald-500/30 flex items-center justify-center">
-                <Clock className="w-5 h-5 text-emerald-500" />
+          <div className="flex flex-wrap gap-8 py-8 border-y border-slate-200">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 bg-blue-50 rounded-2xl flex items-center justify-center">
+                <Clock className="w-6 h-6 text-blue-600" />
               </div>
               <div>
-                <div className="text-[10px] text-slate-500 font-bold uppercase">Duration</div>
-                <div className="text-sm text-emerald-400 font-bold uppercase">{course.duration}</div>
+                <div className="text-sm text-slate-500 font-medium">Duration</div>
+                <div className="text-base text-slate-900 font-bold">{course.duration}</div>
               </div>
             </div>
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-[#0a0a0a] border border-emerald-500/30 flex items-center justify-center">
-                <Star className="w-5 h-5 text-emerald-500 fill-emerald-500" />
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 bg-amber-50 rounded-2xl flex items-center justify-center">
+                <Star className="w-6 h-6 text-amber-500 fill-amber-500" />
               </div>
               <div>
-                <div className="text-[10px] text-slate-500 font-bold uppercase">Rating</div>
-                <div className="text-sm text-emerald-400 font-bold uppercase">{course.rating}/5.0</div>
+                <div className="text-sm text-slate-500 font-medium">Rating</div>
+                <div className="text-base text-slate-900 font-bold">{course.rating}/5.0</div>
               </div>
             </div>
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-[#0a0a0a] border border-emerald-500/30 flex items-center justify-center">
-                <BookOpen className="w-5 h-5 text-emerald-500" />
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 bg-emerald-50 rounded-2xl flex items-center justify-center">
+                <BookOpen className="w-6 h-6 text-emerald-600" />
               </div>
               <div>
-                <div className="text-[10px] text-slate-500 font-bold uppercase">Enrolled</div>
-                <div className="text-sm text-emerald-400 font-bold uppercase">{course.students}+</div>
+                <div className="text-sm text-slate-500 font-medium">Enrolled</div>
+                <div className="text-base text-slate-900 font-bold">{course.students}+</div>
               </div>
             </div>
           </div>
 
           <div>
-            <h2 className="text-xl font-bold text-white mb-6 uppercase flex items-center gap-2">
-              <Terminal className="w-5 h-5 text-emerald-500" /> SYS_Curriculum
+            <h2 className="text-2xl font-bold text-slate-900 mb-8 flex items-center gap-3">
+              <LayoutList className="w-6 h-6 text-blue-600" /> Course Curriculum
             </h2>
             <div className="space-y-4">
               {course.modules.map((mod, i) => (
-                <div key={i} className="bg-[#0a0a0a] border border-emerald-900/50 p-4 flex items-center gap-4 hover:border-emerald-500/50 transition-colors">
-                  <div className="w-8 h-8 bg-[#050505] border border-emerald-500/30 flex items-center justify-center text-emerald-500 font-bold text-xs">
+                <div key={i} className="bg-white border border-slate-200 rounded-2xl p-5 flex items-center gap-5 hover:border-blue-200 hover:shadow-md transition-all group">
+                  <div className="w-10 h-10 bg-slate-50 text-slate-500 rounded-xl flex items-center justify-center font-bold text-sm group-hover:bg-blue-50 group-hover:text-blue-600 transition-colors">
                     {i + 1 < 10 ? `0${i+1}` : i + 1}
                   </div>
-                  <div className="text-slate-300 text-sm uppercase font-bold">{mod}</div>
+                  <div className="text-slate-700 font-medium group-hover:text-slate-900 transition-colors">{mod}</div>
                 </div>
               ))}
             </div>
@@ -124,39 +124,38 @@ export default function CourseDetail() {
           <motion.div 
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
-            className="bg-[#0a0a0a] border border-emerald-500/50 rounded-none sticky top-24"
+            className="bg-white border border-slate-200 rounded-3xl shadow-xl sticky top-24 overflow-hidden"
           >
-            <div className="relative h-48 overflow-hidden border-b border-emerald-500/30">
-              <div className="absolute inset-0 bg-emerald-500/20 mix-blend-overlay z-10"></div>
-              <img src={course.image} alt={course.title} className="w-full h-full object-cover grayscale" />
-              <div className="absolute inset-0 flex items-center justify-center z-20">
-                <div className="w-16 h-16 bg-[#050505]/80 border border-emerald-500 backdrop-blur-sm flex items-center justify-center cursor-pointer hover:bg-emerald-500/20 transition-colors group">
-                  <Play className="w-6 h-6 text-emerald-500 group-hover:text-emerald-400 ml-1" />
+            <div className="relative h-56 overflow-hidden">
+              <img src={course.image} alt={course.title} className="w-full h-full object-cover" />
+              <div className="absolute inset-0 bg-black/20 flex items-center justify-center z-20 group cursor-pointer hover:bg-black/30 transition-colors">
+                <div className="w-16 h-16 bg-white/90 rounded-full backdrop-blur-sm flex items-center justify-center group-hover:scale-110 transition-transform shadow-lg">
+                  <Play className="w-6 h-6 text-blue-600 ml-1" />
                 </div>
               </div>
             </div>
             
-            <div className="p-6">
-              <div className="text-3xl font-bold text-emerald-400 mb-6">{course.price}</div>
+            <div className="p-8">
+              <div className="text-4xl font-bold text-slate-900 mb-8">{course.price}</div>
               
               <Link to="/checkout" className="block w-full">
-                <button className="w-full bg-emerald-500 text-black py-4 font-bold uppercase hover:bg-emerald-400 transition-all shadow-[0_0_15px_rgba(16,185,129,0.3)] flex items-center justify-center gap-2 mb-4">
-                  INIT_ENROLLMENT <ArrowRight className="w-4 h-4" />
+                <button className="w-full bg-blue-600 text-white py-4 rounded-xl font-bold hover:bg-blue-700 transition-all shadow-lg shadow-blue-600/20 flex items-center justify-center gap-2 mb-6 hover:scale-[1.02]">
+                  Enroll Now <ArrowRight className="w-5 h-5" />
                 </button>
               </Link>
               
-              <div className="space-y-4 pt-4 border-t border-emerald-900/50">
-                <h3 className="text-xs font-bold text-slate-400 uppercase">Course_Includes:</h3>
+              <div className="space-y-4 pt-6 border-t border-slate-100">
+                <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider mb-4">This course includes:</h3>
                 {course.features.map((feature, i) => (
                   <div key={i} className="flex items-start gap-3">
-                    <CheckCircle className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
-                    <span className="text-xs text-slate-300 uppercase">{feature}</span>
+                    <CheckCircle className="w-5 h-5 text-emerald-500 shrink-0 mt-0.5" />
+                    <span className="text-sm text-slate-600 font-medium">{feature}</span>
                   </div>
                 ))}
               </div>
 
-              <div className="mt-6 pt-6 border-t border-emerald-900/50 flex items-center justify-center gap-2 text-[10px] text-emerald-600 font-bold uppercase">
-                <Shield className="w-3.5 h-3.5" /> Secure_Encrypted_Checkout
+              <div className="mt-8 pt-6 border-t border-slate-100 flex items-center justify-center gap-2 text-xs text-slate-500 font-semibold uppercase tracking-wider">
+                <Shield className="w-4 h-4" /> Secure Encrypted Checkout
               </div>
             </div>
           </motion.div>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "motion/react";
-import { Terminal, Youtube, FileText, Lock, MessageSquare, Send } from "lucide-react";
+import { PlayCircle, Youtube, FileText, Lock, MessageSquare, Send, BookOpen } from "lucide-react";
 
 export default function Lectures() {
   const [featuredVideoId, setFeaturedVideoId] = useState<string | null>(null);
@@ -71,42 +71,41 @@ export default function Lectures() {
 
   if (!hasAccess) {
     return (
-      <div className="max-w-5xl mx-auto space-y-6 pb-12 font-mono">
-        <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4 border-b border-emerald-500/30 pb-4">
+      <div className="max-w-5xl mx-auto space-y-6 pb-12">
+        <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4 border-b border-slate-200 pb-4">
           <div>
-            <h1 className="text-2xl font-bold text-white mb-1 uppercase flex items-center gap-2">
-              <Terminal className="w-6 h-6 text-emerald-500" /> Course_Content
+            <h1 className="text-2xl font-bold text-slate-900 mb-1 flex items-center gap-2">
+              <PlayCircle className="w-6 h-6 text-blue-600" /> Course Content
             </h1>
-            <p className="text-emerald-600 text-sm uppercase">&gt; Access the latest lecture and materials.</p>
+            <p className="text-slate-500 text-sm">Access the latest lecture and materials.</p>
           </div>
         </div>
 
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-[#0a0a0a] border border-red-500/50 p-12 text-center rounded-none shadow-[0_0_30px_rgba(239,68,68,0.1)]"
+          className="bg-white border border-red-100 p-12 text-center rounded-2xl shadow-sm"
         >
-          <Lock className="w-16 h-16 text-red-500 mx-auto mb-6 animate-pulse" />
-          <h2 className="text-2xl font-bold text-red-500 uppercase mb-4 tracking-widest">Access_Denied</h2>
-          <p className="text-red-400/80 text-sm uppercase max-w-md mx-auto leading-relaxed">
+          <div className="bg-red-50 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6">
+            <Lock className="w-10 h-10 text-red-500" />
+          </div>
+          <h2 className="text-2xl font-bold text-slate-900 mb-4">Access Denied</h2>
+          <p className="text-slate-500 max-w-md mx-auto leading-relaxed">
             You do not have access to any course videos. Please request enrollment from the Overview page.
           </p>
-          <div className="mt-8 inline-block border border-red-500/30 bg-red-500/10 px-6 py-3 text-red-400 text-xs font-bold uppercase">
-            ERR_CODE: 403_FORBIDDEN
-          </div>
         </motion.div>
       </div>
     );
   }
 
   return (
-    <div className="max-w-5xl mx-auto space-y-6 pb-12 font-mono">
-      <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4 border-b border-emerald-500/30 pb-4">
+    <div className="max-w-5xl mx-auto space-y-6 pb-12">
+      <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4 border-b border-slate-200 pb-4">
         <div>
-          <h1 className="text-2xl font-bold text-white mb-1 uppercase flex items-center gap-2">
-            <Terminal className="w-6 h-6 text-emerald-500" /> Course_Content
+          <h1 className="text-2xl font-bold text-slate-900 mb-1 flex items-center gap-2">
+            <PlayCircle className="w-6 h-6 text-blue-600" /> Course Content
           </h1>
-          <p className="text-emerald-600 text-sm uppercase">&gt; Access the latest lecture and materials.</p>
+          <p className="text-slate-500 text-sm">Access the latest lecture and materials.</p>
         </div>
       </div>
 
@@ -116,17 +115,20 @@ export default function Lectures() {
             <motion.div 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="bg-[#0a0a0a] border border-emerald-500/30 rounded-none overflow-hidden shadow-[0_0_20px_rgba(16,185,129,0.1)]"
+              className="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm"
             >
-              <div className="p-4 md:p-6 border-b border-emerald-500/20 bg-[#050505] flex items-center gap-3">
-                <Youtube className="w-6 h-6 text-red-500" />
-                <h2 className="text-xl font-bold text-white uppercase">{videoTitle || "Latest Lecture"}</h2>
-                <span className="ml-auto px-3 py-1 bg-emerald-500/10 text-emerald-500 text-[10px] font-bold border border-emerald-500/30 uppercase animate-pulse">
-                  LIVE_NOW
+              <div className="p-4 md:p-6 border-b border-slate-100 bg-white flex items-center gap-3">
+                <div className="bg-red-50 p-2 rounded-lg">
+                  <Youtube className="w-6 h-6 text-red-600" />
+                </div>
+                <h2 className="text-xl font-bold text-slate-900">{videoTitle || "Latest Lecture"}</h2>
+                <span className="ml-auto px-3 py-1 bg-red-50 text-red-600 text-xs font-semibold rounded-full border border-red-100 flex items-center gap-1.5">
+                  <span className="w-1.5 h-1.5 bg-red-600 rounded-full animate-pulse"></span>
+                  LIVE NOW
                 </span>
               </div>
               
-              <div className="aspect-video w-full bg-black">
+              <div className="aspect-video w-full bg-slate-900">
                 <iframe 
                   width="100%" 
                   height="100%" 
@@ -139,12 +141,12 @@ export default function Lectures() {
               </div>
 
               {videoNotes && (
-                <div className="p-6 bg-[#0a0a0a] border-t border-emerald-500/30">
-                  <h3 className="text-sm font-bold text-emerald-500 uppercase flex items-center gap-2 mb-4">
-                    <FileText className="w-4 h-4" /> Lecture_Notes
+                <div className="p-6 bg-white border-t border-slate-100">
+                  <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2 mb-4">
+                    <FileText className="w-4 h-4 text-blue-600" /> Lecture Notes
                   </h3>
-                  <div className="bg-[#050505] border border-emerald-900/50 p-6 rounded-none">
-                    <p className="text-emerald-400 whitespace-pre-wrap font-mono leading-relaxed text-sm">
+                  <div className="bg-slate-50 border border-slate-200 p-6 rounded-xl">
+                    <p className="text-slate-700 whitespace-pre-wrap leading-relaxed text-sm">
                       {videoNotes}
                     </p>
                   </div>
@@ -158,50 +160,51 @@ export default function Lectures() {
             <motion.div 
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
-              className="bg-[#0a0a0a] border border-emerald-500/30 rounded-none h-full flex flex-col"
+              className="bg-white border border-slate-200 rounded-2xl h-full flex flex-col shadow-sm overflow-hidden"
             >
-              <div className="p-4 border-b border-emerald-500/30 bg-[#050505] flex items-center gap-2">
-                <MessageSquare className="w-5 h-5 text-emerald-500" />
-                <h3 className="text-sm font-bold text-white uppercase">Lecture_Doubts</h3>
+              <div className="p-4 border-b border-slate-100 bg-slate-50 flex items-center gap-2">
+                <MessageSquare className="w-5 h-5 text-blue-600" />
+                <h3 className="text-sm font-bold text-slate-900">Lecture Doubts</h3>
               </div>
               
-              <div className="flex-1 p-4 overflow-y-auto min-h-[300px] max-h-[500px] space-y-4">
+              <div className="flex-1 p-4 overflow-y-auto min-h-[300px] max-h-[500px] space-y-4 bg-white">
                 {doubts.length === 0 ? (
-                  <div className="text-center text-emerald-700 text-xs uppercase py-8">
+                  <div className="text-center text-slate-500 text-sm py-8 flex flex-col items-center gap-3">
+                    <MessageSquare className="w-8 h-8 text-slate-300" />
                     No doubts asked yet.
                   </div>
                 ) : (
                   doubts.map(doubt => (
-                    <div key={doubt.id} className="bg-[#050505] border border-emerald-900/50 p-3">
+                    <div key={doubt.id} className="bg-slate-50 border border-slate-200 rounded-xl p-4 shadow-sm">
                       <div className="flex justify-between items-start mb-2">
-                        <span className="text-[10px] text-emerald-600">{doubt.time}</span>
-                        <span className={`text-[9px] px-1.5 py-0.5 uppercase border ${
+                        <span className="text-xs text-slate-500 font-medium">{doubt.time}</span>
+                        <span className={`text-[10px] px-2 py-1 rounded-full font-semibold ${
                           doubt.status === 'resolved' 
-                            ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30' 
-                            : 'bg-amber-500/10 text-amber-400 border-amber-500/30'
+                            ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' 
+                            : 'bg-amber-50 text-amber-700 border border-amber-200'
                         }`}>
                           {doubt.status}
                         </span>
                       </div>
-                      <p className="text-xs text-emerald-300">{doubt.text}</p>
+                      <p className="text-sm text-slate-700">{doubt.text}</p>
                     </div>
                   ))
                 )}
               </div>
 
-              <div className="p-4 border-t border-emerald-500/30 bg-[#050505]">
+              <div className="p-4 border-t border-slate-100 bg-white">
                 <form onSubmit={handleAskDoubt} className="flex gap-2">
                   <input 
                     type="text" 
                     value={doubtText}
                     onChange={(e) => setDoubtText(e.target.value)}
                     placeholder="Ask a doubt..." 
-                    className="flex-1 bg-[#111] border border-emerald-500/30 px-3 py-2 text-xs text-emerald-400 focus:outline-none focus:border-emerald-500 placeholder:text-emerald-800"
+                    className="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm text-slate-900 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 placeholder:text-slate-400 transition-all"
                   />
                   <button 
                     type="submit"
                     disabled={!doubtText.trim()}
-                    className="bg-emerald-500 text-black p-2 hover:bg-emerald-400 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    className="bg-blue-600 text-white p-2.5 rounded-xl hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors shadow-sm"
                   >
                     <Send className="w-4 h-4" />
                   </button>
@@ -214,11 +217,13 @@ export default function Lectures() {
         <motion.div 
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="bg-[#0a0a0a] border border-emerald-500/30 p-12 text-center"
+          className="bg-white border border-slate-200 rounded-2xl p-12 text-center shadow-sm"
         >
-          <Terminal className="w-12 h-12 text-emerald-900 mx-auto mb-4" />
-          <h2 className="text-xl font-bold text-emerald-600 uppercase mb-2">Awaiting_Transmission</h2>
-          <p className="text-emerald-800 text-sm uppercase">The instructor has not published any content yet.</p>
+          <div className="bg-slate-50 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6">
+            <BookOpen className="w-10 h-10 text-slate-400" />
+          </div>
+          <h2 className="text-xl font-bold text-slate-900 mb-2">Awaiting Content</h2>
+          <p className="text-slate-500 text-sm">The instructor has not published any content yet.</p>
         </motion.div>
       )}
     </div>
