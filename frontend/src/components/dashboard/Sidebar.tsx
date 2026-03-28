@@ -1,8 +1,12 @@
-﻿import { motion } from "motion/react";
+import { motion } from "motion/react";
 import { LayoutDashboard, PlayCircle, FileText, Briefcase, MessageSquare, X, LogOut, GraduationCap } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 
 export default function Sidebar({ activeTab, setActiveTab, isOpen, setIsOpen }: any) {
+  const { logout, token } = useAuth();
+  const navigate = useNavigate();
+
   const navItems = [
     { id: "overview", label: "Overview", icon: LayoutDashboard },
     { id: "lectures", label: "Lectures", icon: PlayCircle },
@@ -10,6 +14,22 @@ export default function Sidebar({ activeTab, setActiveTab, isOpen, setIsOpen }: 
     { id: "career", label: "Career", icon: Briefcase },
     { id: "doubts", label: "Doubt Support", icon: MessageSquare },
   ];
+
+  const handleLogout = async () => {
+    try {
+      await fetch("http://localhost:5000/api/auth/logout", {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${token}`
+        }
+      });
+    } catch (err) {
+      console.error(err);
+    } finally {
+      logout();
+      navigate("/");
+    }
+  };
 
   return (
     <>
@@ -31,7 +51,7 @@ export default function Sidebar({ activeTab, setActiveTab, isOpen, setIsOpen }: 
               <GraduationCap className="w-5 h-5 text-white" />
             </div>
             <span className="font-bold text-xl tracking-tight text-slate-900">
-              Codecure Acedamy
+              Codecure Academy
             </span>
           </Link>
           <button className="md:hidden text-slate-400 hover:text-slate-600" onClick={() => setIsOpen(false)}>
@@ -61,10 +81,10 @@ export default function Sidebar({ activeTab, setActiveTab, isOpen, setIsOpen }: 
         </nav>
 
         <div className="p-4 border-t border-slate-100">
-          <Link to="/" className="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-600 hover:bg-red-50 hover:text-red-600 transition-all duration-200 text-sm font-medium">
+          <button onClick={handleLogout} className="w-full flex flex-row items-center gap-3 px-4 py-3 rounded-xl text-slate-600 hover:bg-red-50 hover:text-red-600 transition-all duration-200 text-sm font-medium">
             <LogOut className="w-5 h-5" />
             Logout
-          </Link>
+          </button>
         </div>
       </motion.aside>
     </>

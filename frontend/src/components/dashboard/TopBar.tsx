@@ -1,6 +1,9 @@
 import { Menu, Bell, Search, User } from "lucide-react";
+import { useAuth } from "../../context/AuthContext";
 
 export default function TopBar({ setIsSidebarOpen }: any) {
+  const { user } = useAuth();
+
   return (
     <header className="h-16 bg-white/80 backdrop-blur-md border-b border-slate-200 flex items-center justify-between px-4 md:px-8 sticky top-0 z-30">
       <div className="flex items-center gap-4">
@@ -27,11 +30,15 @@ export default function TopBar({ setIsSidebarOpen }: any) {
         </button>
         <div className="flex items-center gap-3 pl-4 border-l border-slate-200">
           <div className="hidden md:block text-right">
-            <p className="text-sm font-semibold text-slate-900">Alex Student</p>
-            <p className="text-xs text-slate-500">Premium Plan</p>
+            <p className="text-sm font-semibold text-slate-900">{user?.name || "Student"}</p>
+            <p className="text-xs text-slate-500 capitalize">{user?.role || "Student"}</p>
           </div>
-          <div className="w-9 h-9 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 border border-blue-200">
-            <User className="w-5 h-5" />
+          <div className="w-9 h-9 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 border border-blue-200 overflow-hidden">
+            {user?.profile_picture && user?.profile_picture !== 'no-photo.jpg' ? (
+              <img src={user.profile_picture} alt={user.name} className="w-full h-full object-cover" />
+            ) : (
+              <User className="w-5 h-5" />
+            )}
           </div>
         </div>
       </div>

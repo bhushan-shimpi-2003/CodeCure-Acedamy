@@ -42,6 +42,31 @@ const PageWrapper = ({ children }: { children: React.ReactNode }) => (
   </motion.div>
 );
 
+import { useAuth } from "./context/AuthContext";
+import { Navigate } from "react-router-dom";
+
+// Protected Route Component
+const ProtectedRoute = ({ children, allowedRoles }: { children: React.ReactNode, allowedRoles?: string[] }) => {
+  const { isAuthenticated, isLoading, user } = useAuth();
+  
+  if (isLoading) {
+    return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
+  }
+  
+  if (!isAuthenticated || !user) {
+    return <Navigate to="/login" replace />;
+  }
+
+  if (allowedRoles && !allowedRoles.includes(user.role)) {
+    // Redirect based on their role if they try to access a page they shouldn't
+    if (user.role === 'admin') return <Navigate to="/admin" replace />;
+    if (user.role === 'teacher') return <Navigate to="/teacher" replace />;
+    return <Navigate to="/dashboard" replace />;
+  }
+  
+  return <>{children}</>;
+};
+
 const AnimatedRoutes = () => {
   const location = useLocation();
   
@@ -60,9 +85,12 @@ const AnimatedRoutes = () => {
         <Route path="/terms" element={<PageWrapper><PublicLayout><Terms /></PublicLayout></PageWrapper>} />
         <Route path="/privacy" element={<PageWrapper><PublicLayout><Privacy /></PublicLayout></PageWrapper>} />
         <Route path="/refund" element={<PageWrapper><PublicLayout><Refund /></PublicLayout></PageWrapper>} />
-        <Route path="/dashboard" element={<PageWrapper><Dashboard /></PageWrapper>} />
-        <Route path="/admin" element={<PageWrapper><AdminDashboard /></PageWrapper>} />
-        <Route path="/teacher" element={<PageWrapper><TeacherDashboard /></PageWrapper>} />
+        
+        {/* Protected Dashboard Routes */}
+        <Route path="/dashboard" element={<ProtectedRoute allowedRoles={['student']}><PageWrapper><Dashboard /></PageWrapper></ProtectedRoute>} />
+        <Route path="/admin" element={<ProtectedRoute allowedRoles={['admin']}><PageWrapper><AdminDashboard /></PageWrapper></ProtectedRoute>} />
+        <Route path="/teacher" element={<ProtectedRoute allowedRoles={['teacher']}><PageWrapper><TeacherDashboard /></PageWrapper></ProtectedRoute>} />
+        
         <Route path="*" element={<PageWrapper><NotFound /></PageWrapper>} />
       </Routes>
     </AnimatePresence>

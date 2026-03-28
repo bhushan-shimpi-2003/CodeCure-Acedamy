@@ -1,9 +1,50 @@
+import React, { useState } from "react";
 import { motion } from "motion/react";
-import { GraduationCap, Lock, Mail, User, ArrowRight } from "lucide-react";
-import { Link } from "react-router-dom";
+import { GraduationCap, Lock, Mail, User, ArrowRight, Loader2 } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "../components/ui/button";
+import { useAuth } from "../context/AuthContext";
 
 export default function Signup() {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  
+  const { login } = useAuth();
+  const navigate = useNavigate();
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+    setError("");
+
+    try {
+      const response = await fetch("http://localhost:5000/api/auth/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, email, password }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        // Log in the user after successful signup
+        login(data.data.session.access_token, data.data.user);
+        
+        // Redirect to student dashboard
+        navigate("/dashboard");
+      } else {
+        setError(data.error || "Signup failed");
+      }
+    } catch (err) {
+      setError("Server error. Please try again later.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -25,16 +66,25 @@ export default function Signup() {
         <p className="text-center text-slate-500 text-sm mb-8">
           Join our learning platform and start your journey.
         </p>
+
+        {error && (
+          <div className="mb-4 p-3 bg-red-50 text-red-600 text-sm rounded-xl border border-red-100 text-center">
+            {error}
+          </div>
+        )}
         
-        <form className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-2">
             <label className="text-sm text-slate-700 font-semibold flex items-center gap-2">
               <User className="w-4 h-4 text-slate-400" /> Full Name
             </label>
             <input 
               type="text" 
+              value={name}
+              onChange={(e) => setName(e.target.value)}
               className="w-full bg-white border border-slate-200 rounded-xl p-3 text-slate-900 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all placeholder:text-slate-400"
               placeholder="John Doe"
+              required
             />
           </div>
 
@@ -44,8 +94,11 @@ export default function Signup() {
             </label>
             <input 
               type="email" 
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               className="w-full bg-white border border-slate-200 rounded-xl p-3 text-slate-900 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all placeholder:text-slate-400"
               placeholder="student@example.com"
+              required
             />
           </div>
           
@@ -55,17 +108,18 @@ export default function Signup() {
             </label>
             <input 
               type="password" 
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               className="w-full bg-white border border-slate-200 rounded-xl p-3 text-slate-900 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all placeholder:text-slate-400"
               placeholder="••••••••"
+              required
             />
           </div>
           
-          <Link to="/dashboard" className="w-full block">
-            <Button className="w-full h-12 bg-blue-600 text-white hover:bg-blue-700 rounded-xl font-bold shadow-lg shadow-blue-600/20 group transition-all">
-              Sign Up
-              <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
-            </Button>
-          </Link>
+          <Button type="submit" disabled={isLoading} className="w-full h-12 bg-blue-600 text-white hover:bg-blue-700 rounded-xl font-bold shadow-lg shadow-blue-600/20 group transition-all">
+            {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Sign Up"}
+            {!isLoading && <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />}
+          </Button>
         </form>
         
         <div className="mt-8 text-center text-sm text-slate-500 font-medium">

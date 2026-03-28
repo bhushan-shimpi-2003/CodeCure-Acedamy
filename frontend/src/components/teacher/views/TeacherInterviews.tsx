@@ -1,28 +1,76 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "motion/react";
-import { Video, Calendar, Send, User, GraduationCap } from "lucide-react";
+import { Video, Calendar, Send, User, GraduationCap, Loader2 } from "lucide-react";
+import { useAuth } from "../../../context/AuthContext";
+
+const API = "http://localhost:5000/api";
 
 export default function TeacherInterviews() {
+  const { token } = useAuth();
   const [studentEmail, setStudentEmail] = useState("");
   const [interviewDate, setInterviewDate] = useState("");
   const [meetLink, setMeetLink] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
+  const [error, setError] = useState("");
+  const [interviews, setInterviews] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const handleSchedule = (e: React.FormEvent) => {
+  useEffect(() => {
+    fetchInterviews();
+  }, [token]);
+
+  const fetchInterviews = async () => {
+    try {
+      setIsLoading(true);
+      const res = await fetch(`${API}/interviews/teacher`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await res.json();
+      if (data.success) {
+        setInterviews(data.data);
+      }
+    } catch (err) {
+      console.error("Failed to fetch interviews", err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleSchedule = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    
-    // Simulate API call
-    setTimeout(() => {
+    setError("");
+
+    try {
+      const res = await fetch(`${API}/interviews`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          student_email: studentEmail,
+          scheduled_at: interviewDate,
+          meet_link: meetLink,
+        }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setSuccessMessage(`Interview scheduled with ${studentEmail} on ${new Date(interviewDate).toLocaleString()}. Link sent!`);
+        setStudentEmail("");
+        setInterviewDate("");
+        setMeetLink("");
+        fetchInterviews();
+        setTimeout(() => setSuccessMessage(""), 5000);
+      } else {
+        setError(data.error || "Failed to schedule interview");
+      }
+    } catch (err) {
+      setError("Server error. Please try again.");
+    } finally {
       setIsSubmitting(false);
-      setSuccessMessage(`Interview scheduled with ${studentEmail} on ${new Date(interviewDate).toLocaleString()}. Link sent!`);
-      setStudentEmail("");
-      setInterviewDate("");
-      setMeetLink("");
-      
-      setTimeout(() => setSuccessMessage(""), 5000);
-    }, 1500);
+    }
   };
 
   return (
@@ -49,6 +97,12 @@ export default function TeacherInterviews() {
           <div className="mb-6 p-4 bg-green-50 border border-green-200 text-green-700 text-sm font-semibold rounded-xl flex items-center gap-2">
             <div className="w-2 h-2 bg-green-500 rounded-full"></div>
             {successMessage}
+          </div>
+        )}
+
+        {error && (
+          <div className="mb-6 p-4 bg-red-50 border border-red-200 text-red-700 text-sm font-semibold rounded-xl">
+            {error}
           </div>
         )}
 
@@ -102,7 +156,7 @@ export default function TeacherInterviews() {
             className="w-full bg-blue-600 hover:bg-blue-700 text-white px-6 py-4 rounded-xl font-semibold transition-colors flex items-center justify-center gap-2 shadow-sm disabled:opacity-50 disabled:cursor-not-allowed mt-4"
           >
             {isSubmitting ? (
-              <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+              <Loader2 className="w-5 h-5 animate-spin" />
             ) : (
               <>
                 <Send className="w-5 h-5" /> Schedule & Send Link
@@ -111,6 +165,37 @@ export default function TeacherInterviews() {
           </button>
         </form>
       </motion.div>
+
+      {/* Scheduled Interviews List */}
+      {!isLoading && interviews.length > 0 && (
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+          className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm"
+        >
+          <h2 className="text-lg font-bold text-slate-800 mb-6 border-b border-slate-100 pb-3">
+            Scheduled Interviews ({interviews.length})
+          </h2>
+          <div className="space-y-3">
+            {interviews.map((iv: any) => (
+              <div key={iv.id} className="flex items-center justify-between p-4 bg-slate-50 border border-slate-100 rounded-xl">
+                <div>
+                  <p className="text-sm font-semibold text-slate-900">{iv.student_email || iv.student_name || 'Student'}</p>
+                  <p className="text-xs text-slate-500">{new Date(iv.scheduled_at).toLocaleString()}</p>
+                </div>
+                <span className={`px-2.5 py-1 text-[10px] font-bold uppercase rounded-lg border ${
+                  iv.status === 'completed' 
+                    ? 'bg-green-50 text-green-700 border-green-200' 
+                    : 'bg-blue-50 text-blue-700 border-blue-200'
+                }`}>
+                  {iv.status || 'scheduled'}
+                </span>
+              </div>
+            ))}
+          </div>
+        </motion.div>
+      )}
     </div>
   );
 }

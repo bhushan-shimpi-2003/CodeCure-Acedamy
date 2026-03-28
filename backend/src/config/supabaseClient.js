@@ -14,6 +14,11 @@ if (!supabaseUrl || !supabaseKey) {
   throw new Error('Supabase Configuration Error: SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are required in .env');
 }
 
-const supabase = createClient(supabaseUrl, supabaseKey);
+const supabase = createClient(supabaseUrl, supabaseKey, {
+  auth: {
+    autoRefreshToken: false,
+    persistSession: false,
+  },
+});
 
 module.exports = supabase;

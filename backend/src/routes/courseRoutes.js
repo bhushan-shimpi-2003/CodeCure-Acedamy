@@ -7,16 +7,22 @@ const { protect, authorize } = require('../middlewares/authMiddleware');
 
 const router = express.Router();
 
-// Public
+// Public - list all
 router.get('/', getCourses);
-router.get('/:idOrSlug', getCourse);
-router.get('/:courseId/modules', getModules);
 
-// Teacher
+// Teacher (must come BEFORE /:idOrSlug wildcard)
 router.get('/teacher/my', protect, authorize('teacher', 'admin'), getMyCourses);
 
-// Admin
+// Admin (must come BEFORE /:idOrSlug wildcard)
 router.get('/admin/all', protect, authorize('admin'), getAllCoursesAdmin);
+
+// Modules - specific routes before wildcards
+router.put('/modules/:id', protect, authorize('teacher', 'admin'), updateModule);
+router.delete('/modules/:id', protect, authorize('teacher', 'admin'), deleteModule);
+
+// Public - single course (wildcard - must be LAST among GET routes)
+router.get('/:idOrSlug', getCourse);
+router.get('/:courseId/modules', getModules);
 
 // Create / Update / Delete
 router.post('/', protect, authorize('teacher', 'admin'), createCourse);
@@ -25,7 +31,6 @@ router.delete('/:id', protect, authorize('admin'), deleteCourse);
 
 // Modules
 router.post('/:courseId/modules', protect, authorize('teacher', 'admin'), addModule);
-router.put('/modules/:id', protect, authorize('teacher', 'admin'), updateModule);
-router.delete('/modules/:id', protect, authorize('teacher', 'admin'), deleteModule);
 
 module.exports = router;
+

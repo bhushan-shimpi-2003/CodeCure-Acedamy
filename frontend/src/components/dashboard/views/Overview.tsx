@@ -1,19 +1,47 @@
 import { useState, useEffect } from "react";
 import { motion } from "motion/react";
-import { Play, Calendar, Users, Terminal, Youtube, BookOpen, CheckCircle, GraduationCap } from "lucide-react";
+import { Play, Calendar, Users, Terminal, Youtube, BookOpen, CheckCircle, GraduationCap, Loader2 } from "lucide-react";
+import { useAuth } from "../../../context/AuthContext";
 
 export default function Overview() {
+  const { user, token } = useAuth();
   const [featuredVideoId, setFeaturedVideoId] = useState<string | null>(null);
-  const [requestedCourses, setRequestedCourses] = useState<string[]>([]);
-  const [assignedCourses, setAssignedCourses] = useState<string[]>([]);
+  
+  const [availableCourses, setAvailableCourses] = useState<any[]>([]);
+  const [enrollments, setEnrollments] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isRequesting, setIsRequesting] = useState<string | null>(null);
 
-  const CURRENT_STUDENT_ID = "STD_001";
-  const availableCourses = ["Playwright Master", "Selenium Pro", "API Testing", "React Masterclass"];
+  const fetchDashboardData = async () => {
+    setIsLoading(true);
+    try {
+      // Fetch all public courses
+      const coursesRes = await fetch("http://localhost:5000/api/courses");
+      const coursesData = await coursesRes.json();
+      if (coursesData.success) {
+        setAvailableCourses(coursesData.data);
+      }
+
+      // Fetch my enrollments
+      if (token) {
+        const enrollRes = await fetch("http://localhost:5000/api/enrollments/me", {
+          headers: { "Authorization": `Bearer ${token}` }
+        });
+        const enrollData = await enrollRes.json();
+        if (enrollData.success) {
+          setEnrollments(enrollData.data);
+        }
+      }
+    } catch (err) {
+      console.error("Failed to load dashboard data", err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   useEffect(() => {
     const savedLink = localStorage.getItem("sharedYoutubeLink");
     if (savedLink) {
-      // Extract YouTube ID
       const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
       const match = savedLink.match(regExp);
       if (match && match[2].length === 11) {
@@ -21,23 +49,39 @@ export default function Overview() {
       }
     }
 
-    // Check requested courses
-    const savedRequests = localStorage.getItem(`requested_courses_${CURRENT_STUDENT_ID}`);
-    if (savedRequests) {
-      setRequestedCourses(JSON.parse(savedRequests));
-    }
+    fetchDashboardData();
+  }, [token]);
 
-    // Check assigned courses
-    const savedAssigned = localStorage.getItem(`assigned_courses_${CURRENT_STUDENT_ID}`);
-    if (savedAssigned) {
-      setAssignedCourses(JSON.parse(savedAssigned));
+  const handleRequestEnrollment = async (courseId: string) => {
+    setIsRequesting(courseId);
+    try {
+      const res = await fetch("http://localhost:5000/api/enrollments/request", {
+        method: "POST",
+        headers: { 
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify({ course_id: courseId }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        // Refresh enrollments to show pending
+        fetchDashboardData();
+      } else {
+        alert(data.error || "Failed to request enrollment");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Error requesting enrollment");
+    } finally {
+      setIsRequesting(null);
     }
-  }, []);
+  };
 
-  const handleRequestEnrollment = (course: string) => {
-    const newRequests = [...requestedCourses, course];
-    setRequestedCourses(newRequests);
-    localStorage.setItem(`requested_courses_${CURRENT_STUDENT_ID}`, JSON.stringify(newRequests));
+  // Helper to check enrollment status
+  const getEnrollmentStatus = (courseId: string) => {
+    const enrollment = enrollments.find(e => e.course_id === courseId);
+    return enrollment ? enrollment.status : null; // 'active', 'pending', 'completed', 'cancelled'
   };
 
   return (
@@ -52,11 +96,11 @@ export default function Overview() {
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div>
             <h1 className="text-2xl md:text-3xl font-bold text-slate-900 mb-2 flex items-center gap-2">
-              Welcome back, Alex! 👋
+              Welcome back, {user?.name?.split(' ')[0]}! 👋
             </h1>
             <p className="text-slate-500 text-sm md:text-base max-w-xl">
               "Success is not final, failure is not fatal: it is the courage to continue that counts."<br/>
-              Ready to continue your Playwright Automation Master Program?
+              Ready to continue your journey?
             </p>
           </div>
           <div className="bg-slate-50 border border-slate-100 p-5 rounded-xl min-w-[240px]">
@@ -90,51 +134,70 @@ export default function Overview() {
           <h2 className="text-xl font-bold text-slate-900">Course Catalog</h2>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {availableCourses.map((course, i) => {
-            const isRequested = requestedCourses.includes(course);
-            const isAssigned = assignedCourses.includes(course);
+        {isLoading ? (
+          <div className="flex justify-center p-12">
+            <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
+          </div>
+        ) : availableCourses.length === 0 ? (
+          <div className="text-center p-12 bg-white rounded-xl border border-slate-200 text-slate-500">
+            No courses available yet.
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {availableCourses.map((course, i) => {
+              const status = getEnrollmentStatus(course.id);
 
-            return (
-              <motion.div 
-                key={course}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.1 }}
-                className="bg-white border border-slate-200 rounded-xl p-6 flex flex-col justify-between shadow-sm hover:shadow-md hover:border-blue-200 transition-all"
-              >
-                <div>
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="bg-blue-50 p-3 rounded-xl">
-                      <GraduationCap className="w-6 h-6 text-blue-600" />
+              return (
+                <motion.div 
+                  key={course.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: i * 0.1 }}
+                  className="bg-white border border-slate-200 rounded-xl p-6 flex flex-col justify-between shadow-sm hover:shadow-md hover:border-blue-200 transition-all"
+                >
+                  <div>
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="bg-blue-50 p-3 rounded-xl overflow-hidden shadow-sm border border-blue-100/50">
+                        {course.thumbnail_url ? (
+                          <img src={course.thumbnail_url} alt={course.title} className="w-8 h-8 object-cover rounded" />
+                        ) : (
+                          <GraduationCap className="w-6 h-6 text-blue-600" />
+                        )}
+                      </div>
+                      <h3 className="text-lg font-bold text-slate-900 line-clamp-1">{course.title}</h3>
                     </div>
-                    <h3 className="text-lg font-bold text-slate-900">{course}</h3>
+                    <p className="text-sm text-slate-500 mb-6 leading-relaxed line-clamp-3">
+                      {course.description || `Master the concepts of ${course.title} with our comprehensive video lectures, assignments, and real-world projects.`}
+                    </p>
                   </div>
-                  <p className="text-sm text-slate-500 mb-6 leading-relaxed">
-                    Master the concepts of {course} with our comprehensive video lectures, assignments, and real-world projects.
-                  </p>
-                </div>
-                
-                {isAssigned ? (
-                  <div className="flex items-center justify-center gap-2 w-full py-3 bg-emerald-50 text-emerald-700 rounded-xl text-sm font-semibold">
-                    <CheckCircle className="w-4 h-4" /> Enrolled
-                  </div>
-                ) : isRequested ? (
-                  <div className="flex items-center justify-center gap-2 w-full py-3 bg-amber-50 text-amber-700 rounded-xl text-sm font-semibold">
-                    <CheckCircle className="w-4 h-4" /> Request Pending
-                  </div>
-                ) : (
-                  <button 
-                    onClick={() => handleRequestEnrollment(course)}
-                    className="w-full py-3 bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 hover:text-blue-600 hover:border-blue-200 rounded-xl transition-all text-sm font-semibold"
-                  >
-                    Request Enrollment
-                  </button>
-                )}
-              </motion.div>
-            );
-          })}
-        </div>
+                  
+                  {status === 'active' || status === 'completed' ? (
+                    <div className="flex items-center justify-center gap-2 w-full py-3 bg-emerald-50 text-emerald-700 rounded-xl text-sm font-semibold">
+                      <CheckCircle className="w-4 h-4" /> {status === 'completed' ? 'Completed' : 'Enrolled'}
+                    </div>
+                  ) : status === 'pending' ? (
+                    <div className="flex items-center justify-center gap-2 w-full py-3 bg-amber-50 text-amber-700 rounded-xl text-sm font-semibold">
+                      <CheckCircle className="w-4 h-4" /> Request Pending
+                    </div>
+                  ) : status === 'cancelled' ? (
+                    <div className="flex items-center justify-center gap-2 w-full py-3 bg-red-50 text-red-700 rounded-xl text-sm font-semibold">
+                      <CheckCircle className="w-4 h-4" /> Enrollment Cancelled
+                    </div>
+                  ) : (
+                    <button 
+                      onClick={() => handleRequestEnrollment(course.id)}
+                      disabled={isRequesting === course.id}
+                      className="w-full py-3 bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 hover:text-blue-600 hover:border-blue-200 rounded-xl transition-all text-sm font-semibold disabled:opacity-50 flex items-center justify-center gap-2"
+                    >
+                      {isRequesting === course.id ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
+                      Request Enrollment
+                    </button>
+                  )}
+                </motion.div>
+              );
+            })}
+          </div>
+        )}
       </motion.div>
     </div>
   );

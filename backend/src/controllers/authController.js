@@ -1,4 +1,20 @@
 const supabase = require('../config/supabaseClient');
+const { createClient } = require('@supabase/supabase-js');
+
+// Create a temporary, session-isolated Supabase client for auth operations
+// This prevents signInWithPassword/signUp from polluting the shared service-role client
+function createAuthClient() {
+  return createClient(
+    process.env.SUPABASE_URL,
+    process.env.SUPABASE_ANON_KEY,
+    {
+      auth: {
+        autoRefreshToken: false,
+        persistSession: false,
+      },
+    }
+  );
+}
 
 // @desc    Register user (signup)
 // @route   POST /api/auth/signup
@@ -11,8 +27,9 @@ exports.signup = async (req, res, next) => {
       return res.status(400).json({ success: false, error: 'Please provide name, email, and password' });
     }
 
-    // Sign up via Supabase Auth (profile auto-created by trigger)
-    const { data, error } = await supabase.auth.signUp({
+    // Use a per-request client so signUp doesn't pollute the shared service-role client
+    const authClient = createAuthClient();
+    const { data, error } = await authClient.auth.signUp({
       email,
       password,
       options: {
@@ -47,7 +64,9 @@ exports.login = async (req, res, next) => {
       return res.status(400).json({ success: false, error: 'Please provide email and password' });
     }
 
-    const { data, error } = await supabase.auth.signInWithPassword({
+    // Use a per-request client so signInWithPassword doesn't set session on the shared client
+    const authClient = createAuthClient();
+    const { data, error } = await authClient.auth.signInWithPassword({
       email,
       password,
     });
@@ -56,7 +75,7 @@ exports.login = async (req, res, next) => {
       return res.status(401).json({ success: false, error: 'Invalid credentials' });
     }
 
-    // Fetch profile (with role) for the frontend
+    // Fetch profile (with role) for the frontend using the service-role client (bypasses RLS)
     const { data: profile } = await supabase
       .from('profiles')
       .select('*')
@@ -94,13 +113,12 @@ exports.getMe = async (req, res, next) => {
 // @access  Private
 exports.logout = async (req, res, next) => {
   try {
-    const { error } = await supabase.auth.signOut();
-    if (error) {
-      return res.status(500).json({ success: false, error: error.message });
-    }
-
+    // Server-side logout is a no-op: the frontend simply discards the token.
+    // We do NOT call supabase.auth.signOut() here because that would
+    // sign out the shared service-role client, breaking the entire server.
     res.status(200).json({ success: true, data: {} });
   } catch (err) {
     next(err);
   }
 };
+

@@ -1,39 +1,79 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "motion/react";
-import { CheckCircle, Link as LinkIcon, Youtube, Type, FileText, LayoutDashboard } from "lucide-react";
+import { CheckCircle, Link as LinkIcon, Youtube, Type, FileText, LayoutDashboard, Loader2 } from "lucide-react";
+import { useAuth } from "../../../context/AuthContext";
+
+const API = "http://localhost:5000/api";
 
 export default function TeacherOverview() {
+  const { token } = useAuth();
   const [youtubeLink, setYoutubeLink] = useState("");
   const [videoTitle, setVideoTitle] = useState("");
   const [videoNotes, setVideoNotes] = useState("");
+  const [selectedCourseId, setSelectedCourseId] = useState("");
   const [isSharing, setIsSharing] = useState(false);
   const [shareSuccess, setShareSuccess] = useState(false);
+  const [courses, setCourses] = useState<any[]>([]);
+  const [isLoadingCourses, setIsLoadingCourses] = useState(true);
+  const [error, setError] = useState("");
 
   useEffect(() => {
-    const savedLink = localStorage.getItem("sharedYoutubeLink");
-    const savedTitle = localStorage.getItem("sharedVideoTitle");
-    const savedNotes = localStorage.getItem("sharedVideoNotes");
-    
-    if (savedLink) setYoutubeLink(savedLink);
-    if (savedTitle) setVideoTitle(savedTitle);
-    if (savedNotes) setVideoNotes(savedNotes);
-  }, []);
+    fetchMyCourses();
+  }, [token]);
 
-  const handleShareYoutube = () => {
-    if (!youtubeLink.trim() || !videoTitle.trim()) return;
+  const fetchMyCourses = async () => {
+    try {
+      setIsLoadingCourses(true);
+      const res = await fetch(`${API}/courses/teacher/my`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await res.json();
+      if (data.success) {
+        setCourses(data.data);
+        if (data.data.length > 0) setSelectedCourseId(data.data[0].id);
+      }
+    } catch (err) {
+      console.error("Failed to fetch courses", err);
+    } finally {
+      setIsLoadingCourses(false);
+    }
+  };
+
+  const handleShareYoutube = async () => {
+    if (!youtubeLink.trim() || !videoTitle.trim() || !selectedCourseId) return;
     setIsSharing(true);
-    
-    setTimeout(() => {
-      localStorage.setItem("sharedYoutubeLink", youtubeLink);
-      localStorage.setItem("sharedVideoTitle", videoTitle);
-      localStorage.setItem("sharedVideoNotes", videoNotes);
+    setError("");
+
+    try {
+      const res = await fetch(`${API}/lessons`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          course_id: selectedCourseId,
+          title: videoTitle,
+          video_url: youtubeLink,
+          notes: videoNotes,
+          type: "video",
+        }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setShareSuccess(true);
+        setYoutubeLink("");
+        setVideoTitle("");
+        setVideoNotes("");
+        setTimeout(() => setShareSuccess(false), 3000);
+      } else {
+        setError(data.error || "Failed to publish content");
+      }
+    } catch (err) {
+      setError("Server error. Please try again.");
+    } finally {
       setIsSharing(false);
-      setShareSuccess(true);
-      
-      setTimeout(() => {
-        setShareSuccess(false);
-      }, 3000);
-    }, 1000);
+    }
   };
 
   return (
@@ -64,7 +104,37 @@ export default function TeacherOverview() {
           <Youtube className="w-5 h-5 text-red-600" /> Publish New Lecture
         </h2>
         
+        {error && (
+          <div className="mb-4 p-3 bg-red-50 text-red-600 text-sm rounded-xl border border-red-100">
+            {error}
+          </div>
+        )}
+
         <div className="space-y-6">
+          {/* Course Selector */}
+          <div>
+            <label className="block text-sm font-semibold text-slate-700 mb-2">
+              Select Course <span className="text-red-500">*</span>
+            </label>
+            {isLoadingCourses ? (
+              <div className="flex items-center gap-2 text-sm text-slate-500">
+                <Loader2 className="w-4 h-4 animate-spin" /> Loading courses...
+              </div>
+            ) : courses.length === 0 ? (
+              <p className="text-sm text-slate-500">No courses assigned. Contact admin to create a course first.</p>
+            ) : (
+              <select
+                value={selectedCourseId}
+                onChange={(e) => setSelectedCourseId(e.target.value)}
+                className="block w-full px-4 py-3 border border-slate-200 bg-slate-50 text-slate-900 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-xl transition-colors"
+              >
+                {courses.map((c: any) => (
+                  <option key={c.id} value={c.id}>{c.title}</option>
+                ))}
+              </select>
+            )}
+          </div>
+
           {/* Title Input */}
           <div>
             <label className="block text-sm font-semibold text-slate-700 mb-2 flex items-center gap-2">
@@ -111,13 +181,14 @@ export default function TeacherOverview() {
             <p className="text-sm text-slate-500">This content will be immediately visible to all enrolled students.</p>
             <button
               onClick={handleShareYoutube}
-              disabled={isSharing || !youtubeLink.trim() || !videoTitle.trim()}
+              disabled={isSharing || !youtubeLink.trim() || !videoTitle.trim() || !selectedCourseId}
               className={`w-full sm:w-auto px-8 py-3 rounded-xl font-semibold transition-colors flex items-center justify-center gap-2 ${
-                isSharing || !youtubeLink.trim() || !videoTitle.trim()
+                isSharing || !youtubeLink.trim() || !videoTitle.trim() || !selectedCourseId
                   ? 'bg-slate-100 text-slate-400 cursor-not-allowed'
                   : 'bg-blue-600 text-white hover:bg-blue-700 shadow-sm'
               }`}
             >
+              {isSharing ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
               {isSharing ? 'Publishing...' : 'Publish Content'}
             </button>
           </div>

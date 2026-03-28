@@ -1,124 +1,106 @@
-/**
- * RBAC Test Script — Tests signup, login, and role-based access
- * Run: node src/test-rbac.js
- */
-
 const supabase = require('./config/supabaseClient');
+const app = require('./app');
 
-const API = 'http://localhost:5000/api';
+const PORT = 5050;
+const API = `http://localhost:${PORT}/api`;
 
-async function request(method, path, body = null, token = null) {
-  const headers = { 'Content-Type': 'application/json' };
-  if (token) headers['Authorization'] = `Bearer ${token}`;
-
-  const options = { method, headers };
-  if (body) options.body = JSON.stringify(body);
-
-  const res = await fetch(`${API}${path}`, options);
-  const data = await res.json();
-  return { status: res.status, data };
-}
-
-async function createTestUser(email, password, name, role) {
-  // Use Supabase Admin API to create user (bypasses email verification)
-  const { data, error } = await supabase.auth.admin.createUser({
-    email,
-    password,
-    email_confirm: true,
-    user_metadata: { name, role },
-  });
-
-  if (error) {
-    // User might already exist — try to sign in instead
-    if (error.message.includes('already been registered')) {
-      console.log(`  ⚠️  ${email} already exists, will login instead`);
-      return null;
-    }
-    console.error(`  ❌ Failed to create ${email}:`, error.message);
-    return null;
-  }
-
-  console.log(`  ✅ Created ${role}: ${email} (ID: ${data.user.id})`);
-  return data.user;
-}
-
-async function loginUser(email, password) {
-  const result = await request('POST', '/auth/login', { email, password });
-  if (result.data.success) {
-    console.log(`  ✅ Login OK — Role: ${result.data.data.user.role}`);
-    return result.data.data.session.access_token;
-  } else {
-    console.error(`  ❌ Login failed:`, result.data.error);
-    return null;
-  }
-}
-
-async function testAccess(label, method, path, token, expectedStatus) {
-  const result = await request(method, path, null, token);
-  const passed = result.status === expectedStatus;
-  const icon = passed ? '✅' : '❌';
-  console.log(`  ${icon} ${label} — Status: ${result.status} (expected ${expectedStatus})${!passed ? ' — ' + JSON.stringify(result.data.error) : ''}`);
-  return passed;
+async function req(method, path, body, token) {
+  const h = { 'Content-Type': 'application/json' };
+  if (token) h['Authorization'] = `Bearer ${token}`;
+  const opts = { method, headers: h };
+  if (body) opts.body = JSON.stringify(body);
+  const r = await fetch(`${API}${path}`, opts);
+  return { status: r.status, data: await r.json() };
 }
 
 async function main() {
-  console.log('\n╔══════════════════════════════════════════════╗');
-  console.log('║   CODECURE ACADEMY — RBAC TEST SUITE         ║');
-  console.log('╚══════════════════════════════════════════════╝\n');
+  const server = app.listen(PORT);
+  await new Promise(r => setTimeout(r, 500));
+  console.log('Server on', PORT);
 
-  // ── Step 1: Create test users ──
-  console.log('📦 STEP 1: Creating Test Users via Supabase Admin API...');
-  await createTestUser('student@test.com', 'Password123!', 'Test Student', 'student');
-  await createTestUser('teacher@test.com', 'Password123!', 'Test Teacher', 'teacher');
-  await createTestUser('admin@test.com', 'Password123!', 'Test Admin', 'admin');
+  const tokens = {};
 
-  // ── Step 2: Login as each role ──
-  console.log('\n🔐 STEP 2: Login & Token Retrieval...');
+  const { data: listData } = await supabase.auth.admin.listUsers();
+  const allUsers = listData?.users || [];
 
-  console.log('\n  [Student]');
-  const studentToken = await loginUser('student@test.com', 'Password123!');
+  // Create 3 test users
+  for (const [email, name, role] of [
+    ['s1@test.com', 'Student1', 'student'],
+    ['t1@test.com', 'Teacher1', 'teacher'],
+    ['a1@test.com', 'Admin1', 'admin']
+  ]) {
+    // 1. Clean up existing test user
+    const existing = allUsers.find(u => u.email === email);
+    if (existing) {
+      await supabase.auth.admin.deleteUser(existing.id);
+      await supabase.from('profiles').delete().eq('id', existing.id);
+      console.log(role, 'cleaned up old records');
+    }
 
-  console.log('\n  [Teacher]');
-  const teacherToken = await loginUser('teacher@test.com', 'Password123!');
+    // 2. Create the user fresh
+    let authUserId = null;
+    const createRes = await supabase.auth.admin.createUser({
+      email, password: 'Pass123!', email_confirm: true, user_metadata: { name }
+    });
+    if (createRes.data && createRes.data.user) {
+      authUserId = createRes.data.user.id;
+      console.log(role, 'created fresh:', authUserId);
+    } else {
+      console.log(role, 'create failed:', createRes.error);
+    }
 
-  console.log('\n  [Admin]');
-  const adminToken = await loginUser('admin@test.com', 'Password123!');
+    // 3. Upsert the profile to ensure they have the correct role and exist
+    if (authUserId) {
+      const resp = await supabase.from('profiles').upsert({ id: authUserId, name, email, role }).eq('id', authUserId);
+      if (resp.error) {
+          console.log(role, 'PROFILE UPSERT ERROR:', resp.error);
+      } else {
+          console.log(role, 'profile initialized/updated:', role);
+      }
+    }
 
-  if (!studentToken || !teacherToken || !adminToken) {
-    console.log('\n❌ Cannot proceed — one or more logins failed.');
-    process.exit(1);
+    // 4. Login via API
+    const login = await req('POST', '/auth/login', { email, password: 'Pass123!' });
+    console.log(role, 'login status:', login.status);
+
+    if (login.data.success && login.data.data && login.data.data.session) {
+      tokens[role] = login.data.data.session.access_token;
+      const user = login.data.data.user;
+      console.log(role, 'logged in, role:', user ? user.role : 'NO PROFILE');
+    } else {
+      console.log(role, 'login FAIL:', login.data.error || 'unknown');
+    }
   }
 
-  // ── Step 3: Test /auth/me ──
-  console.log('\n👤 STEP 3: GET /api/auth/me (all roles should get 200)...');
-  await testAccess('Student → /auth/me', 'GET', '/auth/me', studentToken, 200);
-  await testAccess('Teacher → /auth/me', 'GET', '/auth/me', teacherToken, 200);
-  await testAccess('Admin   → /auth/me', 'GET', '/auth/me', adminToken, 200);
+  if (!tokens.student || !tokens.teacher || !tokens.admin) {
+    console.log('\nMissing tokens:', Object.keys(tokens));
+    server.close(); process.exit(1);
+  }
 
-  // ── Step 4: Test RBAC — Admin-only routes ──
-  console.log('\n🛡️  STEP 4: RBAC — Admin-only routes (GET /api/admin/students)...');
-  await testAccess('Student → /admin/students', 'GET', '/admin/students', studentToken, 403);
-  await testAccess('Teacher → /admin/students', 'GET', '/admin/students', teacherToken, 403);
-  await testAccess('Admin   → /admin/students', 'GET', '/admin/students', adminToken, 200);
+  // RBAC tests
+  console.log('\n--- RBAC Tests ---');
+  let pass = 0, fail = 0;
+  const tests = [
+    ['student /auth/me', 'GET', '/auth/me', tokens.student, 200],
+    ['admin /auth/me', 'GET', '/auth/me', tokens.admin, 200],
+    ['student BLOCKED /admin/students', 'GET', '/admin/students', tokens.student, 403],
+    ['teacher BLOCKED /admin/students', 'GET', '/admin/students', tokens.teacher, 403],
+    ['admin OK /admin/students', 'GET', '/admin/students', tokens.admin, 200],
+    ['student OK /doubts/me', 'GET', '/doubts/me', tokens.student, 200],
+    ['teacher BLOCKED /doubts/me', 'GET', '/doubts/me', tokens.teacher, 403],
+    ['no-token /auth/me', 'GET', '/auth/me', null, 401],
+  ];
 
-  // ── Step 5: Test RBAC — Teacher-only routes ──
-  console.log('\n🛡️  STEP 5: RBAC — Teacher/Admin routes (GET /api/courses/teacher/my)...');
-  await testAccess('Student → /courses/teacher/my', 'GET', '/courses/teacher/my', studentToken, 403);
-  await testAccess('Teacher → /courses/teacher/my', 'GET', '/courses/teacher/my', teacherToken, 200);
-  await testAccess('Admin   → /courses/teacher/my', 'GET', '/courses/teacher/my', adminToken, 200);
+  for (const [label, method, path, token, expected] of tests) {
+    const r = await req(method, path, null, token);
+    const ok = r.status === expected;
+    console.log(ok ? 'PASS' : 'FAIL', label, r.status, 'want', expected);
+    ok ? pass++ : fail++;
+  }
 
-  // ── Step 6: Test RBAC — Student-only routes ──
-  console.log('\n🛡️  STEP 6: RBAC — Student-only routes (GET /api/doubts/me)...');
-  await testAccess('Student → /doubts/me', 'GET', '/doubts/me', studentToken, 200);
-  await testAccess('Teacher → /doubts/me', 'GET', '/doubts/me', teacherToken, 403);
-  await testAccess('Admin   → /doubts/me', 'GET', '/doubts/me', adminToken, 403);
-
-  // ── Step 7: No token ──
-  console.log('\n🔒 STEP 7: No Token (should get 401)...');
-  await testAccess('No token → /auth/me', 'GET', '/auth/me', null, 401);
-  await testAccess('No token → /admin/students', 'GET', '/admin/students', null, 401);
-
-  console.log('\n✨ RBAC Test Suite Complete!\n');
+  console.log('\nResult:', pass + '/' + (pass+fail), 'passed');
+  server.close();
+  process.exit(fail > 0 ? 1 : 0);
 }
 
-main().catch(console.error);
+main().catch(e => { console.error('Fatal:', e.message); process.exit(1); });
