@@ -15,7 +15,7 @@ router.get('/me', protect, authorize('student'), getMyEnrollments);
 // Admin
 router.get('/requests/pending', protect, authorize('admin'), getPendingRequests);
 router.put('/requests/:id', protect, authorize('admin'), resolveRequest);
-router.get('/', protect, authorize('admin'), getAllEnrollments);
-router.put('/:id', protect, authorize('admin'), updateEnrollment);
+router.get('/', protect, authorize('admin', 'teacher'), getAllEnrollments);
+router.put('/:id', protect, authorize('admin', 'teacher'), updateEnrollment);
 
 module.exports = router;

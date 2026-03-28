@@ -11,7 +11,7 @@ export default function AdminFinance() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    fetchTransactions();
+    if (token) fetchTransactions();
   }, [token]);
 
   const fetchTransactions = async () => {

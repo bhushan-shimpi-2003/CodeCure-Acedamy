@@ -55,8 +55,7 @@ export default function TeacherOverview() {
           course_id: selectedCourseId,
           title: videoTitle,
           video_url: youtubeLink,
-          notes: videoNotes,
-          type: "video",
+          content: videoNotes
         }),
       });
       const data = await res.json();

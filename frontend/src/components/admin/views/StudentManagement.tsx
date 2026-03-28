@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion } from "motion/react";
-import { Users, Search, Filter, CheckSquare, XSquare, MoreVertical, Shield, X, Bell, Download, Plus, Loader2 } from "lucide-react";
+import { Users, Search, CheckSquare, XSquare, MoreVertical, Shield, X, Bell, Download, Loader2 } from "lucide-react";
 import { useAuth } from "../../../context/AuthContext";
 
 export default function StudentManagement() {
@@ -8,31 +8,28 @@ export default function StudentManagement() {
   const [students, setStudents] = useState<any[]>([]);
   const [requests, setRequests] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  
+
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedStudent, setSelectedStudent] = useState<any>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  // Fetch students, enrollments, and pending requests
   const fetchData = async () => {
     setIsLoading(true);
     try {
-      // Fetch students
       const studentsRes = await fetch("http://localhost:5000/api/admin/students", {
-        headers: { "Authorization": `Bearer ${token}` }
+        headers: { Authorization: `Bearer ${token}` },
       });
       const studentsData = await studentsRes.json();
-      if (studentsData.success) {
-        setStudents(studentsData.data);
-      }
+      if (studentsData.success) setStudents(studentsData.data);
 
-      // Fetch pending requests
-      const requestsRes = await fetch("http://localhost:5000/api/enrollments/requests/pending", {
-        headers: { "Authorization": `Bearer ${token}` }
-      });
-      const requestsData = await requestsRes.json();
-      if (requestsData.success) {
-        setRequests(requestsData.data);
+      try {
+        const requestsRes = await fetch("http://localhost:5000/api/enrollments/requests/pending", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const requestsData = await requestsRes.json();
+        if (requestsData.success) setRequests(requestsData.data);
+      } catch {
+        // pending requests endpoint may not exist yet
       }
     } catch (err) {
       console.error("Failed to load student data", err);
@@ -45,22 +42,47 @@ export default function StudentManagement() {
     if (token) fetchData();
   }, [token]);
 
-  const handleResolveRequest = async (requestId: string, status: 'approved' | 'rejected') => {
+  const handleResolveRequest = async (requestId: string, status: "approved" | "rejected") => {
     try {
       const res = await fetch(`http://localhost:5000/api/enrollments/requests/${requestId}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`
+          Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ status })
+        body: JSON.stringify({ status }),
       });
-      if (res.ok) {
-        fetchData(); // Refresh list after resolving
-      }
+      if (res.ok) fetchData();
     } catch (err) {
       console.error(err);
       alert("Error updating request");
+    }
+  };
+
+  const handleChangeRole = async (userId: string, currentRole: string) => {
+    const newRole = prompt(`Current role: ${currentRole}. Enter new role (student, teacher, admin):`, currentRole);
+    if (!newRole || !["student", "teacher", "admin"].includes(newRole.toLowerCase())) {
+      if (newRole) alert("Invalid role.");
+      return;
+    }
+    try {
+      const res = await fetch(`http://localhost:5000/api/admin/users/${userId}/role`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ role: newRole.toLowerCase() }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        alert("Role updated!");
+        fetchData();
+      } else {
+        alert(data.error || "Failed");
+      }
+    } catch {
+      alert("Error");
     }
   };
 
@@ -78,25 +100,20 @@ export default function StudentManagement() {
           </h1>
           <p className="text-slate-500 text-sm">Manage enrollments, progress, and access.</p>
         </div>
-        <div className="flex gap-3">
-          <button className="flex items-center gap-2 bg-white border border-slate-200 text-slate-700 px-4 py-2 rounded-lg text-sm font-medium hover:bg-slate-50 transition-colors">
-            <Download className="w-4 h-4" /> Export CSV
-          </button>
-          <button className="flex items-center gap-2 bg-blue-600 border border-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors shadow-sm">
-            <Plus className="w-4 h-4" /> Add Student
-          </button>
-        </div>
+        <button className="flex items-center gap-2 bg-white border border-slate-200 text-slate-700 px-4 py-2 rounded-lg text-sm font-medium hover:bg-slate-50 transition-colors">
+          <Download className="w-4 h-4" /> Export CSV
+        </button>
       </div>
 
       <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
         <div className="flex flex-col md:flex-row gap-4 mb-6">
           <div className="flex-1 flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-lg px-4 py-2 focus-within:border-blue-500 focus-within:ring-1 focus-within:ring-blue-500 transition-all">
             <Search className="w-4 h-4 text-slate-400" />
-            <input 
-              type="text" 
+            <input
+              type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search by Name or Email..." 
+              placeholder="Search by Name or Email..."
               className="bg-transparent border-none outline-none text-sm text-slate-900 w-full placeholder:text-slate-400"
             />
           </div>
@@ -120,20 +137,20 @@ export default function StudentManagement() {
               </thead>
               <tbody className="divide-y divide-slate-100">
                 {students
-                  .filter(student => {
-                    const query = searchQuery.toLowerCase();
+                  .filter((s) => {
+                    const q = searchQuery.toLowerCase();
                     return (
-                      student.name?.toLowerCase().includes(query) ||
-                      student.id.toLowerCase().includes(query) ||
-                      (student.email && student.email.toLowerCase().includes(query))
+                      s.name?.toLowerCase().includes(q) ||
+                      s.id.toLowerCase().includes(q) ||
+                      (s.email && s.email.toLowerCase().includes(q))
                     );
                   })
                   .map((student, i) => {
-                    const stdRequests = requests.filter(r => r.student_id === student.id);
+                    const stdRequests = requests.filter((r) => r.student_id === student.id);
                     const hasRequests = stdRequests.length > 0;
-                    
+
                     return (
-                      <motion.tr 
+                      <motion.tr
                         key={student.id}
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
@@ -155,28 +172,38 @@ export default function StudentManagement() {
                           <div className="text-sm font-medium text-slate-700">{student.email}</div>
                         </td>
                         <td className="p-4">
-                          <span className={`px-2.5 py-1 text-xs font-medium rounded-full ${
-                            student.role === 'admin' ? 'bg-purple-100 text-purple-700' :
-                            student.role === 'teacher' ? 'bg-blue-100 text-blue-700' :
-                            'bg-green-100 text-green-700'
-                          }`}>
+                          <span
+                            className={`px-2.5 py-1 text-xs font-medium rounded-full ${
+                              student.role === "admin"
+                                ? "bg-purple-100 text-purple-700"
+                                : student.role === "teacher"
+                                ? "bg-blue-100 text-blue-700"
+                                : "bg-green-100 text-green-700"
+                            }`}
+                          >
                             {student.role.charAt(0).toUpperCase() + student.role.slice(1)}
                           </span>
                         </td>
                         <td className="p-4 text-right">
                           <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                            <button 
+                            <button
                               onClick={() => openAccessModal(student)}
                               className={`flex items-center gap-1 px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${
-                                hasRequests 
-                                  ? "bg-amber-100 text-amber-700 hover:bg-amber-200" 
+                                hasRequests
+                                  ? "bg-amber-100 text-amber-700 hover:bg-amber-200"
                                   : "bg-slate-100 text-slate-700 hover:bg-slate-200"
                               }`}
                               title="Manage Course Access"
                             >
                               <Shield className="w-3.5 h-3.5" /> Access
                             </button>
-                            <button className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-md transition-colors"><MoreVertical className="w-4 h-4" /></button>
+                            <button
+                              onClick={() => handleChangeRole(student.id, student.role)}
+                              className="flex items-center gap-1 px-3 py-1.5 text-xs font-medium rounded-md bg-blue-50 text-blue-700 hover:bg-blue-100 transition-colors"
+                              title="Change Role"
+                            >
+                              <Shield className="w-3.5 h-3.5" /> Role
+                            </button>
                           </div>
                         </td>
                       </motion.tr>
@@ -191,7 +218,7 @@ export default function StudentManagement() {
       {/* Access Management Modal */}
       {isModalOpen && selectedStudent && (
         <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, scale: 0.95, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             className="bg-white rounded-2xl p-6 max-w-lg w-full shadow-xl"
@@ -201,42 +228,53 @@ export default function StudentManagement() {
                 <h3 className="text-lg font-bold text-slate-900 flex items-center gap-2">
                   <Shield className="w-5 h-5 text-blue-600" /> Manage Access
                 </h3>
-                <p className="text-sm text-slate-500 mt-1">Student: <span className="font-medium text-slate-700">{selectedStudent.name}</span></p>
+                <p className="text-sm text-slate-500 mt-1">
+                  Student: <span className="font-medium text-slate-700">{selectedStudent.name}</span>
+                </p>
               </div>
-              <button onClick={() => setIsModalOpen(false)} className="text-slate-400 hover:text-slate-600 hover:bg-slate-100 p-2 rounded-full transition-colors">
+              <button
+                onClick={() => setIsModalOpen(false)}
+                className="text-slate-400 hover:text-slate-600 hover:bg-slate-100 p-2 rounded-full transition-colors"
+              >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
             <div className="space-y-4 mb-8">
               <p className="text-sm font-medium text-slate-700 mb-2 border-b pb-2">Pending Enrollment Requests:</p>
-              
-              {requests.filter(r => r.student_id === selectedStudent.id).length === 0 ? (
+
+              {requests.filter((r) => r.student_id === selectedStudent.id).length === 0 ? (
                 <div className="text-sm text-slate-500 italic pb-4">No pending requests.</div>
               ) : (
-                requests.filter(r => r.student_id === selectedStudent.id).map(req => (
-                  <div key={req.id} className="flex flex-col sm:flex-row sm:items-center justify-between p-3 rounded-xl border border-amber-200 bg-amber-50 gap-3">
-                    <div className="text-sm font-medium text-slate-800">
-                      Course: {req.course_id.slice(0, 8)}...
+                requests
+                  .filter((r) => r.student_id === selectedStudent.id)
+                  .map((req) => (
+                    <div
+                      key={req.id}
+                      className="flex flex-col sm:flex-row sm:items-center justify-between p-3 rounded-xl border border-amber-200 bg-amber-50 gap-3"
+                    >
+                      <div className="text-sm font-medium text-slate-800">Course: {req.course_id.slice(0, 8)}...</div>
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => handleResolveRequest(req.id, "approved")}
+                          className="bg-emerald-100 text-emerald-700 hover:bg-emerald-200 px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1 transition-colors"
+                        >
+                          <CheckSquare className="w-4 h-4" /> Approve
+                        </button>
+                        <button
+                          onClick={() => handleResolveRequest(req.id, "rejected")}
+                          className="bg-red-100 text-red-700 hover:bg-red-200 px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1 transition-colors"
+                        >
+                          <XSquare className="w-4 h-4" /> Reject
+                        </button>
+                      </div>
                     </div>
-                    <div className="flex gap-2">
-                      <button onClick={() => handleResolveRequest(req.id, 'approved')} className="bg-emerald-100 text-emerald-700 hover:bg-emerald-200 px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1 transition-colors">
-                        <CheckSquare className="w-4 h-4" /> Approve
-                      </button>
-                      <button onClick={() => handleResolveRequest(req.id, 'rejected')} className="bg-red-100 text-red-700 hover:bg-red-200 px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1 transition-colors">
-                        <XSquare className="w-4 h-4" /> Reject
-                      </button>
-                    </div>
-                  </div>
-                ))
+                  ))
               )}
-
-              <p className="text-sm font-medium text-slate-700 mb-2 border-b pb-2">Enrolled Courses:</p>
-              <div className="text-sm text-slate-500 italic pb-4">View enrollments disabled in demo.</div>
             </div>
 
             <div className="flex justify-end gap-3 pt-4 border-t border-slate-100">
-              <button 
+              <button
                 onClick={() => setIsModalOpen(false)}
                 className="px-4 py-2 bg-slate-100 text-slate-600 hover:bg-slate-200 rounded-lg text-sm font-medium transition-colors"
               >

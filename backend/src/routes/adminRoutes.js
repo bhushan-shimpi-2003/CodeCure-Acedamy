@@ -5,6 +5,7 @@ const {
   getFeedback, resolveComplaint,
   getSettings, updateSetting,
 } = require('../controllers/adminController');
+const { createStaff } = require('../controllers/authController');
 const { protect, authorize } = require('../middlewares/authMiddleware');
 
 const router = express.Router();
@@ -15,6 +16,7 @@ router.use(protect, authorize('admin'));
 // Students & Staff
 router.get('/students', getStudents);
 router.get('/staff', getStaff);
+router.post('/staff', createStaff);
 router.put('/users/:id/role', updateUserRole);
 
 // Finance

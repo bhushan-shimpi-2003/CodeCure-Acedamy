@@ -47,9 +47,13 @@ exports.getCourse = async (req, res, next) => {
 // @access  Private (teacher, admin)
 exports.createCourse = async (req, res, next) => {
   try {
+    let instructor_id = req.user.id;
+    if (req.user.role === 'admin' && req.body.instructor_id) {
+      instructor_id = req.body.instructor_id;
+    }
     const courseData = {
       ...req.body,
-      instructor_id: req.user.id,
+      instructor_id,
     };
     const course = await CourseModel.createCourse(courseData);
     res.status(201).json({ success: true, data: course });

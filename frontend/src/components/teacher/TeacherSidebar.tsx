@@ -1,5 +1,5 @@
 import { motion } from "motion/react";
-import { LayoutDashboard, Users, FileText, Video, MessageSquare, X, LogOut, GraduationCap } from "lucide-react";
+import { LayoutDashboard, Users, FileText, Video, MessageSquare, X, LogOut, GraduationCap, User } from "lucide-react";
 import { Link } from "react-router-dom";
 
 export default function TeacherSidebar({ activeTab, setActiveTab, isOpen, setIsOpen }: any) {
@@ -10,6 +10,7 @@ export default function TeacherSidebar({ activeTab, setActiveTab, isOpen, setIsO
     { id: "assignments", label: "Assignments", icon: FileText },
     { id: "interviews", label: "Mock Interviews", icon: Video },
     { id: "doubts", label: "Doubt Support", icon: MessageSquare },
+    { id: "profile", label: "Profile", icon: User },
   ];
 
   return (
@@ -22,7 +23,7 @@ export default function TeacherSidebar({ activeTab, setActiveTab, isOpen, setIsO
       )}
       
       <motion.aside 
-        className={`fixed md:static top-0 left-0 h-full w-64 bg-white border-r border-slate-200 z-50 flex flex-col transition-transform duration-300 ${isOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}`}
+        className={`fixed md:static top-0 left-0 h-full w-64 bg-transparent backdrop-blur-md border-r border-slate-200 z-50 flex flex-col transition-transform duration-300 ${isOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}`}
       >
         <div className="p-6 flex items-center justify-between border-b border-slate-100">
           <Link to="/" className="flex items-center gap-3 group">

@@ -1,5 +1,6 @@
 const supabase = require('../config/supabaseClient');
 const { createClient } = require('@supabase/supabase-js');
+const UserModel = require('../models/User');
 
 // Create a temporary, session-isolated Supabase client for auth operations
 // This prevents signInWithPassword/signUp from polluting the shared service-role client
@@ -21,7 +22,7 @@ function createAuthClient() {
 // @access  Public
 exports.signup = async (req, res, next) => {
   try {
-    const { name, email, password } = req.body;
+    const { name, email, password, phone } = req.body;
 
     if (!name || !email || !password) {
       return res.status(400).json({ success: false, error: 'Please provide name, email, and password' });
@@ -33,12 +34,20 @@ exports.signup = async (req, res, next) => {
       email,
       password,
       options: {
-        data: { name, role: 'student' },
+        data: { name, role: 'student', phone: phone || '' },
       },
     });
 
     if (error) {
       return res.status(400).json({ success: false, error: error.message });
+    }
+
+    if (phone) {
+      try {
+        await supabase.from('profiles').update({ phone }).eq('id', data.user.id);
+      } catch (e) {
+        console.error("Failed to update phone on signup", e);
+      }
     }
 
     res.status(201).json({
@@ -122,3 +131,75 @@ exports.logout = async (req, res, next) => {
   }
 };
 
+// @desc    Update own profile
+// @route   PUT /api/auth/me
+// @access  Private
+exports.updateMe = async (req, res, next) => {
+  try {
+    const { name, phone, email, password } = req.body;
+    let updates = {};
+
+    if (name) updates.name = name;
+    if (phone !== undefined) updates.phone = phone;
+
+    // 1. Update Auth user (email, password)
+    const authUpdates = {};
+    if (email) authUpdates.email = email;
+    if (password) authUpdates.password = password;
+
+    if (Object.keys(authUpdates).length > 0) {
+      const { data: authData, error: authError } = await supabase.auth.admin.updateUserById(
+        req.user.id,
+        authUpdates
+      );
+      if (authError) {
+        return res.status(400).json({ success: false, error: authError.message });
+      }
+    }
+
+    if (email) updates.email = email; // Keep profile table email consistent
+
+    // 2. Update Profile table
+    const profile = await UserModel.updateProfile(req.user.id, updates);
+
+    res.status(200).json({ success: true, data: profile });
+  } catch (err) {
+    next(err);
+  }
+};
+
+// @desc    Admin creates a staff account (teacher/admin)
+// @route   POST /api/admin/staff
+// @access  Private (admin)
+exports.createStaff = async (req, res, next) => {
+  try {
+    const { name, email, password, role } = req.body;
+
+    if (!name || !email || !password || !role) {
+      return res.status(400).json({ success: false, error: 'name, email, password, and role are required' });
+    }
+    if (!['teacher', 'admin'].includes(role)) {
+      return res.status(400).json({ success: false, error: 'Role must be teacher or admin' });
+    }
+
+    // Use supabase admin (service-role) to create the user
+    const { data: authData, error: authError } = await supabase.auth.admin.createUser({
+      email,
+      password,
+      email_confirm: true,
+      user_metadata: { name, role },
+    });
+
+    if (authError) {
+      return res.status(400).json({ success: false, error: authError.message });
+    }
+
+    // The trigger auto-creates a profile, but let's ensure the role is correct
+    await UserModel.updateUserRole(authData.user.id, role);
+    const profile = await UserModel.getProfileById(authData.user.id);
+
+    res.status(201).json({ success: true, data: profile });
+  } catch (err) {
+    next(err);
+  }
+};

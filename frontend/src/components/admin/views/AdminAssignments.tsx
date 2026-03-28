@@ -12,7 +12,7 @@ export default function AdminAssignments() {
   const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
-    fetchAssignments();
+    if (token) fetchAssignments();
   }, [token]);
 
   const fetchAssignments = async () => {

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion } from "motion/react";
-import { BookOpen, Plus, Edit, Trash2, LayoutDashboard, Layers, ArrowLeft, Save, IndianRupee, Loader2 } from "lucide-react";
+import { BookOpen, Plus, Edit, Trash2, LayoutDashboard, Layers, ArrowLeft, Save, IndianRupee, Loader2, Users } from "lucide-react";
 import { useAuth } from "../../../context/AuthContext";
 
 interface Module {
@@ -17,11 +17,14 @@ interface Course {
  students?: number;
  status: "active" | "draft";
  price: string | number;
+ instructor_id?: string;
+ profiles?: { id?: string; name?: string; email?: string };
 }
 
 export default function AdminCourses() {
  const { token } = useAuth();
  const [courses, setCourses] = useState<Course[]>([]);
+ const [teachers, setTeachers] = useState<{id: string, name: string, email: string}[]>([]);
  const [isLoading, setIsLoading] = useState(true);
  const [isSaving, setIsSaving] = useState(false);
 
@@ -36,8 +39,6 @@ export default function AdminCourses() {
      });
      const data = await res.json();
      if (data.success) {
-       // Backend returns courses with modules potentially if populated, or we fetch them when editing.
-       // Default modules to [] for now if not available.
        const formatted = data.data.map((c: any) => ({
          ...c,
          modules: c.modules || [],
@@ -52,14 +53,30 @@ export default function AdminCourses() {
    }
  };
 
+ const fetchTeachers = async () => {
+   try {
+     const res = await fetch("http://localhost:5000/api/admin/staff", {
+       headers: { "Authorization": `Bearer ${token}` }
+     });
+     const data = await res.json();
+     if (data.success) {
+       setTeachers(data.data.filter((u: any) => u.role === 'teacher'));
+     }
+   } catch (e) {
+     console.error(e);
+   }
+ };
+
  useEffect(() => {
-   if (token) fetchCourses();
+   if (token) {
+     fetchCourses();
+     fetchTeachers();
+   }
  }, [token]);
 
  const handleEditCourse = async (course: Course) => {
    setSelectedCourse({ ...course });
    setActiveTab('basic');
-   // Optionally fetch modules for this course here if not returned in admin/all
    try {
      const res = await fetch(`http://localhost:5000/api/courses/${course.id}/modules`);
      const data = await res.json();
@@ -79,7 +96,8 @@ export default function AdminCourses() {
      modules: [],
      students: 0,
      status: "draft",
-     price: 0
+     price: 0,
+     instructor_id: ""
    };
    setSelectedCourse(newCourse);
    setActiveTab('basic');
@@ -94,19 +112,24 @@ export default function AdminCourses() {
      const url = isNew ? "http://localhost:5000/api/courses" : `http://localhost:5000/api/courses/${selectedCourse.id}`;
      const method = isNew ? "POST" : "PUT";
 
+     const payload: any = {
+       title: selectedCourse.title,
+       description: selectedCourse.description,
+       status: selectedCourse.status,
+       price: Number(selectedCourse.price) || 0
+     };
+
+     if (selectedCourse.instructor_id) {
+       payload.instructor_id = selectedCourse.instructor_id;
+     }
+
      const res = await fetch(url, {
        method,
        headers: {
          "Content-Type": "application/json",
          "Authorization": `Bearer ${token}`
        },
-       // Modules must be managed separately according to the backend API normally, but we update course details first
-       body: JSON.stringify({
-         title: selectedCourse.title,
-         description: selectedCourse.description,
-         status: selectedCourse.status,
-         price: Number(selectedCourse.price) || 0
-       })
+       body: JSON.stringify(payload)
      });
 
      const data = await res.json();
@@ -265,6 +288,20 @@ export default function AdminCourses() {
                </select>
              </div>
 
+             <div className="space-y-2">
+               <label className="text-xs text-blue-600 font-bold ">Assign Teacher</label>
+               <select 
+                 value={selectedCourse.instructor_id || ""} 
+                 onChange={(e) => handleUpdateField('instructor_id', e.target.value)} 
+                 className="w-full bg-slate-50 border border-slate-200 px-4 py-3 text-slate-900 focus:border-blue-600 outline-none transition-colors appearance-none"
+               >
+                 <option value="">-- Select Instructor --</option>
+                 {teachers.map(t => (
+                   <option key={t.id} value={t.id}>{t.name || t.email}</option>
+                 ))}
+               </select>
+             </div>
+
              <div className="space-y-2 md:col-span-2">
                <label className="text-xs text-blue-600 font-bold ">Course Description</label>
                <textarea 
@@ -397,6 +434,10 @@ export default function AdminCourses() {
              </div>
              
              <div className="pl-2 mb-6 space-y-2 flex-1">
+               <div className="flex items-center justify-between text-xs text-slate-500 font-bold ">
+                 <span className="flex items-center gap-1.5"><Users className="w-3.5 h-3.5" /> Instructor</span>
+                 <span className="text-slate-900">{course.profiles?.name || course.profiles?.email || 'Unassigned'}</span>
+               </div>
                <div className="flex items-center justify-between text-xs text-slate-500 font-bold ">
                  <span className="flex items-center gap-1.5"><Layers className="w-3.5 h-3.5" /> Modules</span>
                  <span className="text-slate-900">{course.modules?.length || 0}</span>

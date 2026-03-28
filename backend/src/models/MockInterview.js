@@ -36,7 +36,7 @@ exports.getInterviewsByTeacher = async (teacherId) => {
 exports.getAllInterviews = async () => {
   const { data, error } = await supabase
     .from('mock_interviews')
-    .select('*, profiles!student_id(id, name), profiles!teacher_id(id, name)')
+    .select('*')
     .order('scheduled_at', { ascending: false });
   if (error) throw error;
   return data;

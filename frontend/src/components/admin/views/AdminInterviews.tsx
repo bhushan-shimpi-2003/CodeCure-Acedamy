@@ -12,7 +12,7 @@ export default function AdminInterviews() {
   const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
-    fetchInterviews();
+    if (token) fetchInterviews();
   }, [token]);
 
   const fetchInterviews = async () => {

@@ -21,7 +21,7 @@ export default function AdminSettings() {
   ];
 
   useEffect(() => {
-    fetchSettings();
+    if (token) fetchSettings();
   }, [token]);
 
   const fetchSettings = async () => {

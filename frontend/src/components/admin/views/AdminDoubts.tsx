@@ -12,7 +12,7 @@ export default function AdminDoubts() {
   const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
-    fetchDoubts();
+    if (token) fetchDoubts();
   }, [token]);
 
   const fetchDoubts = async () => {

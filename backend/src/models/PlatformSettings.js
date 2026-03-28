@@ -10,11 +10,7 @@ const supabase = require('../config/supabaseClient');
 exports.getAllSettings = async () => {
   const { data, error } = await supabase.from('platform_settings').select('*');
   if (error) throw error;
-  // Convert to a key-value map for convenience
-  return data.reduce((acc, setting) => {
-    acc[setting.key] = setting.value;
-    return acc;
-  }, {});
+  return data || [];
 };
 
 exports.getSetting = async (key) => {

@@ -12,6 +12,7 @@ import StaffManagement from "../components/admin/views/StaffManagement";
 import AdminFinance from "../components/admin/views/AdminFinance";
 import AdminFeedback from "../components/admin/views/AdminFeedback";
 import AdminSettings from "../components/admin/views/AdminSettings";
+import AdminProfile from "../components/admin/views/AdminProfile";
 
 export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState("overview");
@@ -29,16 +30,17 @@ export default function AdminDashboard() {
       case "finance": return <AdminFinance />;
       case "feedback": return <AdminFeedback />;
       case "settings": return <AdminSettings />;
+      case "profile": return <AdminProfile />;
       default: return <AdminOverview />;
     }
   };
 
   return (
-    <div className="admin-theme min-h-screen bg-slate-50 text-slate-900 flex overflow-hidden selection:bg-blue-100 selection:text-blue-900">
+    <div className="admin-theme h-screen w-full bg-slate-50 text-slate-900 flex overflow-hidden selection:bg-blue-100 selection:text-blue-900">
       <AdminSidebar activeTab={activeTab} setActiveTab={setActiveTab} isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen} />
       <div className="flex-1 flex flex-col h-screen overflow-hidden relative z-10">
         <AdminTopBar setIsSidebarOpen={setIsSidebarOpen} />
-        <main className="flex-1 overflow-y-auto p-4 md:p-8">
+        <main className="flex-1 overflow-y-auto p-4 md:p-8 min-h-0">
           <AnimatePresence mode="wait">
             <motion.div
               key={activeTab}
@@ -46,7 +48,6 @@ export default function AdminDashboard() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.2 }}
-              className="h-full"
             >
               {renderView()}
             </motion.div>

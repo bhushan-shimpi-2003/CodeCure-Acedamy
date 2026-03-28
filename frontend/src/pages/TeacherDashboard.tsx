@@ -8,6 +8,7 @@ import TeacherAssignments from "../components/teacher/views/TeacherAssignments";
 import TeacherStudents from "../components/teacher/views/TeacherStudents";
 import TeacherInterviews from "../components/teacher/views/TeacherInterviews";
 import TeacherDoubts from "../components/teacher/views/TeacherDoubts";
+import TeacherProfile from "../components/teacher/views/TeacherProfile";
 
 export default function TeacherDashboard() {
   const [activeTab, setActiveTab] = useState("overview");
@@ -21,16 +22,17 @@ export default function TeacherDashboard() {
       case "assignments": return <TeacherAssignments />;
       case "interviews": return <TeacherInterviews />;
       case "doubts": return <TeacherDoubts />;
+      case "profile": return <TeacherProfile />;
       default: return <TeacherOverview />;
     }
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 flex overflow-hidden selection:bg-blue-100 selection:text-blue-900">
+    <div className="teacher-theme h-screen w-full bg-slate-50 text-slate-900 flex overflow-hidden selection:bg-blue-100 selection:text-blue-900">
       <TeacherSidebar activeTab={activeTab} setActiveTab={setActiveTab} isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen} />
       <div className="flex-1 flex flex-col h-screen overflow-hidden relative z-10">
         <TeacherTopBar setIsSidebarOpen={setIsSidebarOpen} />
-        <main className="flex-1 overflow-y-auto p-4 md:p-8">
+        <main className="flex-1 overflow-y-auto p-4 md:p-8 min-h-0">
           <AnimatePresence mode="wait">
             <motion.div
               key={activeTab}
@@ -38,7 +40,6 @@ export default function TeacherDashboard() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.2 }}
-              className="h-full"
             >
               {renderView()}
             </motion.div>

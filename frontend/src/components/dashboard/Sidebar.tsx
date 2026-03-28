@@ -1,5 +1,5 @@
 import { motion } from "motion/react";
-import { LayoutDashboard, PlayCircle, FileText, Briefcase, MessageSquare, X, LogOut, GraduationCap } from "lucide-react";
+import { LayoutDashboard, PlayCircle, FileText, Briefcase, MessageSquare, X, LogOut, GraduationCap, User } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 
@@ -13,6 +13,7 @@ export default function Sidebar({ activeTab, setActiveTab, isOpen, setIsOpen }: 
     { id: "assignments", label: "Assignment", icon: FileText },
     { id: "career", label: "Career", icon: Briefcase },
     { id: "doubts", label: "Doubt Support", icon: MessageSquare },
+    { id: "profile", label: "Profile", icon: User },
   ];
 
   const handleLogout = async () => {
@@ -43,7 +44,7 @@ export default function Sidebar({ activeTab, setActiveTab, isOpen, setIsOpen }: 
       
       {/* Sidebar */}
       <motion.aside 
-        className={`fixed md:static top-0 left-0 h-full w-64 bg-white border-r border-slate-200 z-50 flex flex-col transition-transform duration-300 ${isOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}`}
+        className={`fixed md:static top-0 left-0 h-full w-64 bg-transparent backdrop-blur-md border-r border-slate-200 z-50 flex flex-col transition-transform duration-300 ${isOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}`}
       >
         <div className="p-6 flex items-center justify-between border-b border-slate-100">
           <Link to="/" className="flex items-center gap-2 group">

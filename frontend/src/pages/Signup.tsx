@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 import { motion } from "motion/react";
-import { GraduationCap, Lock, Mail, User, ArrowRight, Loader2 } from "lucide-react";
+import { GraduationCap, Lock, Mail, User, ArrowRight, Loader2, Phone } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "../components/ui/button";
 import { useAuth } from "../context/AuthContext";
 
 export default function Signup() {
   const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -24,7 +25,7 @@ export default function Signup() {
       const response = await fetch("http://localhost:5000/api/auth/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email, password }),
+        body: JSON.stringify({ name, email, password, phone }),
       });
 
       const data = await response.json();
@@ -84,6 +85,20 @@ export default function Signup() {
               onChange={(e) => setName(e.target.value)}
               className="w-full bg-white border border-slate-200 rounded-xl p-3 text-slate-900 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all placeholder:text-slate-400"
               placeholder="John Doe"
+              required
+            />
+          </div>
+
+          <div className="space-y-2">
+            <label className="text-sm text-slate-700 font-semibold flex items-center gap-2">
+              <Phone className="w-4 h-4 text-slate-400" /> Mobile Number
+            </label>
+            <input 
+              type="tel" 
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              className="w-full bg-white border border-slate-200 rounded-xl p-3 text-slate-900 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all placeholder:text-slate-400"
+              placeholder="+91 98765 43210"
               required
             />
           </div>

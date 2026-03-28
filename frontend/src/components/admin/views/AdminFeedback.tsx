@@ -11,7 +11,7 @@ export default function AdminFeedback() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    fetchFeedback();
+    if (token) fetchFeedback();
   }, [token]);
 
   const fetchFeedback = async () => {
