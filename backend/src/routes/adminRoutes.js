@@ -1,0 +1,32 @@
+const express = require('express');
+const {
+  getStudents, getStaff, updateUserRole,
+  getTransactions, createTransaction,
+  getFeedback, resolveComplaint,
+  getSettings, updateSetting,
+} = require('../controllers/adminController');
+const { protect, authorize } = require('../middlewares/authMiddleware');
+
+const router = express.Router();
+
+// All admin routes require admin role
+router.use(protect, authorize('admin'));
+
+// Students & Staff
+router.get('/students', getStudents);
+router.get('/staff', getStaff);
+router.put('/users/:id/role', updateUserRole);
+
+// Finance
+router.get('/transactions', getTransactions);
+router.post('/transactions', createTransaction);
+
+// Feedback
+router.get('/feedback', getFeedback);
+router.put('/feedback/:id/resolve', resolveComplaint);
+
+// Settings
+router.get('/settings', getSettings);
+router.put('/settings/:key', updateSetting);
+
+module.exports = router;

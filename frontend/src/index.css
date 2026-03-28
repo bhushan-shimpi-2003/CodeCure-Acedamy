@@ -1,0 +1,215 @@
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+}
+
+:root {
+  --bg-base: #f3f7ff;
+  --bg-soft: #eaf2ff;
+  --surface: rgba(255, 255, 255, 0.86);
+  --ink-strong: #081126;
+  --ink-main: #0f1b35;
+  --ink-muted: #415172;
+  --line-soft: #d6e2f7;
+  --line-subtle: #e6eefc;
+  --accent: #0369a1;
+  --accent-strong: #1d4ed8;
+}
+
+body {
+  background-color: var(--bg-base);
+  background-image: radial-gradient(circle at 12% 18%, rgba(14, 165, 233, 0.12), transparent 38%), radial-gradient(circle at 85% 8%, rgba(37, 99, 235, 0.09), transparent 34%), linear-gradient(180deg, rgba(255, 255, 255, 0.45) 0%, rgba(243, 247, 255, 0.9) 100%);
+  color: var(--ink-main);
+  font-family: var(--font-sans);
+  min-height: 100vh;
+  position: relative;
+  isolation: isolate;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0.22;
+  background-image: linear-gradient(rgba(3, 105, 161, 0.09) 1px, transparent 1px), linear-gradient(90deg, rgba(3, 105, 161, 0.09) 1px, transparent 1px);
+  background-size: 42px 42px;
+}
+
+::selection {
+  background-color: #bfdbfe;
+  color: #0b1220;
+}
+
+/* Widen the overall layout across pages and dashboards. */
+.container {
+  width: min(100%, 114rem);
+  max-width: 114rem;
+  margin-inline: auto;
+  padding-inline: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .container {
+    padding-inline: 2.25rem;
+  }
+}
+
+.max-w-md {
+  max-width: 38rem;
+}
+
+.max-w-lg {
+  max-width: 46rem;
+}
+
+.max-w-xl {
+  max-width: 54rem;
+}
+
+.max-w-2xl {
+  max-width: 64rem;
+}
+
+.max-w-3xl {
+  max-width: 76rem;
+}
+
+.max-w-4xl {
+  max-width: 88rem;
+}
+
+.max-w-5xl {
+  max-width: 100rem;
+}
+
+.max-w-6xl {
+  max-width: 112rem;
+}
+
+.max-w-7xl {
+  max-width: 124rem;
+}
+
+/* Global palette upgrades so existing utility classes render a cohesive automation-testing UI. */
+.bg-white {
+  background-color: var(--surface) !important;
+  backdrop-filter: blur(10px);
+}
+
+.bg-slate-50 {
+  background-color: var(--bg-soft) !important;
+}
+
+.bg-slate-100 {
+  background-color: #e2ebff !important;
+}
+
+.bg-blue-50 {
+  background-color: #e0f2ff !important;
+}
+
+.bg-blue-100 {
+  background-color: #cbe7ff !important;
+}
+
+.text-slate-900 {
+  color: var(--ink-strong) !important;
+}
+
+.text-slate-800 {
+  color: #16243f !important;
+}
+
+.text-slate-700 {
+  color: #223253 !important;
+}
+
+.text-slate-600 {
+  color: #32466b !important;
+}
+
+.text-slate-500 {
+  color: var(--ink-muted) !important;
+}
+
+.border-slate-200 {
+  border-color: var(--line-soft) !important;
+}
+
+.border-slate-100 {
+  border-color: var(--line-subtle) !important;
+}
+
+.text-blue-600 {
+  color: var(--accent) !important;
+}
+
+.text-blue-700 {
+  color: #075985 !important;
+}
+
+.border-blue-600 {
+  border-color: var(--accent) !important;
+}
+
+.bg-blue-600 {
+  background-color: transparent !important;
+  background-image: linear-gradient(135deg, var(--accent) 0%, var(--accent-strong) 100%) !important;
+}
+
+.hover\:bg-blue-700:hover {
+  background-color: transparent !important;
+  background-image: linear-gradient(135deg, #075985 0%, #1e40af 100%) !important;
+}
+
+/* Admin palette harmonization: convert legacy amber/red status blocks into the same blue-slate system. */
+.admin-theme [class*="bg-amber-50"],
+.admin-theme [class*="bg-amber-100"],
+.admin-theme [class*="bg-red-50"],
+.admin-theme [class*="bg-red-100"] {
+  background-color: #e4f2ff !important;
+}
+
+.admin-theme [class*="text-amber-700"],
+.admin-theme [class*="text-amber-600"],
+.admin-theme [class*="text-amber-500"],
+.admin-theme [class*="text-amber-400"],
+.admin-theme [class*="text-red-700"],
+.admin-theme [class*="text-red-600"],
+.admin-theme [class*="text-red-500"] {
+  color: #075985 !important;
+}
+
+.admin-theme [class*="border-amber-200"],
+.admin-theme [class*="border-amber-300"],
+.admin-theme [class*="border-amber-500"],
+.admin-theme [class*="border-red-200"],
+.admin-theme [class*="border-red-300"],
+.admin-theme [class*="border-red-400"],
+.admin-theme [class*="border-red-500"] {
+  border-color: #bfdbfe !important;
+}
+
+.admin-theme [class*="hover:bg-amber-200"]:hover,
+.admin-theme [class*="hover:bg-red-50"]:hover,
+.admin-theme [class*="hover:bg-red-100"]:hover {
+  background-color: #d6eaff !important;
+}
+
+.admin-theme [class*="hover:border-red-400"]:hover {
+  border-color: #93c5fd !important;
+}
+
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+.animate-marquee {
+  animation: marquee 30s linear infinite;
+}
+
