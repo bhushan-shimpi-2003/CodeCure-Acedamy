@@ -7,6 +7,7 @@ export default function AdminSidebar({ activeTab, setActiveTab, isOpen, setIsOpe
     { id: "overview", label: "Overview", icon: LayoutDashboard },
     { id: "students", label: "Students", icon: Users },
     { id: "courses", label: "Courses", icon: BookOpen },
+    { id: "lessons", label: "Lectures", icon: Video },
     { id: "assignments", label: "Assignments", icon: FileCode2 },
     { id: "interviews", label: "Interviews", icon: Video },
     { id: "doubts", label: "Doubts", icon: MessageSquare },

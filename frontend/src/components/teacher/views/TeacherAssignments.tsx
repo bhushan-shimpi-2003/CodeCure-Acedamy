@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "motion/react";
-import { FileCode2, Send, Calendar, FileText, GraduationCap, Loader2 } from "lucide-react";
+import { FileCode2, Send, Calendar, FileText, GraduationCap, Loader2, BookOpen } from "lucide-react";
+import Select from "../../ui/Select";
 import { useAuth } from "../../../context/AuthContext";
 
 const API = "http://localhost:5000/api";
@@ -123,15 +124,15 @@ export default function TeacherAssignments() {
               ) : courses.length === 0 ? (
                 <p className="text-sm text-slate-500">No courses assigned.</p>
               ) : (
-                <select
+                <Select
                   value={selectedCourseId}
                   onChange={(e) => setSelectedCourseId(e.target.value)}
-                  className="w-full bg-slate-50 border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 p-3.5 rounded-xl text-slate-900 outline-none transition-all"
+                  icon={<BookOpen className="w-4 h-4 text-slate-400" />}
                 >
                   {courses.map((c: any) => (
                     <option key={c.id} value={c.id}>{c.title}</option>
                   ))}
-                </select>
+                </Select>
               )}
             </div>
 

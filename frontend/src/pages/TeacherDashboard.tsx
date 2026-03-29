@@ -9,6 +9,7 @@ import TeacherStudents from "../components/teacher/views/TeacherStudents";
 import TeacherInterviews from "../components/teacher/views/TeacherInterviews";
 import TeacherDoubts from "../components/teacher/views/TeacherDoubts";
 import TeacherProfile from "../components/teacher/views/TeacherProfile";
+import TeacherLessons from "../components/teacher/views/TeacherLessons";
 
 export default function TeacherDashboard() {
   const [activeTab, setActiveTab] = useState("overview");
@@ -17,6 +18,7 @@ export default function TeacherDashboard() {
   const renderView = () => {
     switch (activeTab) {
       case "overview": return <TeacherOverview />;
+      case "lessons": return <TeacherLessons />;
       case "courses": return <TeacherClasses />;
       case "students": return <TeacherStudents />;
       case "assignments": return <TeacherAssignments />;

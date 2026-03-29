@@ -7,6 +7,7 @@ export default function StudentManagement() {
   const { token } = useAuth();
   const [students, setStudents] = useState<any[]>([]);
   const [requests, setRequests] = useState<any[]>([]);
+  const [enrollments, setEnrollments] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   const [searchQuery, setSearchQuery] = useState("");
@@ -28,9 +29,15 @@ export default function StudentManagement() {
         });
         const requestsData = await requestsRes.json();
         if (requestsData.success) setRequests(requestsData.data);
-      } catch {
-        // pending requests endpoint may not exist yet
-      }
+      } catch (err) { console.error(err); }
+
+      try {
+        const enrollmentsRes = await fetch("http://localhost:5000/api/enrollments", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const enrollmentsData = await enrollmentsRes.json();
+        if (enrollmentsData.success) setEnrollments(enrollmentsData.data || []);
+      } catch (err) { console.error(err); }
     } catch (err) {
       console.error("Failed to load student data", err);
     } finally {
@@ -56,6 +63,24 @@ export default function StudentManagement() {
     } catch (err) {
       console.error(err);
       alert("Error updating request");
+    }
+  };
+
+  const handleRemoveAccess = async (enrollmentId: string) => {
+    if (!confirm("Are you sure you want to remove access to this course?")) return;
+    try {
+      const res = await fetch(`http://localhost:5000/api/enrollments/${enrollmentId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ student_status: "cancelled" }),
+      });
+      if (res.ok) fetchData();
+    } catch (err) {
+      console.error(err);
+      alert("Error removing access");
     }
   };
 
@@ -217,68 +242,126 @@ export default function StudentManagement() {
 
       {/* Access Management Modal */}
       {isModalOpen && selectedStudent && (
-        <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
           <motion.div
-            initial={{ opacity: 0, scale: 0.95, y: 20 }}
+            initial={{ opacity: 0, scale: 0.95, y: 10 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            className="bg-white rounded-2xl p-6 max-w-lg w-full shadow-xl"
+            exit={{ opacity: 0, scale: 0.95, y: 10 }}
+            className="bg-white rounded-2xl max-w-xl w-full shadow-2xl overflow-hidden border border-slate-200/60"
           >
-            <div className="flex justify-between items-center mb-6 border-b border-slate-100 pb-4">
-              <div>
-                <h3 className="text-lg font-bold text-slate-900 flex items-center gap-2">
-                  <Shield className="w-5 h-5 text-blue-600" /> Manage Access
-                </h3>
-                <p className="text-sm text-slate-500 mt-1">
-                  Student: <span className="font-medium text-slate-700">{selectedStudent.name}</span>
-                </p>
+            {/* Modal Header */}
+            <div className="bg-slate-50/80 px-6 py-5 border-b border-slate-100 flex justify-between items-start">
+              <div className="flex gap-4 items-center">
+                <div className="bg-blue-100 p-2.5 rounded-xl shadow-inner border border-blue-200/50">
+                  <Shield className="w-6 h-6 text-blue-600" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-extrabold text-slate-900 tracking-tight">
+                    Manage Access
+                  </h3>
+                  <p className="text-sm text-slate-500 mt-0.5">
+                    Modifying enrollment for <span className="font-semibold text-slate-800">{selectedStudent.name}</span>
+                  </p>
+                </div>
               </div>
               <button
                 onClick={() => setIsModalOpen(false)}
-                className="text-slate-400 hover:text-slate-600 hover:bg-slate-100 p-2 rounded-full transition-colors"
+                className="text-slate-400 hover:text-slate-700 bg-white hover:bg-slate-200 border border-slate-200 hover:border-slate-300 p-1.5 rounded-lg transition-all shadow-sm"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
-            <div className="space-y-4 mb-8">
-              <p className="text-sm font-medium text-slate-700 mb-2 border-b pb-2">Pending Enrollment Requests:</p>
+            {/* Modal Body */}
+            <div className="p-6 max-h-[60vh] overflow-y-auto">
+              {/* Pending Requests Section */}
+              <div className="mb-8">
+                <h4 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3 flex items-center gap-2">
+                  <Bell className="w-3.5 h-3.5" /> Pending Requests
+                </h4>
 
-              {requests.filter((r) => r.student_id === selectedStudent.id).length === 0 ? (
-                <div className="text-sm text-slate-500 italic pb-4">No pending requests.</div>
-              ) : (
-                requests
-                  .filter((r) => r.student_id === selectedStudent.id)
-                  .map((req) => (
-                    <div
-                      key={req.id}
-                      className="flex flex-col sm:flex-row sm:items-center justify-between p-3 rounded-xl border border-amber-200 bg-amber-50 gap-3"
-                    >
-                      <div className="text-sm font-medium text-slate-800">Course: {req.course_id.slice(0, 8)}...</div>
-                      <div className="flex gap-2">
-                        <button
-                          onClick={() => handleResolveRequest(req.id, "approved")}
-                          className="bg-emerald-100 text-emerald-700 hover:bg-emerald-200 px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1 transition-colors"
+                {requests.filter((r) => r.student_id === selectedStudent.id).length === 0 ? (
+                  <div className="text-sm text-slate-400 italic bg-slate-50 rounded-xl p-4 border border-slate-100/50 text-center">
+                    No pending enrollment requests.
+                  </div>
+                ) : (
+                  <div className="space-y-3">
+                    {requests
+                      .filter((r) => r.student_id === selectedStudent.id)
+                      .map((req) => (
+                        <div
+                          key={req.id}
+                          className="flex flex-col sm:flex-row sm:items-center justify-between p-4 rounded-xl border border-amber-200 bg-amber-50/50 shadow-sm"
                         >
-                          <CheckSquare className="w-4 h-4" /> Approve
-                        </button>
-                        <button
-                          onClick={() => handleResolveRequest(req.id, "rejected")}
-                          className="bg-red-100 text-red-700 hover:bg-red-200 px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1 transition-colors"
+                          <div className="text-sm font-semibold text-slate-800 flex items-center gap-2">
+                            <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
+                            {req.courses?.title || req.course_id.slice(0, 8) + '...'}
+                          </div>
+                          <div className="flex gap-2 mt-3 sm:mt-0">
+                            <button
+                              onClick={() => handleResolveRequest(req.id, "approved")}
+                              className="bg-emerald-600 hover:bg-emerald-700 text-white shadow-md shadow-emerald-600/20 px-3.5 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-all"
+                            >
+                              <CheckSquare className="w-4 h-4" /> Approve
+                            </button>
+                            <button
+                              onClick={() => handleResolveRequest(req.id, "rejected")}
+                              className="bg-white hover:bg-red-50 text-slate-600 hover:text-red-700 border border-slate-200 hover:border-red-200 px-3.5 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-all"
+                            >
+                              <XSquare className="w-4 h-4" /> Reject
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Active Courses Section */}
+              <div>
+                <h4 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3 flex items-center gap-2">
+                  <CheckSquare className="w-3.5 h-3.5" /> Active Courses
+                </h4>
+
+                {enrollments.filter((e) => e.student_id === selectedStudent.id && e.student_status === 'active').length === 0 ? (
+                  <div className="text-sm text-slate-400 italic bg-slate-50 rounded-xl p-4 border border-slate-100/50 text-center">
+                    Student has no active courses.
+                  </div>
+                ) : (
+                  <div className="space-y-3">
+                    {enrollments
+                      .filter((e) => e.student_id === selectedStudent.id && e.student_status === 'active')
+                      .map((enrollment) => (
+                        <div
+                          key={enrollment.id}
+                          className="flex flex-col sm:flex-row sm:items-center justify-between p-4 rounded-xl border border-slate-200 bg-white hover:border-blue-300 shadow-sm transition-all group"
                         >
-                          <XSquare className="w-4 h-4" /> Reject
-                        </button>
-                      </div>
-                    </div>
-                  ))
-              )}
+                          <div className="text-sm font-semibold text-slate-800 flex items-center gap-3">
+                            <div className="bg-emerald-100 p-1.5 rounded-md">
+                              <CheckSquare className="w-4 h-4 text-emerald-600" />
+                            </div>
+                            {enrollment.courses?.title || enrollment.course_id.slice(0, 8) + '...'}
+                          </div>
+                          <button
+                            onClick={() => handleRemoveAccess(enrollment.id)}
+                            className="mt-3 sm:mt-0 px-3.5 py-1.5 bg-white border border-red-200 text-red-600 hover:bg-red-50 hover:border-red-300 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-all opacity-100 sm:opacity-0 sm:group-hover:opacity-100"
+                          >
+                            <XSquare className="w-4 h-4" /> Revoke
+                          </button>
+                        </div>
+                      ))}
+                  </div>
+                )}
+              </div>
             </div>
 
-            <div className="flex justify-end gap-3 pt-4 border-t border-slate-100">
+            {/* Modal Footer */}
+            <div className="bg-slate-50/50 px-6 py-4 border-t border-slate-100 flex justify-end">
               <button
                 onClick={() => setIsModalOpen(false)}
-                className="px-4 py-2 bg-slate-100 text-slate-600 hover:bg-slate-200 rounded-lg text-sm font-medium transition-colors"
+                className="px-5 py-2 bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 hover:text-slate-900 rounded-xl text-sm font-bold transition-all shadow-sm"
               >
-                Close
+                Done
               </button>
             </div>
           </motion.div>

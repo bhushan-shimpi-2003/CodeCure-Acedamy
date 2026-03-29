@@ -1,28 +1,76 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "motion/react";
-import { MessageSquare, Send, Search, HelpCircle } from "lucide-react";
+import { MessageSquare, Send, Search, HelpCircle, Loader2 } from "lucide-react";
+import { useAuth } from "../../../context/AuthContext";
 
 export default function StudentDoubts() {
+  const { token } = useAuth();
   const [doubtText, setDoubtText] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [successMessage, setSuccessMessage] = useState("");
+  const [doubts, setDoubts] = useState<any[]>([]);
 
-  const doubts = [
-    { id: "DBT-01", text: "How does the event loop work in Node.js?", status: "resolved", reply: "The event loop is what allows Node.js to perform non-blocking I/O operations..." },
-    { id: "DBT-02", text: "Can someone explain Playwright fixtures?", status: "pending", reply: null },
-  ];
+  useEffect(() => {
+    const fetchDoubts = async () => {
+      setIsLoading(true);
+      if (!token) return;
+      try {
+        const res = await fetch("http://localhost:5000/api/doubts/me", {
+          headers: { "Authorization": `Bearer ${token}` }
+        });
+        const data = await res.json();
+        if (data.success) {
+          setDoubts(data.data);
+        }
+      } catch (err) {
+        console.error("Failed to fetch doubts", err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchDoubts();
+  }, [token]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsSubmitting(true);
+    if (!doubtText.trim()) return;
     
-    setTimeout(() => {
+    setIsSubmitting(true);
+    try {
+      const res = await fetch("http://localhost:5000/api/doubts", {
+        method: "POST",
+        headers: { 
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ text: doubtText })
+      });
+      const data = await res.json();
+      
+      if (data.success) {
+        setSuccessMessage("Doubt submitted successfully! A teacher will respond soon.");
+        setDoubtText("");
+        setDoubts([data.data, ...doubts]); // Add new doubt to top
+        setTimeout(() => setSuccessMessage(""), 5000);
+      } else {
+        alert("Failed to submit doubt.");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Error submitting doubt.");
+    } finally {
       setIsSubmitting(false);
-      setSuccessMessage("Doubt submitted successfully! A teacher will respond soon.");
-      setDoubtText("");
-      setTimeout(() => setSuccessMessage(""), 5000);
-    }, 1500);
+    }
   };
+
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center min-h-[50vh]">
+        <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6 max-w-6xl mx-auto pb-12">
@@ -66,7 +114,7 @@ export default function StudentDoubts() {
 
               <button 
                 type="submit"
-                disabled={isSubmitting}
+                disabled={isSubmitting || !doubtText.trim()}
                 className="w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-3 rounded-xl font-semibold transition-colors flex items-center justify-center gap-2 shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isSubmitting ? (
@@ -95,27 +143,40 @@ export default function StudentDoubts() {
             </div>
             
             <div className="space-y-4">
-              {doubts.map((doubt) => (
-                <div key={doubt.id} className="bg-slate-50 border border-slate-200 rounded-xl p-5 hover:border-blue-200 transition-colors">
-                  <div className="flex items-center justify-between mb-3">
-                    <span className="text-xs font-bold text-slate-500">{doubt.id}</span>
-                    <span className={`px-2.5 py-1 text-xs font-semibold rounded-full border ${
-                      doubt.status === 'pending' ? 'bg-amber-50 text-amber-700 border-amber-200' :
-                      'bg-green-50 text-green-700 border-green-200'
-                    }`}>
-                      {doubt.status.charAt(0).toUpperCase() + doubt.status.slice(1)}
-                    </span>
-                  </div>
-                  <p className="text-sm text-slate-900 font-medium mb-4">{doubt.text}</p>
-                  
-                  {doubt.reply && (
-                    <div className="mt-4 pt-4 border-t border-slate-200 bg-white rounded-lg p-4 border">
-                      <span className="text-xs font-bold text-blue-600 block mb-2">Instructor Reply:</span>
-                      <p className="text-sm text-slate-700">{doubt.reply}</p>
-                    </div>
-                  )}
+              {doubts.length === 0 ? (
+                <div className="text-center p-8 bg-slate-50 rounded-xl border border-slate-100 text-slate-500 text-sm shadow-inner">
+                  You haven't asked any doubts yet.
                 </div>
-              ))}
+              ) : (
+                doubts.map((doubt) => (
+                  <div key={doubt.id} className="bg-slate-50 border border-slate-200 rounded-xl p-5 hover:border-blue-200 transition-colors">
+                    <div className="flex items-center justify-between mb-3">
+                      <span className="text-xs font-bold text-slate-500">
+                        {new Date(doubt.created_at).toLocaleDateString()}
+                      </span>
+                      <span className={`px-2.5 py-1 text-xs font-semibold rounded-full border ${
+                        doubt.status === 'pending' ? 'bg-amber-50 text-amber-700 border-amber-200' :
+                        'bg-green-50 text-green-700 border-green-200'
+                      }`}>
+                        {doubt.status ? doubt.status.charAt(0).toUpperCase() + doubt.status.slice(1) : "Pending"}
+                      </span>
+                    </div>
+                    <p className="text-sm text-slate-900 font-medium mb-4">{doubt.text}</p>
+                    
+                    {doubt.reply && (
+                      <div className="mt-4 pt-4 border-t border-slate-200 bg-white rounded-lg p-4 border shadow-sm">
+                        <div className="flex justify-between items-center mb-2">
+                          <span className="text-xs font-bold text-blue-600">Instructor Reply:</span>
+                          <span className="text-[10px] text-slate-400 font-medium">
+                            {doubt.resolved_at ? new Date(doubt.resolved_at).toLocaleDateString() : ""}
+                          </span>
+                        </div>
+                        <p className="text-sm text-slate-700">{doubt.reply}</p>
+                      </div>
+                    )}
+                  </div>
+                ))
+              )}
             </div>
           </motion.div>
         </div>

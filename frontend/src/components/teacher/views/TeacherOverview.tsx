@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "motion/react";
-import { CheckCircle, Link as LinkIcon, Youtube, Type, FileText, LayoutDashboard, Loader2 } from "lucide-react";
+import { CheckCircle, Link as LinkIcon, Youtube, Type, FileText, LayoutDashboard, Loader2, BookOpen } from "lucide-react";
+import Select from "../../ui/Select";
 import { useAuth } from "../../../context/AuthContext";
 
 const API = "http://localhost:5000/api";
@@ -122,15 +123,15 @@ export default function TeacherOverview() {
             ) : courses.length === 0 ? (
               <p className="text-sm text-slate-500">No courses assigned. Contact admin to create a course first.</p>
             ) : (
-              <select
+              <Select
                 value={selectedCourseId}
                 onChange={(e) => setSelectedCourseId(e.target.value)}
-                className="block w-full px-4 py-3 border border-slate-200 bg-slate-50 text-slate-900 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-xl transition-colors"
+                icon={<BookOpen className="w-4 h-4 text-slate-400" />}
               >
                 {courses.map((c: any) => (
                   <option key={c.id} value={c.id}>{c.title}</option>
                 ))}
-              </select>
+              </Select>
             )}
           </div>
 

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "motion/react";
 import { UserCog, Plus, Loader2, Shield, X, Mail, Lock, User } from "lucide-react";
+import Select from "../../ui/Select";
 import { useAuth } from "../../../context/AuthContext";
 
 const API = "http://localhost:5000/api";
@@ -211,13 +212,13 @@ export default function StaffManagement() {
                 <label className="block text-sm font-semibold text-slate-700 mb-2 flex items-center gap-2">
                   <Shield className="w-4 h-4 text-slate-400" /> Role
                 </label>
-                <select
+                <Select
                   value={newRole} onChange={(e) => setNewRole(e.target.value)}
-                  className="w-full bg-slate-50 border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 p-3 rounded-xl text-slate-900 outline-none transition-all appearance-none"
+                  icon={<Shield className="w-4 h-4 text-slate-400" />}
                 >
                   <option value="teacher">Teacher</option>
                   <option value="admin">Admin</option>
-                </select>
+                </Select>
               </div>
               <button
                 type="submit" disabled={isCreating}

@@ -51,95 +51,115 @@ export default function Signup() {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="flex flex-col items-center justify-center min-h-screen w-full overflow-hidden bg-slate-50 selection:bg-blue-100 selection:text-blue-900 pt-20 pb-10"
+      className="flex items-center justify-center min-h-screen w-full bg-slate-50 p-4 md:p-8 pt-16 md:pt-20 pb-8 selection:bg-blue-100 selection:text-blue-900"
     >
-      <div className="w-full max-w-md p-8 bg-white border border-slate-200 shadow-xl rounded-2xl relative z-10">
+      <div className="flex flex-col md:flex-row w-full max-w-4xl bg-white rounded-3xl shadow-2xl overflow-hidden relative z-10 min-h-[500px]">
         
-        <div className="flex items-center justify-center mb-8">
-          <div className="bg-blue-50 w-16 h-16 flex items-center justify-center rounded-2xl">
-            <GraduationCap className="w-8 h-8 text-blue-600" />
-          </div>
-        </div>
-        
-        <h2 className="text-2xl font-bold text-center text-slate-900 mb-2">
-          Create <span className="text-blue-600">Account</span>
-        </h2>
-        <p className="text-center text-slate-500 text-sm mb-8">
-          Join our learning platform and start your journey.
-        </p>
-
-        {error && (
-          <div className="mb-4 p-3 bg-red-50 text-red-600 text-sm rounded-xl border border-red-100 text-center">
-            {error}
-          </div>
-        )}
-        
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="space-y-2">
-            <label className="text-sm text-slate-700 font-semibold flex items-center gap-2">
-              <User className="w-4 h-4 text-slate-400" /> Full Name
-            </label>
-            <input 
-              type="text" 
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              className="w-full bg-white border border-slate-200 rounded-xl p-3 text-slate-900 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all placeholder:text-slate-400"
-              placeholder="John Doe"
-              required
-            />
-          </div>
-
-          <div className="space-y-2">
-            <label className="text-sm text-slate-700 font-semibold flex items-center gap-2">
-              <Phone className="w-4 h-4 text-slate-400" /> Mobile Number
-            </label>
-            <input 
-              type="tel" 
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              className="w-full bg-white border border-slate-200 rounded-xl p-3 text-slate-900 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all placeholder:text-slate-400"
-              placeholder="+91 98765 43210"
-              required
-            />
-          </div>
-
-          <div className="space-y-2">
-            <label className="text-sm text-slate-700 font-semibold flex items-center gap-2">
-              <Mail className="w-4 h-4 text-slate-400" /> Email Address
-            </label>
-            <input 
-              type="email" 
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full bg-white border border-slate-200 rounded-xl p-3 text-slate-900 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all placeholder:text-slate-400"
-              placeholder="student@example.com"
-              required
-            />
+        {/* Left Side - Visuals */}
+        <div className="hidden md:flex flex-col justify-between w-1/2 p-8 bg-blue-900 relative overflow-hidden">
+          {/* Background Image with Overlay */}
+          <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1516321497487-e288fb19713f?q=80&w=2070&auto=format&fit=crop')] bg-cover bg-center">
+             <div className="absolute inset-0 bg-blue-900/60 backdrop-mix-blend-multiply"></div>
+             <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/20 to-transparent"></div>
           </div>
           
-          <div className="space-y-2">
-            <label className="text-sm text-slate-700 font-semibold flex items-center gap-2">
-              <Lock className="w-4 h-4 text-slate-400" /> Password
-            </label>
-            <input 
-              type="password" 
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full bg-white border border-slate-200 rounded-xl p-3 text-slate-900 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all placeholder:text-slate-400"
-              placeholder="••••••••"
-              required
-            />
+          {/* Content */}
+          <div className="relative z-10 flex items-center gap-2">
+            <div className="bg-white/20 p-2 rounded-xl backdrop-blur-sm">
+              <GraduationCap className="w-6 h-6 text-white" />
+            </div>
+            <span className="text-white font-bold text-lg tracking-tight">CodeCure Academy</span>
           </div>
-          
-          <Button type="submit" disabled={isLoading} className="w-full h-12 bg-blue-600 text-white hover:bg-blue-700 rounded-xl font-bold shadow-lg shadow-blue-600/20 group transition-all">
-            {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Sign Up"}
-            {!isLoading && <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />}
-          </Button>
-        </form>
-        
-        <div className="mt-8 text-center text-sm text-slate-500 font-medium">
-          Already have an account? <Link to="/login" className="text-blue-600 hover:text-blue-700 font-bold underline decoration-blue-200 underline-offset-4 transition-colors">Sign in here</Link>.
+
+          <div className="relative z-10 text-white mt-auto">
+            <h2 className="text-2xl font-bold mb-3 leading-tight">
+              Start Your Journey,<br/>Master the Future.
+            </h2>
+            <p className="text-blue-100/80 text-sm max-w-sm">
+              Create an account and access high-quality courses designed to accelerate your career.
+            </p>
+            <div className="flex gap-2 mt-6">
+               <div className="w-8 h-1 bg-white rounded-full"></div>
+               <div className="w-2 h-1 bg-white/40 rounded-full"></div>
+               <div className="w-2 h-1 bg-white/40 rounded-full"></div>
+            </div>
+          </div>
         </div>
+
+        {/* Right Side - Form */}
+        <div className="w-full md:w-1/2 p-6 md:p-10 flex flex-col justify-center bg-white">
+          <div className="w-full max-w-[340px] mx-auto">
+            <h2 className="text-2xl font-bold text-slate-900 mb-2">
+              Create an account
+            </h2>
+            <p className="text-slate-500 text-sm mb-8">
+              Already have an account?{" "}
+              <Link to="/login" className="text-blue-600 hover:text-blue-700 font-semibold underline underline-offset-4">
+                Log in
+              </Link>
+            </p>
+
+            {error && (
+              <div className="mb-6 p-3 bg-red-50 text-red-600 text-sm rounded-xl border border-red-100 text-center">
+                {error}
+              </div>
+            )}
+            
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <input 
+                  type="text" 
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3.5 text-slate-900 focus:outline-none focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all placeholder:text-slate-400 font-medium"
+                  placeholder="Full name"
+                  required
+                />
+                
+                <input 
+                  type="tel" 
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3.5 text-slate-900 focus:outline-none focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all placeholder:text-slate-400 font-medium"
+                  placeholder="Mobile number"
+                  required
+                />
+              </div>
+
+              <input 
+                type="email" 
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3.5 text-slate-900 focus:outline-none focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all placeholder:text-slate-400 font-medium"
+                placeholder="Email address"
+                required
+              />
+              
+              <input 
+                type="password" 
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3.5 text-slate-900 focus:outline-none focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all placeholder:text-slate-400 font-medium"
+                placeholder="Enter your password"
+                required
+              />
+              
+              <div className="flex items-center pt-2 pb-2">
+                <label className="flex items-start gap-2 cursor-pointer">
+                  <input type="checkbox" className="w-4 h-4 mt-0.5 rounded border-slate-300 text-blue-600 focus:ring-blue-500" required />
+                  <span className="text-sm text-slate-600">
+                    I agree to the <Link to="/terms" className="text-blue-600 hover:underline">Terms & Conditions</Link>
+                  </span>
+                </label>
+              </div>
+
+              <Button type="submit" disabled={isLoading} className="w-full h-12 bg-blue-600 text-white hover:bg-blue-700 rounded-xl font-bold transition-all">
+                {isLoading ? <Loader2 className="w-5 h-5 animate-spin mx-auto" /> : "Create account"}
+              </Button>
+            </form>
+          </div>
+        </div>
+
       </div>
     </motion.div>
   );

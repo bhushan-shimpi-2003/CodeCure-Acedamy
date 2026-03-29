@@ -39,7 +39,12 @@ export default function TeacherStudents() {
             if (enrollData.success) {
               enrollData.data.forEach((e: any) => {
                 if (e.course_id === course.id && !allStudents.find(s => s.student_id === e.student_id)) {
-                  allStudents.push({ ...e, course_title: course.title });
+                  allStudents.push({
+                    ...e,
+                    course_title: e.courses?.title || course.title,
+                    student_name: e.profiles?.name || 'N/A',
+                    student_email: e.profiles?.email || 'N/A',
+                  });
                 }
               });
             }

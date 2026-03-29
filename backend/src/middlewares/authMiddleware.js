@@ -27,9 +27,11 @@ exports.protect = async (req, res, next) => {
     const { data: { user }, error } = await supabase.auth.getUser(token);
 
     if (error || !user) {
+      console.error('Supabase getUser error:', error);
       return res.status(401).json({
         success: false,
         error: 'Not authorized - invalid token',
+        details: error ? error.message : 'No user returned from Supabase',
       });
     }
 
@@ -41,9 +43,11 @@ exports.protect = async (req, res, next) => {
       .single();
 
     if (profileError || !profile) {
+      console.error('Supabase profile fetch error:', profileError);
       return res.status(401).json({
         success: false,
         error: 'User profile not found',
+        details: profileError ? profileError.message : 'No profile found',
       });
     }
 
@@ -51,9 +55,11 @@ exports.protect = async (req, res, next) => {
     req.user = profile;
     next();
   } catch (err) {
+    console.error('Catch error in protect:', err);
     return res.status(401).json({
       success: false,
       error: 'Not authorized - token verification failed',
+      details: err.message,
     });
   }
 };

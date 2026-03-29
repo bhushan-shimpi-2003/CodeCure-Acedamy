@@ -54,67 +54,100 @@ export default function Login() {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="flex flex-col items-center justify-center min-h-screen w-full overflow-hidden bg-slate-50 selection:bg-blue-100 selection:text-blue-900 pt-20"
+      className="flex items-center justify-center min-h-screen w-full bg-slate-50 p-4 md:p-8 pt-16 md:pt-20 pb-8 selection:bg-blue-100 selection:text-blue-900"
     >
-      <div className="w-full max-w-md p-8 bg-white border border-slate-200 shadow-xl rounded-2xl relative z-10">
+      <div className="flex flex-col md:flex-row w-full max-w-4xl bg-white rounded-3xl shadow-2xl overflow-hidden relative z-10 min-h-[500px]">
         
-        <div className="flex items-center justify-center mb-8">
-          <div className="bg-blue-50 w-16 h-16 flex items-center justify-center rounded-2xl">
-            <GraduationCap className="w-8 h-8 text-blue-600" />
+        {/* Left Side - Visuals */}
+        <div className="hidden md:flex flex-col justify-between w-1/2 p-8 bg-blue-900 relative overflow-hidden">
+          {/* Background Image with Overlay */}
+          <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1516321497487-e288fb19713f?q=80&w=2070&auto=format&fit=crop')] bg-cover bg-center">
+             <div className="absolute inset-0 bg-blue-900/60 backdrop-mix-blend-multiply"></div>
+             <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/20 to-transparent"></div>
           </div>
-        </div>
-        
-        <h2 className="text-2xl font-bold text-center text-slate-900 mb-2">
-          Welcome <span className="text-blue-600">Back</span>
-        </h2>
-        <p className="text-center text-slate-500 text-sm mb-8">
-          Enter your credentials to access your account.
-        </p>
+          
+          {/* Content */}
+          <div className="relative z-10 flex items-center gap-2">
+            <div className="bg-white/20 p-2 rounded-xl backdrop-blur-sm">
+              <GraduationCap className="w-6 h-6 text-white" />
+            </div>
+            <span className="text-white font-bold text-lg tracking-tight">CodeCure Academy</span>
+          </div>
 
-        {error && (
-          <div className="mb-4 p-3 bg-red-50 text-red-600 text-sm rounded-xl border border-red-100 text-center">
-            {error}
+          <div className="relative z-10 text-white mt-auto">
+            <h2 className="text-2xl font-bold mb-3 leading-tight">
+              Unlock Your Potential,<br/>Shape Your Future.
+            </h2>
+            <p className="text-blue-100/80 text-sm max-w-sm">
+              Join thousands of students learning in-demand tech skills from industry experts.
+            </p>
+            <div className="flex gap-2 mt-6">
+               <div className="w-8 h-1 bg-white rounded-full"></div>
+               <div className="w-2 h-1 bg-white/40 rounded-full"></div>
+               <div className="w-2 h-1 bg-white/40 rounded-full"></div>
+            </div>
           </div>
-        )}
-        
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="space-y-2">
-            <label className="text-sm text-slate-700 font-semibold flex items-center gap-2">
-              <Mail className="w-4 h-4 text-slate-400" /> Email Address
-            </label>
-            <input 
-              type="email" 
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full bg-white border border-slate-200 rounded-xl p-3 text-slate-900 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all placeholder:text-slate-400"
-              placeholder="student@example.com"
-              required
-            />
-          </div>
-          
-          <div className="space-y-2">
-            <label className="text-sm text-slate-700 font-semibold flex items-center gap-2">
-              <Lock className="w-4 h-4 text-slate-400" /> Password
-            </label>
-            <input 
-              type="password" 
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full bg-white border border-slate-200 rounded-xl p-3 text-slate-900 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all placeholder:text-slate-400"
-              placeholder="••••••••"
-              required
-            />
-          </div>
-          
-          <Button type="submit" disabled={isLoading} className="w-full h-12 bg-blue-600 text-white hover:bg-blue-700 rounded-xl font-bold shadow-lg shadow-blue-600/20 group transition-all">
-            {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Sign In"}
-            {!isLoading && <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />}
-          </Button>
-        </form>
-        
-        <div className="mt-8 text-center text-sm text-slate-500 font-medium">
-          Don't have an account? <Link to="/signup" className="text-blue-600 hover:text-blue-700 font-bold underline decoration-blue-200 underline-offset-4 transition-colors">Sign up here</Link>.
         </div>
+
+        {/* Right Side - Form */}
+        <div className="w-full md:w-1/2 p-6 md:p-10 flex flex-col justify-center bg-white">
+          <div className="w-full max-w-[340px] mx-auto">
+            <h2 className="text-2xl font-bold text-slate-900 mb-2">
+              Welcome back
+            </h2>
+            <p className="text-slate-500 text-sm mb-8">
+              Don't have an account?{" "}
+              <Link to="/signup" className="text-blue-600 hover:text-blue-700 font-semibold underline underline-offset-4">
+                Sign up
+              </Link>
+            </p>
+
+            {error && (
+              <div className="mb-6 p-3 bg-red-50 text-red-600 text-sm rounded-xl border border-red-100 text-center">
+                {error}
+              </div>
+            )}
+            
+            <form onSubmit={handleSubmit} className="space-y-5">
+              <div className="space-y-2">
+                <input 
+                  type="email" 
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3.5 text-slate-900 focus:outline-none focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all placeholder:text-slate-400 font-medium"
+                  placeholder="Email address"
+                  required
+                />
+              </div>
+              
+              <div className="space-y-2">
+                <input 
+                  type="password" 
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3.5 text-slate-900 focus:outline-none focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all placeholder:text-slate-400 font-medium"
+                  placeholder="Enter your password"
+                  required
+                />
+              </div>
+
+              <div className="flex items-center justify-between pt-1">
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input type="checkbox" className="w-4 h-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500" />
+                  <span className="text-sm text-slate-600">Remember me</span>
+                </label>
+                <Link to="#" className="text-sm text-blue-600 hover:text-blue-700 font-medium hover:underline">
+                  Forgot password?
+                </Link>
+              </div>
+              
+              <Button type="submit" disabled={isLoading} className="w-full h-12 mt-4 bg-blue-600 text-white hover:bg-blue-700 rounded-xl font-bold transition-all">
+                {isLoading ? <Loader2 className="w-5 h-5 animate-spin mx-auto" /> : "Sign In"}
+              </Button>
+            </form>
+          </div>
+        </div>
+
       </div>
     </motion.div>
   );

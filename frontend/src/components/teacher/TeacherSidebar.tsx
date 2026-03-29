@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 export default function TeacherSidebar({ activeTab, setActiveTab, isOpen, setIsOpen }: any) {
   const navItems = [
     { id: "overview", label: "Overview", icon: LayoutDashboard },
+    { id: "lessons", label: "Published Content", icon: Video },
     { id: "courses", label: "Active Courses", icon: FileText },
     { id: "students", label: "Students", icon: Users },
     { id: "assignments", label: "Assignments", icon: FileText },

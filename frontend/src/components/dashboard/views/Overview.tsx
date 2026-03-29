@@ -9,6 +9,7 @@ export default function Overview() {
   
   const [availableCourses, setAvailableCourses] = useState<any[]>([]);
   const [enrollments, setEnrollments] = useState<any[]>([]);
+  const [requests, setRequests] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isRequesting, setIsRequesting] = useState<string | null>(null);
 
@@ -22,7 +23,7 @@ export default function Overview() {
         setAvailableCourses(coursesData.data);
       }
 
-      // Fetch my enrollments
+      // Fetch my enrollments and requests
       if (token) {
         const enrollRes = await fetch("http://localhost:5000/api/enrollments/me", {
           headers: { "Authorization": `Bearer ${token}` }
@@ -30,6 +31,14 @@ export default function Overview() {
         const enrollData = await enrollRes.json();
         if (enrollData.success) {
           setEnrollments(enrollData.data);
+        }
+
+        const reqRes = await fetch("http://localhost:5000/api/enrollments/requests/me", {
+          headers: { "Authorization": `Bearer ${token}` }
+        });
+        const reqData = await reqRes.json();
+        if (reqData.success) {
+          setRequests(reqData.data);
         }
       }
     } catch (err) {
@@ -81,7 +90,18 @@ export default function Overview() {
   // Helper to check enrollment status
   const getEnrollmentStatus = (courseId: string) => {
     const enrollment = enrollments.find(e => e.course_id === courseId);
-    return enrollment ? enrollment.status : null; // 'active', 'pending', 'completed', 'cancelled'
+    if (enrollment) {
+      // Return student_status ('active', 'completed', 'cancelled')
+      return enrollment.student_status; 
+    }
+    
+    // If not enrolled, check if there's a pending request
+    const request = requests.find(r => r.course_id === courseId && r.status === 'pending');
+    if (request) {
+      return 'pending';
+    }
+
+    return null;
   };
 
   return (

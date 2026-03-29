@@ -5,7 +5,7 @@ import { Button } from "../components/ui/button";
 
 export default function Hero() {
   return (
-    <section className="relative pt-32 pb-20 md:pt-40 md:pb-28 overflow-hidden bg-white">
+    <section className="relative pt-24 pb-16 md:pt-28 md:pb-20 overflow-hidden bg-white">
       {/* Background decorations */}
       <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
         <div className="absolute top-[-10%] right-[-5%] w-[500px] h-[500px] rounded-full bg-blue-50/50 blur-3xl"></div>

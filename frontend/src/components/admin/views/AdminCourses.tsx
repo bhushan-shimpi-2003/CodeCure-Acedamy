@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { motion } from "motion/react";
 import { BookOpen, Plus, Edit, Trash2, LayoutDashboard, Layers, ArrowLeft, Save, IndianRupee, Loader2, Users } from "lucide-react";
+import Select from "../../ui/Select";
 import { useAuth } from "../../../context/AuthContext";
 
 interface Module {
@@ -278,28 +279,26 @@ export default function AdminCourses() {
 
              <div className="space-y-2">
                <label className="text-xs text-blue-600 font-bold ">Status</label>
-               <select 
+               <Select 
                  value={selectedCourse.status} 
                  onChange={(e) => handleUpdateField('status', e.target.value)} 
-                 className="w-full bg-slate-50 border border-slate-200 px-4 py-3 text-slate-900 focus:border-blue-600 outline-none transition-colors appearance-none"
                >
                  <option value="active">Active (Published)</option>
                  <option value="draft">Draft (Hidden)</option>
-               </select>
+               </Select>
              </div>
 
              <div className="space-y-2">
                <label className="text-xs text-blue-600 font-bold ">Assign Teacher</label>
-               <select 
+               <Select 
                  value={selectedCourse.instructor_id || ""} 
                  onChange={(e) => handleUpdateField('instructor_id', e.target.value)} 
-                 className="w-full bg-slate-50 border border-slate-200 px-4 py-3 text-slate-900 focus:border-blue-600 outline-none transition-colors appearance-none"
                >
                  <option value="">-- Select Instructor --</option>
                  {teachers.map(t => (
                    <option key={t.id} value={t.id}>{t.name || t.email}</option>
                  ))}
-               </select>
+               </Select>
              </div>
 
              <div className="space-y-2 md:col-span-2">
