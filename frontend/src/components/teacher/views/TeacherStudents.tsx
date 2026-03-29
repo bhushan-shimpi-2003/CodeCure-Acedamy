@@ -104,44 +104,62 @@ export default function TeacherStudents() {
             {students.length === 0 ? "No students enrolled in your courses yet." : "No students match your search."}
           </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse">
-              <thead>
-                <tr className="border-b border-slate-200 text-slate-500 text-xs uppercase tracking-wider">
-                  <th className="p-4 font-semibold">Name</th>
-                  <th className="p-4 font-semibold">Email</th>
-                  <th className="p-4 font-semibold">Course</th>
-                  <th className="p-4 font-semibold">Status</th>
-                  <th className="p-4 font-semibold text-right">Action</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100">
-                {filteredStudents.map((student: any) => (
-                  <tr key={student.id || student.student_id} className="hover:bg-slate-50 transition-colors">
-                    <td className="p-4 text-sm text-slate-900 font-semibold">{student.student_name || 'N/A'}</td>
-                    <td className="p-4 text-sm text-slate-600">{student.student_email || 'N/A'}</td>
-                    <td className="p-4 text-sm text-blue-600 font-medium">{student.course_title || 'N/A'}</td>
-                    <td className="p-4">
-                      <span className={`px-2.5 py-1 text-xs font-bold uppercase rounded-lg border ${
-                        student.student_status === 'active' 
-                          ? 'bg-green-50 text-green-700 border-green-200' 
-                          : 'bg-slate-50 text-slate-600 border-slate-200'
-                      }`}>
-                        {student.student_status || 'unknown'}
-                      </span>
-                    </td>
-                    <td className="p-4 text-right">
-                      <a 
-                        href={`mailto:${student.student_email || ''}`}
-                        className="bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 hover:text-blue-600 px-3 py-1.5 rounded-lg text-sm font-semibold transition-colors inline-flex items-center gap-2 shadow-sm"
-                      >
-                        <Mail className="w-4 h-4" /> Contact
-                      </a>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          <div className="space-y-4">
+            {/* Desktop Header - Hidden on Mobile */}
+            <div className="hidden md:grid grid-cols-12 gap-4 px-4 py-3 border-b border-slate-200 text-slate-500 text-xs uppercase tracking-wider font-semibold">
+              <div className="col-span-3">Name</div>
+              <div className="col-span-3">Email</div>
+              <div className="col-span-3">Course</div>
+              <div className="col-span-2">Status</div>
+              <div className="col-span-1 text-right">Action</div>
+            </div>
+
+            {/* Student List */}
+            <div className="flex flex-col gap-3 md:gap-0 md:divide-y md:divide-slate-100">
+              {filteredStudents.map((student: any) => (
+                <div key={student.id || student.student_id} className="relative bg-slate-50 md:bg-transparent p-4 rounded-2xl border border-slate-200 md:border-transparent md:rounded-none md:p-4 hover:bg-slate-50 transition-colors flex flex-col md:grid md:grid-cols-12 md:gap-4 md:items-center">
+                  
+                  {/* Name */}
+                  <div className="md:col-span-3 mb-1 md:mb-0">
+                    <span className="md:hidden text-xs text-slate-500 uppercase font-semibold mb-1 block">Name</span>
+                    <span className="text-sm text-slate-900 font-bold">{student.student_name || 'N/A'}</span>
+                  </div>
+
+                  {/* Email */}
+                  <div className="md:col-span-3 mb-3 md:mb-0">
+                    <span className="text-sm text-slate-500">{student.student_email || 'N/A'}</span>
+                  </div>
+
+                  {/* Course */}
+                  <div className="md:col-span-3 flex items-center justify-between md:block mb-3 md:mb-0">
+                    <span className="md:hidden text-xs text-slate-500 uppercase font-semibold">Course</span>
+                    <span className="text-sm text-blue-600 font-bold md:font-medium">{student.course_title || 'N/A'}</span>
+                  </div>
+
+                  {/* Status */}
+                  <div className="md:col-span-2 flex items-center justify-between md:block mb-4 md:mb-0">
+                    <span className="md:hidden text-xs text-slate-500 uppercase font-semibold">Status</span>
+                    <span className={`px-2.5 py-1 text-xs font-bold uppercase rounded-lg border inline-block ${
+                      student.student_status === 'active' 
+                        ? 'bg-green-50 text-green-700 border-green-200' 
+                        : 'bg-slate-100 text-slate-600 border-slate-200'
+                    }`}>
+                      {student.student_status || 'unknown'}
+                    </span>
+                  </div>
+
+                  {/* Action */}
+                  <div className="md:col-span-1 border-t border-slate-200 pt-3 md:border-none md:pt-0 flex justify-end">
+                    <a 
+                      href={`mailto:${student.student_email || ''}`}
+                      className="w-full md:w-auto bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 hover:text-blue-600 px-4 py-2 md:px-3 md:py-1.5 rounded-xl md:rounded-lg text-sm font-bold md:font-semibold transition-colors flex items-center justify-center gap-2 shadow-sm"
+                    >
+                      <Mail className="w-4 h-4" /> <span className="md:hidden">Contact Student</span>
+                    </a>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         )}
       </div>

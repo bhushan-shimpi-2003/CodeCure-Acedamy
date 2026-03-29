@@ -3,7 +3,7 @@ import { motion } from "motion/react";
 import {
   Users, BookOpen, Layers, DollarSign, LayoutDashboard, Loader2,
   MessageSquare, Video, FileCode2, AlertCircle, CheckCircle, Clock,
-  TrendingUp, UserCheck, GraduationCap, Bell, ArrowUpRight
+  TrendingUp, UserCheck, GraduationCap, Bell, ArrowUpRight, Settings, UserCog, ArrowRight
 } from "lucide-react";
 import { useAuth } from "../../../context/AuthContext";
 
@@ -32,7 +32,7 @@ interface PlatformStats {
   totalPayouts: number;
 }
 
-export default function AdminOverview() {
+export default function AdminOverview({ setActiveTab }: { setActiveTab?: (tab: string) => void }) {
   const { token } = useAuth();
   const [stats, setStats] = useState<PlatformStats>({
     students: 0, teachers: 0, courses: 0, publishedCourses: 0, draftCourses: 0,
@@ -157,7 +157,7 @@ export default function AdminOverview() {
       </div>
 
       {/* KPI Cards Row */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         {kpiCards.map((card, i) => {
           const Icon = card.icon;
           return (
@@ -166,21 +166,21 @@ export default function AdminOverview() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.06 }}
-              className={`bg-white border ${card.border} rounded-xl p-4 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden group`}
+              className={`bg-white border ${card.border} rounded-xl p-3 sm:p-4 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden group`}
             >
-              <div className={`absolute -top-4 -right-4 w-16 h-16 rounded-full ${card.bg} opacity-50 group-hover:opacity-80 transition-opacity`}></div>
+              <div className={`absolute -top-4 -right-4 w-12 h-12 sm:w-16 sm:h-16 rounded-full ${card.bg} opacity-50 group-hover:opacity-80 transition-opacity`}></div>
               <div className="relative">
-                <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center justify-between mb-2 স্ম:mb-3">
                   <div className={`p-1.5 rounded-lg ${card.bg}`}>
-                    <Icon className={`w-4 h-4 ${card.color}`} />
+                    <Icon className={`w-3.5 h-3.5 sm:w-4 sm:h-4 ${card.color}`} />
                   </div>
                 </div>
-                <div className="text-2xl font-bold text-slate-900 tracking-tight">
+                <div className="text-lg sm:text-2xl font-bold text-slate-900 tracking-tight">
                   {typeof card.value === 'number' ? card.value.toLocaleString() : card.value}
                 </div>
-                <div className="text-[11px] font-semibold text-slate-500 mt-1">{card.label}</div>
+                <div className="text-[10px] sm:text-[11px] font-semibold text-slate-500 mt-1">{card.label}</div>
                 {card.sub && (
-                  <div className={`text-[10px] font-bold ${card.color} mt-1`}>{card.sub}</div>
+                  <div className={`text-[10px] font-bold ${card.color} mt-0.5 sm:mt-1`}>{card.sub}</div>
                 )}
               </div>
             </motion.div>
@@ -189,22 +189,22 @@ export default function AdminOverview() {
       </div>
 
       {/* Activity Metrics Row */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         {/* Pending Requests */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
-          className={`bg-white border rounded-xl p-5 shadow-sm ${stats.pendingRequests > 0 ? 'border-amber-300' : 'border-slate-200'}`}
+          className={`bg-white border rounded-xl p-3 sm:p-5 shadow-sm flex flex-col ${stats.pendingRequests > 0 ? 'border-amber-300' : 'border-slate-200'}`}
         >
-          <div className="flex items-center justify-between mb-3">
-            <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Pending Requests</span>
-            <Bell className={`w-4 h-4 ${stats.pendingRequests > 0 ? 'text-amber-500 animate-pulse' : 'text-slate-400'}`} />
+          <div className="flex items-center justify-between mb-2 sm:mb-3">
+            <span className="text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider truncate mr-1">Triage</span>
+            <Bell className={`w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0 ${stats.pendingRequests > 0 ? 'text-amber-500 animate-pulse' : 'text-slate-400'}`} />
           </div>
-          <div className={`text-3xl font-bold ${stats.pendingRequests > 0 ? 'text-amber-600' : 'text-slate-900'}`}>
+          <div className={`text-xl sm:text-3xl font-bold mt-auto ${stats.pendingRequests > 0 ? 'text-amber-600' : 'text-slate-900'}`}>
             {stats.pendingRequests}
           </div>
-          <p className="text-xs text-slate-500 mt-2">Enrollment requests awaiting approval</p>
+          <p className="text-[10px] sm:text-xs text-slate-500 mt-1 sm:mt-2 line-clamp-2">Requests awaiting approval</p>
         </motion.div>
 
         {/* Doubts */}
@@ -212,19 +212,19 @@ export default function AdminOverview() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5 }}
-          className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm"
+          className="bg-white border border-slate-200 rounded-xl p-3 sm:p-5 shadow-sm flex flex-col"
         >
-          <div className="flex items-center justify-between mb-3">
-            <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Doubt Support</span>
-            <MessageSquare className="w-4 h-4 text-blue-500" />
+          <div className="flex items-center justify-between mb-2 sm:mb-3">
+            <span className="text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider truncate mr-1">Doubts</span>
+            <MessageSquare className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-blue-500 shrink-0" />
           </div>
-          <div className="text-3xl font-bold text-slate-900">{stats.doubtsTotal}</div>
-          <div className="flex items-center gap-4 mt-2">
-            <span className="text-xs font-bold text-amber-600 flex items-center gap-1">
-              <Clock className="w-3 h-3" /> {stats.doubtsPending} pending
+          <div className="text-xl sm:text-3xl font-bold text-slate-900 mt-auto">{stats.doubtsTotal}</div>
+          <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4 mt-2">
+            <span className="text-[10px] sm:text-xs font-bold text-amber-600 flex items-center gap-1">
+              <Clock className="w-2.5 h-2.5 sm:w-3 sm:h-3" /> {stats.doubtsPending} open
             </span>
-            <span className="text-xs font-bold text-emerald-600 flex items-center gap-1">
-              <CheckCircle className="w-3 h-3" /> {stats.doubtsResolved} resolved
+            <span className="text-[10px] sm:text-xs font-bold text-emerald-600 flex items-center gap-1">
+              <CheckCircle className="w-2.5 h-2.5 sm:w-3 sm:h-3" /> {stats.doubtsResolved} fixed
             </span>
           </div>
         </motion.div>
@@ -234,19 +234,19 @@ export default function AdminOverview() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.6 }}
-          className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm"
+          className="bg-white border border-slate-200 rounded-xl p-3 sm:p-5 shadow-sm flex flex-col"
         >
-          <div className="flex items-center justify-between mb-3">
-            <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Mock Interviews</span>
-            <Video className="w-4 h-4 text-purple-500" />
+          <div className="flex items-center justify-between mb-2 sm:mb-3">
+            <span className="text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider truncate mr-1">Interviews</span>
+            <Video className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-purple-500 shrink-0" />
           </div>
-          <div className="text-3xl font-bold text-slate-900">{stats.interviews}</div>
-          <div className="flex items-center gap-4 mt-2">
-            <span className="text-xs font-bold text-blue-600 flex items-center gap-1">
-              <Clock className="w-3 h-3" /> {stats.interviewsScheduled} upcoming
+          <div className="text-xl sm:text-3xl font-bold text-slate-900 mt-auto">{stats.interviews}</div>
+          <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4 mt-2">
+            <span className="text-[10px] sm:text-xs font-bold text-blue-600 flex items-center gap-1">
+              <Clock className="w-2.5 h-2.5 sm:w-3 sm:h-3" /> {stats.interviewsScheduled} wait
             </span>
-            <span className="text-xs font-bold text-emerald-600 flex items-center gap-1">
-              <CheckCircle className="w-3 h-3" /> {stats.interviewsCompleted} done
+            <span className="text-[10px] sm:text-xs font-bold text-emerald-600 flex items-center gap-1">
+              <CheckCircle className="w-2.5 h-2.5 sm:w-3 sm:h-3" /> {stats.interviewsCompleted} done
             </span>
           </div>
         </motion.div>
@@ -256,25 +256,66 @@ export default function AdminOverview() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.7 }}
-          className={`bg-white border rounded-xl p-5 shadow-sm ${stats.openComplaints > 0 ? 'border-red-300' : 'border-slate-200'}`}
+          className={`bg-white border rounded-xl p-3 sm:p-5 shadow-sm flex flex-col ${stats.openComplaints > 0 ? 'border-red-300' : 'border-slate-200'}`}
         >
-          <div className="flex items-center justify-between mb-3">
-            <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Feedback & Issues</span>
-            <AlertCircle className={`w-4 h-4 ${stats.openComplaints > 0 ? 'text-red-500' : 'text-slate-400'}`} />
+          <div className="flex items-center justify-between mb-2 sm:mb-3">
+            <span className="text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider truncate mr-1">Feedback</span>
+            <AlertCircle className={`w-3.5 h-3.5 sm:w-4 h-4 shrink-0 ${stats.openComplaints > 0 ? 'text-red-500' : 'text-slate-400'}`} />
           </div>
-          <div className="text-3xl font-bold text-slate-900">{stats.feedbackCount}</div>
-          <div className="flex items-center gap-4 mt-2">
+          <div className="text-xl sm:text-3xl font-bold text-slate-900 mt-auto">{stats.feedbackCount}</div>
+          <div className="flex flex-col sm:items-start gap-1 mt-2">
             {stats.openComplaints > 0 ? (
-              <span className="text-xs font-bold text-red-600 flex items-center gap-1 bg-red-50 px-2 py-0.5 rounded-full">
-                <AlertCircle className="w-3 h-3" /> {stats.openComplaints} open complaints
+              <span className="text-[10px] sm:text-xs font-bold text-red-600 flex items-center gap-1 bg-red-50 px-2 py-0.5 rounded-lg border border-red-100">
+                <AlertCircle className="w-2.5 h-2.5 sm:w-3 sm:h-3" /> {stats.openComplaints} issues
               </span>
             ) : (
-              <span className="text-xs font-bold text-emerald-600 flex items-center gap-1">
-                <CheckCircle className="w-3 h-3" /> All resolved
+              <span className="text-[10px] sm:text-xs font-bold text-emerald-600 flex items-center gap-1">
+                <CheckCircle className="w-2.5 h-2.5 sm:w-3 sm:h-3" /> All resolved
               </span>
             )}
           </div>
         </motion.div>
+      </div>
+
+      {/* Quick Actions */}
+      <div className="space-y-4">
+        <h2 className="text-lg font-bold text-slate-800 flex items-center gap-2">
+          <Settings className="w-5 h-5 text-blue-600" /> Platform Actions
+        </h2>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
+          {[
+            { label: "Manage Staff", desc: "Add/Remove Admins", icon: UserCog, tab: "staff", color: "text-blue-600 bg-blue-50 border-blue-200" },
+            { label: "Approve Courses", desc: "Review draft courses", icon: BookOpen, tab: "courses", color: "text-emerald-600 bg-emerald-50 border-emerald-200" },
+            { label: "View Payouts", desc: "Check platform finances", icon: DollarSign, tab: "finance", color: "text-amber-600 bg-amber-50 border-amber-200" },
+            { label: "Configure App", desc: "Edit global settings", icon: Settings, tab: "settings", color: "text-purple-600 bg-purple-50 border-purple-200" },
+          ].map((action, idx) => {
+            const Icon = action.icon;
+            return (
+              <motion.button
+                key={action.label}
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.2 + (idx * 0.1) }}
+                onClick={() => setActiveTab && setActiveTab(action.tab)}
+                className={`flex flex-col text-left p-4 sm:p-6 rounded-2xl border transition-all duration-200 group relative overflow-hidden bg-white hover:shadow-md ${action.color.replace('text-', 'border-').split(' ')[0]} border-slate-200`}
+              >
+                <div className={`absolute -right-2 -bottom-2 opacity-5 transition-transform group-hover:scale-110 group-hover:opacity-10 ${action.color.split(' ')[0]}`}>
+                  <Icon className="w-20 h-20 sm:w-24 sm:h-24" />
+                </div>
+                
+                <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center mb-3 sm:mb-4 border transition-colors ${action.color}`}>
+                  <Icon className="w-5 h-5 sm:w-6 sm:h-6" />
+                </div>
+                <h3 className="text-sm sm:text-lg font-bold text-slate-900 mb-1 leading-tight sm:leading-normal">{action.label}</h3>
+                <p className="text-xs sm:text-sm text-slate-500 font-medium mb-3 sm:mb-4 line-clamp-2 sm:line-clamp-none">{action.desc}</p>
+                
+                <div className="mt-auto flex items-center text-xs sm:text-sm font-bold text-blue-600 sm:group-hover:gap-2 transition-all">
+                  <span className="hidden sm:inline">Go to </span><span className="sm:hidden">{action.tab}</span><span className="hidden sm:inline">{action.tab}</span> <ArrowRight className="w-3 h-3 sm:w-4 sm:h-4 ml-1 shrink-0" />
+                </div>
+              </motion.button>
+            );
+          })}
+        </div>
       </div>
 
       {/* Bottom Row: Recent Activity Feeds */}

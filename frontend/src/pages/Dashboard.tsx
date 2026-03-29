@@ -15,7 +15,7 @@ export default function Dashboard() {
 
   const renderView = () => {
     switch (activeTab) {
-      case "overview": return <Overview />;
+      case "overview": return <Overview setActiveTab={setActiveTab} />;
       case "lectures": return <Lectures />;
       case "assignments": return <Assignments />;
       case "career": return <Career />;

@@ -1,11 +1,10 @@
 import { useState, useEffect } from "react";
 import { motion } from "motion/react";
-import { Play, Calendar, Users, Terminal, Youtube, BookOpen, CheckCircle, GraduationCap, Loader2 } from "lucide-react";
+import { Play, Calendar, Users, Terminal, Youtube, BookOpen, CheckCircle, GraduationCap, Loader2, FileText, Video, MessageSquare, ArrowRight } from "lucide-react";
 import { useAuth } from "../../../context/AuthContext";
 
-export default function Overview() {
+export default function Overview({ setActiveTab }: { setActiveTab?: (tab: string) => void }) {
   const { user, token } = useAuth();
-  const [featuredVideoId, setFeaturedVideoId] = useState<string | null>(null);
   
   const [availableCourses, setAvailableCourses] = useState<any[]>([]);
   const [enrollments, setEnrollments] = useState<any[]>([]);
@@ -49,15 +48,6 @@ export default function Overview() {
   };
 
   useEffect(() => {
-    const savedLink = localStorage.getItem("sharedYoutubeLink");
-    if (savedLink) {
-      const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
-      const match = savedLink.match(regExp);
-      if (match && match[2].length === 11) {
-        setFeaturedVideoId(match[2]);
-      }
-    }
-
     fetchDashboardData();
   }, [token]);
 
@@ -74,7 +64,6 @@ export default function Overview() {
       });
       const data = await res.json();
       if (data.success) {
-        // Refresh enrollments to show pending
         fetchDashboardData();
       } else {
         alert(data.error || "Failed to request enrollment");
@@ -87,22 +76,31 @@ export default function Overview() {
     }
   };
 
-  // Helper to check enrollment status
   const getEnrollmentStatus = (courseId: string) => {
     const enrollment = enrollments.find(e => e.course_id === courseId);
-    if (enrollment) {
-      // Return student_status ('active', 'completed', 'cancelled')
-      return enrollment.student_status; 
-    }
+    if (enrollment) return enrollment.student_status; 
     
-    // If not enrolled, check if there's a pending request
     const request = requests.find(r => r.course_id === courseId && r.status === 'pending');
-    if (request) {
-      return 'pending';
-    }
+    if (request) return 'pending';
 
     return null;
   };
+
+  const activeCoursesCount = enrollments.filter(e => e.student_status === 'active').length;
+
+  const kpis = [
+    { label: "My Courses", value: activeCoursesCount, icon: BookOpen, color: "bg-blue-50 text-blue-600 border-blue-200" },
+    { label: "Pending Requests", value: requests.filter(r => r.status === 'pending').length, icon: Calendar, color: "bg-amber-50 text-amber-600 border-amber-200" },
+    { label: "Available Courses", value: availableCourses.length, icon: Terminal, color: "bg-indigo-50 text-indigo-600 border-indigo-200" },
+    { label: "Completed Lessons", value: 12, icon: CheckCircle, color: "bg-emerald-50 text-emerald-600 border-emerald-200" }, // Mock data
+  ];
+
+  const quickActions = [
+    { label: "Continue Learning", desc: "Watch the latest lectures", icon: Youtube, tab: "lectures", color: "text-red-600 bg-red-50 hover:bg-red-100 border-red-200" },
+    { label: "View Assignments", desc: "Check pending homework", icon: FileText, tab: "assignments", color: "text-blue-600 bg-blue-50 hover:bg-blue-100 border-blue-200" },
+    { label: "Career & Interviews", desc: "Prepare for mock interviews", icon: Video, tab: "career", color: "text-purple-600 bg-purple-50 hover:bg-purple-100 border-purple-200" },
+    { label: "Ask a Doubt", desc: "Get help from instructors", icon: MessageSquare, tab: "doubts", color: "text-amber-600 bg-amber-50 hover:bg-amber-100 border-amber-200" },
+  ];
 
   return (
     <div className="space-y-8 max-w-6xl mx-auto pb-12">
@@ -140,18 +138,78 @@ export default function Overview() {
         </div>
       </motion.div>
 
+      {/* KPI Cards */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
+        {kpis.map((kpi, idx) => {
+          const Icon = kpi.icon;
+          return (
+            <motion.div
+              key={kpi.label}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: idx * 0.1 }}
+              className={`bg-white border rounded-2xl p-4 sm:p-6 shadow-sm flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 ${isLoading ? 'animate-pulse' : ''}`}
+            >
+              <div className={`p-3 sm:p-4 rounded-xl border ${kpi.color}`}>
+                <Icon className="w-5 h-5 sm:w-6 sm:h-6" />
+              </div>
+              <div>
+                <p className="text-xs sm:text-sm font-bold text-slate-500">{kpi.label}</p>
+                <h3 className="text-xl sm:text-2xl font-extrabold text-slate-900 mt-0.5 sm:mt-1">
+                  {isLoading ? "-" : kpi.value}
+                </h3>
+              </div>
+            </motion.div>
+          );
+        })}
+      </div>
+
+      {/* Quick Actions */}
+      <div className="space-y-4">
+        <h2 className="text-lg font-bold text-slate-800 flex items-center gap-2">
+          <CheckCircle className="w-5 h-5 text-blue-600" /> Quick Setup & Actions
+        </h2>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
+          {quickActions.map((action, idx) => {
+            const Icon = action.icon;
+            return (
+              <motion.button
+                key={action.label}
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.2 + (idx * 0.1) }}
+                onClick={() => setActiveTab && setActiveTab(action.tab)}
+                className={`flex flex-col text-left p-4 sm:p-6 rounded-2xl border transition-all duration-200 group relative overflow-hidden bg-white hover:shadow-md ${action.color.replace('text-', 'border-').split(' ')[0]} border-slate-200`}
+              >
+                <div className={`absolute -right-2 -bottom-2 opacity-5 transition-transform group-hover:scale-110 group-hover:opacity-10 ${action.color.split(' ')[0]}`}>
+                  <Icon className="w-20 h-20 sm:w-24 sm:h-24" />
+                </div>
+                
+                <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center mb-3 sm:mb-4 border transition-colors ${action.color}`}>
+                  <Icon className="w-5 h-5 sm:w-6 sm:h-6" />
+                </div>
+                <h3 className="text-sm sm:text-lg font-bold text-slate-900 mb-1 leading-tight sm:leading-normal">{action.label}</h3>
+                <p className="text-xs sm:text-sm text-slate-500 font-medium mb-3 sm:mb-4 line-clamp-2 md:line-clamp-none">{action.desc}</p>
+                
+                <div className="mt-auto flex items-center text-xs sm:text-sm font-bold text-blue-600 sm:group-hover:gap-2 transition-all">
+                  <span className="hidden sm:inline">Go to </span><span className="sm:hidden">{action.tab}</span><span className="hidden sm:inline">{action.tab}</span> <ArrowRight className="w-3 h-3 sm:w-4 sm:h-4 ml-1 shrink-0" />
+                </div>
+              </motion.button>
+            );
+          })}
+        </div>
+      </div>
+
       {/* Course Catalog Section */}
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.1 }}
-        className="space-y-6"
+        transition={{ delay: 0.5 }}
+        className="space-y-6 pt-6 border-t border-slate-200"
       >
         <div className="flex items-center gap-2 mb-2">
-          <div className="bg-blue-100 p-2 rounded-lg">
-            <BookOpen className="w-5 h-5 text-blue-600" />
-          </div>
-          <h2 className="text-xl font-bold text-slate-900">Course Catalog</h2>
+          <Terminal className="w-6 h-6 text-blue-600" />
+          <h2 className="text-xl font-bold text-slate-900">Available Courses</h2>
         </div>
         
         {isLoading ? (
@@ -159,61 +217,65 @@ export default function Overview() {
             <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
           </div>
         ) : availableCourses.length === 0 ? (
-          <div className="text-center p-12 bg-white rounded-xl border border-slate-200 text-slate-500">
-            No courses available yet.
+          <div className="bg-white border rounded-2xl p-12 text-center shadow-sm">
+            <GraduationCap className="w-12 h-12 text-slate-300 mx-auto mb-4" />
+            <h3 className="text-lg font-bold text-slate-700 mb-2">No Courses Available</h3>
+            <p className="text-slate-500 max-w-sm mx-auto">There are currently no public courses available. Please check back later.</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {availableCourses.map((course, i) => {
+            {availableCourses.map((course: any, i: number) => {
               const status = getEnrollmentStatus(course.id);
-
+              
               return (
-                <motion.div 
-                  key={course.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: i * 0.1 }}
-                  className="bg-white border border-slate-200 rounded-xl p-6 flex flex-col justify-between shadow-sm hover:shadow-md hover:border-blue-200 transition-all"
-                >
-                  <div>
-                    <div className="flex items-center gap-3 mb-4">
-                      <div className="bg-blue-50 p-3 rounded-xl overflow-hidden shadow-sm border border-blue-100/50">
-                        {course.thumbnail_url ? (
-                          <img src={course.thumbnail_url} alt={course.title} className="w-8 h-8 object-cover rounded" />
-                        ) : (
-                          <GraduationCap className="w-6 h-6 text-blue-600" />
-                        )}
+                <div key={course.id} className="bg-white border border-slate-200 rounded-2xl overflow-hidden hover:border-blue-300 transition-colors shadow-sm flex flex-col">
+                  {course.image_url ? (
+                    <div className="w-full h-48 bg-slate-100 overflow-hidden relative">
+                      <img src={course.image_url} alt={course.title} className="w-full h-full object-cover" />
+                      <div className="absolute top-4 left-4 bg-slate-900/80 backdrop-blur-sm text-white px-3 py-1 text-xs font-bold rounded-full">
+                        {course.duration || "8 Weeks"}
                       </div>
-                      <h3 className="text-lg font-bold text-slate-900 line-clamp-1">{course.title}</h3>
-                    </div>
-                    <p className="text-sm text-slate-500 mb-6 leading-relaxed line-clamp-3">
-                      {course.description || `Master the concepts of ${course.title} with our comprehensive video lectures, assignments, and real-world projects.`}
-                    </p>
-                  </div>
-                  
-                  {status === 'active' || status === 'completed' ? (
-                    <div className="flex items-center justify-center gap-2 w-full py-3 bg-emerald-50 text-emerald-700 rounded-xl text-sm font-semibold">
-                      <CheckCircle className="w-4 h-4" /> {status === 'completed' ? 'Completed' : 'Enrolled'}
-                    </div>
-                  ) : status === 'pending' ? (
-                    <div className="flex items-center justify-center gap-2 w-full py-3 bg-amber-50 text-amber-700 rounded-xl text-sm font-semibold">
-                      <CheckCircle className="w-4 h-4" /> Request Pending
-                    </div>
-                  ) : status === 'cancelled' ? (
-                    <div className="flex items-center justify-center gap-2 w-full py-3 bg-red-50 text-red-700 rounded-xl text-sm font-semibold">
-                      <CheckCircle className="w-4 h-4" /> Enrollment Cancelled
                     </div>
                   ) : (
-                    <button 
-                      onClick={() => handleRequestEnrollment(course.id)}
-                      disabled={isRequesting === course.id}
-                      className="w-full py-3 bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 hover:text-blue-600 hover:border-blue-200 rounded-xl transition-all text-sm font-semibold disabled:opacity-50 flex items-center justify-center gap-2"
-                    >
-                      {isRequesting === course.id ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
-                      Request Enrollment
-                    </button>
+                    <div className="w-full h-48 bg-gradient-to-br from-slate-100 to-blue-50 flex flex-col items-center justify-center relative">
+                      <Terminal className="w-12 h-12 text-blue-200" />
+                      <div className="absolute top-4 left-4 bg-slate-900/80 backdrop-blur-sm text-white px-3 py-1 text-xs font-bold rounded-full">
+                        {course.duration || "8 Weeks"}
+                      </div>
+                    </div>
                   )}
-                </motion.div>
+                  
+                  <div className="p-6 flex-1 flex flex-col">
+                    <h3 className="font-bold text-lg text-slate-900 mb-2">{course.title}</h3>
+                    <p className="text-slate-500 text-sm mb-6 flex-1 line-clamp-2">
+                      {course.description || "Master the fundamentals and advanced concepts in this comprehensive course."}
+                    </p>
+                    
+                    <div className="mt-auto">
+                      {status === 'active' ? (
+                        <button disabled className="w-full py-2.5 rounded-xl text-sm font-bold bg-green-50 text-green-700 border border-green-200 flex items-center justify-center gap-2">
+                          <CheckCircle className="w-4 h-4" /> Enrolled
+                        </button>
+                      ) : status === 'pending' ? (
+                        <button disabled className="w-full py-2.5 rounded-xl text-sm font-bold bg-amber-50 text-amber-700 border border-amber-200 flex items-center justify-center gap-2">
+                          <Loader2 className="w-4 h-4 animate-spin" /> Request Pending
+                        </button>
+                      ) : (
+                        <button 
+                          onClick={() => handleRequestEnrollment(course.id)}
+                          disabled={isRequesting === course.id}
+                          className="w-full py-2.5 rounded-xl text-sm font-bold bg-blue-600 text-white hover:bg-blue-700 transition-colors flex items-center justify-center gap-2"
+                        >
+                          {isRequesting === course.id ? (
+                            <><Loader2 className="w-4 h-4 animate-spin" /> Requesting...</>
+                          ) : (
+                            "Request Access"
+                          )}
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                </div>
               );
             })}
           </div>

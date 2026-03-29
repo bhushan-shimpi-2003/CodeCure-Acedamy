@@ -21,7 +21,7 @@ export default function AdminDashboard() {
 
   const renderView = () => {
     switch (activeTab) {
-      case "overview": return <AdminOverview />;
+      case "overview": return <AdminOverview setActiveTab={setActiveTab} />;
       case "students": return <StudentManagement />;
       case "courses": return <AdminCourses />;
       case "lessons": return <TeacherLessons />;

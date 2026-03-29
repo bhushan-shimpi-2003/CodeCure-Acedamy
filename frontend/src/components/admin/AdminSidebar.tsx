@@ -28,7 +28,7 @@ export default function AdminSidebar({ activeTab, setActiveTab, isOpen, setIsOpe
       )}
       
       <motion.aside 
-        className={`fixed md:static top-0 left-0 h-full w-64 bg-transparent backdrop-blur-md border-r border-slate-200 z-50 flex flex-col transition-transform duration-300 ${isOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}`}
+        className={`fixed md:static top-0 left-0 h-full w-64 bg-white/95 backdrop-blur-2xl md:bg-slate-50/50 md:backdrop-blur-md border-r border-slate-200 z-50 flex flex-col transition-transform duration-300 ${isOpen ? "translate-x-0 shadow-2xl" : "-translate-x-full md:translate-x-0"}`}
       >
         <div className="p-6 flex items-center justify-between border-b border-slate-100">
           <Link to="/" className="flex items-center gap-2 group">
@@ -44,7 +44,7 @@ export default function AdminSidebar({ activeTab, setActiveTab, isOpen, setIsOpe
           </button>
         </div>
 
-        <nav className="flex-1 px-4 py-6 space-y-1 overflow-y-auto">
+        <nav className="flex-1 px-4 py-6 space-y-1 overflow-y-auto [&::-webkit-scrollbar]:hidden" style={{ scrollbarWidth: 'none' }}>
           {navItems.map((item) => {
             const Icon = item.icon;
             const isActive = activeTab === item.id;

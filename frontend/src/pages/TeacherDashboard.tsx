@@ -3,6 +3,7 @@ import { AnimatePresence, motion } from "motion/react";
 import TeacherSidebar from "../components/teacher/TeacherSidebar";
 import TeacherTopBar from "../components/teacher/TeacherTopBar";
 import TeacherOverview from "../components/teacher/views/TeacherOverview";
+import TeacherPublishLecture from "../components/teacher/views/TeacherPublishLecture";
 import TeacherClasses from "../components/teacher/views/TeacherClasses";
 import TeacherAssignments from "../components/teacher/views/TeacherAssignments";
 import TeacherStudents from "../components/teacher/views/TeacherStudents";
@@ -17,7 +18,8 @@ export default function TeacherDashboard() {
 
   const renderView = () => {
     switch (activeTab) {
-      case "overview": return <TeacherOverview />;
+      case "overview": return <TeacherOverview setActiveTab={setActiveTab} />;
+      case "publish": return <TeacherPublishLecture />;
       case "lessons": return <TeacherLessons />;
       case "courses": return <TeacherClasses />;
       case "students": return <TeacherStudents />;
