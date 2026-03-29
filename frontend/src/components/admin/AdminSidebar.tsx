@@ -1,5 +1,5 @@
 import { motion } from "motion/react";
-import { LayoutDashboard, Users, BookOpen, FileCode2, Video, UserCog, DollarSign, MessageSquare, Settings, X, LogOut, GraduationCap, User } from "lucide-react";
+import { LayoutDashboard, Users, BookOpen, FileCode2, Video, UserCog, DollarSign, MessageSquare, Settings, X, LogOut, GraduationCap, User, Briefcase } from "lucide-react";
 import { Link } from "react-router-dom";
 
 export default function AdminSidebar({ activeTab, setActiveTab, isOpen, setIsOpen }: any) {
@@ -10,6 +10,7 @@ export default function AdminSidebar({ activeTab, setActiveTab, isOpen, setIsOpe
     { id: "lessons", label: "Lectures", icon: Video },
     { id: "assignments", label: "Assignments", icon: FileCode2 },
     { id: "interviews", label: "Interviews", icon: Video },
+    { id: "jobs", label: "Job Openings", icon: Briefcase },
     { id: "doubts", label: "Doubts", icon: MessageSquare },
     { id: "staff", label: "Staff", icon: UserCog },
     { id: "finance", label: "Finance", icon: DollarSign },

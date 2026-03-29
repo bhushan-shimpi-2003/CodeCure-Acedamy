@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "motion/react";
-import { CheckCircle, Link as LinkIcon, Youtube, Type, FileText, LayoutDashboard, Loader2, BookOpen, Video } from "lucide-react";
+import { CheckCircle, Link as LinkIcon, Type, FileText, LayoutDashboard, Loader2, BookOpen, Video, Film } from "lucide-react";
 import Select from "../../ui/Select";
 import { useAuth } from "../../../context/AuthContext";
 
@@ -8,7 +8,7 @@ const API = "http://localhost:5000/api";
 
 export default function TeacherPublishLecture() {
   const { token } = useAuth();
-  const [youtubeLink, setYoutubeLink] = useState("");
+  const [videoUrl, setVideoUrl] = useState("");
   const [videoTitle, setVideoTitle] = useState("");
   const [videoNotes, setVideoNotes] = useState("");
   const [selectedCourseId, setSelectedCourseId] = useState("");
@@ -40,8 +40,8 @@ export default function TeacherPublishLecture() {
     }
   };
 
-  const handleShareYoutube = async () => {
-    if (!youtubeLink.trim() || !videoTitle.trim() || !selectedCourseId) return;
+  const handlePublishVideo = async () => {
+    if (!videoUrl.trim() || !videoTitle.trim() || !selectedCourseId) return;
     setIsSharing(true);
     setError("");
 
@@ -55,14 +55,14 @@ export default function TeacherPublishLecture() {
         body: JSON.stringify({
           course_id: selectedCourseId,
           title: videoTitle,
-          video_url: youtubeLink,
+          video_url: videoUrl,
           content: videoNotes
         }),
       });
       const data = await res.json();
       if (data.success) {
         setShareSuccess(true);
-        setYoutubeLink("");
+        setVideoUrl("");
         setVideoTitle("");
         setVideoNotes("");
         setTimeout(() => setShareSuccess(false), 3000);
@@ -100,7 +100,7 @@ export default function TeacherPublishLecture() {
         className="bg-white border border-slate-200 rounded-2xl p-6 md:p-8 shadow-sm"
       >
         <h2 className="text-lg font-bold text-slate-900 border-b border-slate-100 pb-4 mb-6 flex items-center gap-2">
-          <Youtube className="w-5 h-5 text-red-600" /> Upload Details
+          <Film className="w-5 h-5 text-blue-600" /> Upload Details
         </h2>
         
         {error && (
@@ -147,16 +147,16 @@ export default function TeacherPublishLecture() {
             />
           </div>
 
-          {/* YouTube Link Input */}
+          {/* Video Link Input */}
           <div>
             <label className="block text-sm font-semibold text-slate-700 mb-2 flex items-center gap-2">
-              <LinkIcon className="w-4 h-4 text-slate-400" /> YouTube URL <span className="text-red-500">*</span>
+              <LinkIcon className="w-4 h-4 text-slate-400" /> Video Link <span className="text-red-500">*</span>
             </label>
             <input
               type="text"
-              value={youtubeLink}
-              onChange={(e) => setYoutubeLink(e.target.value)}
-              placeholder="e.g., https://youtube.com/watch?v=..."
+              value={videoUrl}
+              onChange={(e) => setVideoUrl(e.target.value)}
+              placeholder="Source video link or <iframe> embed code..."
               className="w-full bg-white border-2 border-slate-200 hover:border-blue-300 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 px-4 py-3 rounded-xl text-sm font-medium text-slate-900 outline-none transition-all duration-200"
             />
           </div>
@@ -178,10 +178,10 @@ export default function TeacherPublishLecture() {
           <div className="pt-6 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-4">
             <p className="text-sm text-slate-500 pr-5">This content will be immediately visible to all enrolled students.</p>
             <button
-              onClick={handleShareYoutube}
-              disabled={isSharing || !youtubeLink.trim() || !videoTitle.trim() || !selectedCourseId}
+              onClick={handlePublishVideo}
+              disabled={isSharing || !videoUrl.trim() || !videoTitle.trim() || !selectedCourseId}
               className={`w-full sm:w-auto shrink-0 px-8 py-3 rounded-xl font-semibold transition-colors flex items-center justify-center gap-2 ${
-                isSharing || !youtubeLink.trim() || !videoTitle.trim() || !selectedCourseId
+                isSharing || !videoUrl.trim() || !videoTitle.trim() || !selectedCourseId
                   ? 'bg-slate-100 text-slate-400 cursor-not-allowed'
                   : 'bg-blue-600 text-white hover:bg-blue-700 shadow-sm'
               }`}

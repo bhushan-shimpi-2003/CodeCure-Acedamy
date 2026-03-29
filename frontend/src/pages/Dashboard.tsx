@@ -3,6 +3,7 @@ import { AnimatePresence, motion } from "motion/react";
 import Sidebar from "../components/dashboard/Sidebar";
 import TopBar from "../components/dashboard/TopBar";
 import Overview from "../components/dashboard/views/Overview";
+import AvailableCourses from "../components/dashboard/views/AvailableCourses";
 import Lectures from "../components/dashboard/views/Lectures";
 import Assignments from "../components/dashboard/views/Assignments";
 import Career from "../components/dashboard/views/Career";
@@ -16,6 +17,7 @@ export default function Dashboard() {
   const renderView = () => {
     switch (activeTab) {
       case "overview": return <Overview setActiveTab={setActiveTab} />;
+      case "courses": return <AvailableCourses />;
       case "lectures": return <Lectures />;
       case "assignments": return <Assignments />;
       case "career": return <Career />;

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "motion/react";
-import { FileCode2, Send, Calendar, FileText, GraduationCap, Loader2, BookOpen } from "lucide-react";
+import { FileCode2, Send, Calendar, FileText, GraduationCap, Loader2, BookOpen, ChevronDown, ChevronUp, Link as LinkIcon } from "lucide-react";
 import Select from "../../ui/Select";
 import { useAuth } from "../../../context/AuthContext";
 
@@ -17,6 +17,11 @@ export default function TeacherAssignments() {
   const [successMessage, setSuccessMessage] = useState("");
   const [error, setError] = useState("");
   const [isLoadingCourses, setIsLoadingCourses] = useState(true);
+
+  // For assignments view
+  const [assignments, setAssignments] = useState<any[]>([]);
+  const [submissions, setSubmissions] = useState<Record<string, any[]>>({});
+  const [expandedAssignment, setExpandedAssignment] = useState<string | null>(null);
 
   useEffect(() => {
     fetchCourses();
@@ -37,6 +42,83 @@ export default function TeacherAssignments() {
       console.error("Failed to fetch courses", err);
     } finally {
       setIsLoadingCourses(false);
+    }
+  };
+
+  useEffect(() => {
+    if (selectedCourseId) {
+      fetchAssignments(selectedCourseId);
+    } else {
+      setAssignments([]);
+    }
+  }, [selectedCourseId]);
+
+  const fetchAssignments = async (courseId: string) => {
+    try {
+      const res = await fetch(`${API}/assignments/course/${courseId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await res.json();
+      if (data.success) {
+        setAssignments(data.data);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleExpand = async (assignmentId: string) => {
+    if (expandedAssignment === assignmentId) {
+      setExpandedAssignment(null);
+      return;
+    }
+    setExpandedAssignment(assignmentId);
+    
+    if (!submissions[assignmentId]) {
+      try {
+        const res = await fetch(`${API}/assignments/${assignmentId}/submissions`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        const data = await res.json();
+        if (data.success) {
+          setSubmissions(prev => ({ ...prev, [assignmentId]: data.data }));
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    }
+  };
+
+  const handleGrade = async (submissionId: string) => {
+    const scoreStr = prompt("Enter grade (e.g., 8/10):");
+    if (!scoreStr) return;
+    const score = parseInt(scoreStr, 10);
+    if (isNaN(score)) return;
+    const feedback = prompt("Enter feedback (optional):") || "";
+    
+    try {
+      const res = await fetch(`${API}/assignments/submissions/${submissionId}/grade`, {
+        method: "PUT",
+        headers: { 
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}` 
+        },
+        body: JSON.stringify({ score, feedback })
+      });
+      const data = await res.json();
+      if (data.success) {
+         setSubmissions(prev => {
+           const updated = { ...prev };
+           for (const [aId, subs] of Object.entries(updated)) {
+             updated[aId] = (subs as any[]).map((s: any) => s.id === submissionId ? { ...s, status: 'graded', score, feedback } : s);
+           }
+           return updated;
+         });
+      } else {
+         alert("Failed to grade.");
+      }
+    } catch (err) {
+      alert("Error grading submission.");
     }
   };
 
@@ -67,6 +149,7 @@ export default function TeacherAssignments() {
         setDescription("");
         setDueDate("");
         setTimeout(() => setSuccessMessage(""), 5000);
+        fetchAssignments(selectedCourseId);
       } else {
         setError(data.error || "Failed to create assignment");
       }
@@ -192,6 +275,85 @@ export default function TeacherAssignments() {
           </button>
         </form>
       </motion.div>
+
+      {/* Assignment Submissions */}
+      {selectedCourseId && (
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+          className="bg-white border border-slate-200 rounded-2xl p-6 md:p-8 shadow-sm"
+        >
+          <h2 className="text-lg font-bold text-slate-800 mb-6 border-b border-slate-100 pb-3 flex items-center gap-2">
+            <BookOpen className="w-5 h-5 text-blue-600" /> Existing Assignments & Submissions
+          </h2>
+
+          {assignments.length === 0 ? (
+            <p className="text-sm text-slate-500 italic text-center py-6">No assignments found for this course.</p>
+          ) : (
+            <div className="space-y-4">
+              {assignments.map(a => (
+                <div key={a.id} className="border border-slate-200 rounded-xl overflow-hidden hover:border-blue-200 transition-colors">
+                  <div 
+                    onClick={() => handleExpand(a.id)}
+                    className="p-4 bg-slate-50 flex items-center justify-between cursor-pointer group"
+                  >
+                    <div>
+                      <h3 className="font-bold text-slate-900 group-hover:text-blue-600 transition-colors">{a.title}</h3>
+                      <p className="text-xs text-slate-500 mt-0.5">
+                        Due: {new Date(a.due_date).toLocaleString()}
+                      </p>
+                    </div>
+                    <div>
+                      {expandedAssignment === a.id ? <ChevronUp className="w-5 h-5 text-slate-400" /> : <ChevronDown className="w-5 h-5 text-slate-400" />}
+                    </div>
+                  </div>
+
+                  {expandedAssignment === a.id && (
+                    <div className="p-4 bg-white border-t border-slate-100">
+                      {!submissions[a.id] ? (
+                        <div className="flex justify-center p-4">
+                          <Loader2 className="w-5 h-5 animate-spin text-blue-600" />
+                        </div>
+                      ) : submissions[a.id].length === 0 ? (
+                        <p className="text-xs text-slate-500 italic text-center py-2">No student has submitted this assignment yet.</p>
+                      ) : (
+                        <div className="space-y-3">
+                          {submissions[a.id].map(sub => (
+                            <div key={sub.id} className="flex flex-col sm:flex-row sm:items-center justify-between p-3 bg-slate-50 border border-slate-200 rounded-lg">
+                              <div>
+                                <p className="text-sm font-semibold text-slate-800">{sub.profiles?.name || sub.profiles?.email || 'Unknown Student'}</p>
+                                <a href={sub.submission_url} target="_blank" rel="noreferrer" className="text-xs text-blue-600 hover:text-blue-700 mt-1 flex items-center gap-1 font-medium">
+                                  <LinkIcon className="w-3 h-3" /> View Work
+                                </a>
+                              </div>
+                              <div className="mt-3 sm:mt-0 flex flex-col sm:items-end gap-2">
+                                <span className={`px-2 py-0.5 text-[10px] font-bold uppercase rounded-md border ${
+                                  sub.status === 'graded' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-amber-50 text-amber-700 border-amber-200'
+                                }`}>
+                                  {sub.status} {sub.score && `· ${sub.score}/10`}
+                                </span>
+                                {sub.status !== 'graded' && (
+                                  <button
+                                    onClick={() => handleGrade(sub.id)}
+                                    className="px-3 py-1 bg-white border border-slate-300 hover:border-blue-500 hover:text-blue-600 text-xs font-semibold rounded-lg transition-colors"
+                                  >
+                                    Grade Now
+                                  </button>
+                                )}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
+        </motion.div>
+      )}
     </div>
   );
 }

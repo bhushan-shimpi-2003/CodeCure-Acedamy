@@ -147,13 +147,13 @@ export default function AdminOverview({ setActiveTab }: { setActiveTab?: (tab: s
   ];
 
   return (
-    <div className="space-y-8 max-w-7xl mx-auto pb-12">
+    <div className="space-y-6 sm:space-y-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20 pt-4 sm:pt-8 w-full overflow-x-hidden">
       {/* Header */}
-      <div className="border-b border-slate-200 pb-4">
-        <h1 className="text-2xl font-bold text-slate-900 mb-1 flex items-center gap-2">
-          <LayoutDashboard className="w-6 h-6 text-blue-600" /> Platform Overview
+      <div className="border-b border-slate-200 pb-4 sm:pb-6">
+        <h1 className="text-xl sm:text-2xl font-bold text-slate-900 mb-1 flex items-center gap-2">
+          <LayoutDashboard className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600" /> Platform Overview
         </h1>
-        <p className="text-slate-500 text-sm">Real-time platform metrics and activity feed.</p>
+        <p className="text-slate-500 text-xs sm:text-sm">Real-time platform metrics and activity feed.</p>
       </div>
 
       {/* KPI Cards Row */}
@@ -166,7 +166,7 @@ export default function AdminOverview({ setActiveTab }: { setActiveTab?: (tab: s
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.06 }}
-              className={`bg-white border ${card.border} rounded-xl p-3 sm:p-4 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden group`}
+              className={`bg-white/90 backdrop-blur-xl border ${card.border} rounded-2xl p-4 sm:p-5 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] hover:-translate-y-0.5 transition-all duration-300 relative overflow-hidden group`}
             >
               <div className={`absolute -top-4 -right-4 w-12 h-12 sm:w-16 sm:h-16 rounded-full ${card.bg} opacity-50 group-hover:opacity-80 transition-opacity`}></div>
               <div className="relative">
@@ -195,7 +195,7 @@ export default function AdminOverview({ setActiveTab }: { setActiveTab?: (tab: s
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
-          className={`bg-white border rounded-xl p-3 sm:p-5 shadow-sm flex flex-col ${stats.pendingRequests > 0 ? 'border-amber-300' : 'border-slate-200'}`}
+          className={`bg-white/90 backdrop-blur-xl border rounded-2xl p-4 sm:p-5 shadow-sm hover:shadow-md transition-all flex flex-col ${stats.pendingRequests > 0 ? 'border-amber-300' : 'border-slate-200'}`}
         >
           <div className="flex items-center justify-between mb-2 sm:mb-3">
             <span className="text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider truncate mr-1">Triage</span>
@@ -212,7 +212,7 @@ export default function AdminOverview({ setActiveTab }: { setActiveTab?: (tab: s
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5 }}
-          className="bg-white border border-slate-200 rounded-xl p-3 sm:p-5 shadow-sm flex flex-col"
+          className="bg-white/90 backdrop-blur-xl border border-slate-200 rounded-2xl p-4 sm:p-5 shadow-sm hover:shadow-md transition-all flex flex-col"
         >
           <div className="flex items-center justify-between mb-2 sm:mb-3">
             <span className="text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider truncate mr-1">Doubts</span>
@@ -234,7 +234,7 @@ export default function AdminOverview({ setActiveTab }: { setActiveTab?: (tab: s
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.6 }}
-          className="bg-white border border-slate-200 rounded-xl p-3 sm:p-5 shadow-sm flex flex-col"
+          className="bg-white/90 backdrop-blur-xl border border-slate-200 rounded-2xl p-4 sm:p-5 shadow-sm hover:shadow-md transition-all flex flex-col"
         >
           <div className="flex items-center justify-between mb-2 sm:mb-3">
             <span className="text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider truncate mr-1">Interviews</span>
@@ -256,7 +256,7 @@ export default function AdminOverview({ setActiveTab }: { setActiveTab?: (tab: s
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.7 }}
-          className={`bg-white border rounded-xl p-3 sm:p-5 shadow-sm flex flex-col ${stats.openComplaints > 0 ? 'border-red-300' : 'border-slate-200'}`}
+          className={`bg-white/90 backdrop-blur-xl border rounded-2xl p-4 sm:p-5 shadow-sm hover:shadow-md transition-all flex flex-col ${stats.openComplaints > 0 ? 'border-red-300' : 'border-slate-200'}`}
         >
           <div className="flex items-center justify-between mb-2 sm:mb-3">
             <span className="text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider truncate mr-1">Feedback</span>
@@ -297,7 +297,7 @@ export default function AdminOverview({ setActiveTab }: { setActiveTab?: (tab: s
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.2 + (idx * 0.1) }}
                 onClick={() => setActiveTab && setActiveTab(action.tab)}
-                className={`flex flex-col text-left p-4 sm:p-6 rounded-2xl border transition-all duration-200 group relative overflow-hidden bg-white hover:shadow-md ${action.color.replace('text-', 'border-').split(' ')[0]} border-slate-200`}
+                className={`flex flex-col text-left p-5 sm:p-6 rounded-2xl border transition-all duration-300 group relative overflow-hidden bg-white/90 backdrop-blur-xl hover:shadow-[0_8px_30px_rgb(0,0,0,0.06)] hover:-translate-y-1 ${action.color.replace('text-', 'border-').split(' ')[0]} border-slate-200`}
               >
                 <div className={`absolute -right-2 -bottom-2 opacity-5 transition-transform group-hover:scale-110 group-hover:opacity-10 ${action.color.split(' ')[0]}`}>
                   <Icon className="w-20 h-20 sm:w-24 sm:h-24" />
@@ -325,7 +325,7 @@ export default function AdminOverview({ setActiveTab }: { setActiveTab?: (tab: s
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.8 }}
-          className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden"
+          className="bg-white/95 backdrop-blur-xl border border-slate-200 rounded-2xl shadow-sm hover:shadow-md transition-shadow overflow-hidden"
         >
           <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
             <h2 className="text-sm font-bold text-slate-900 flex items-center gap-2">
@@ -363,7 +363,7 @@ export default function AdminOverview({ setActiveTab }: { setActiveTab?: (tab: s
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.9 }}
-          className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden"
+          className="bg-white/95 backdrop-blur-xl border border-slate-200 rounded-2xl shadow-sm hover:shadow-md transition-shadow overflow-hidden"
         >
           <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
             <h2 className="text-sm font-bold text-slate-900 flex items-center gap-2">

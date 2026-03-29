@@ -42,19 +42,19 @@ export default function AdminDoubts() {
   });
 
   return (
-    <div className="space-y-6 max-w-7xl mx-auto pb-12 ">
-      <div className="border-b border-slate-200 pb-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <div className="space-y-6 sm:space-y-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20 pt-4 sm:pt-8 w-full overflow-x-hidden">
+      <div className="border-b border-slate-200 pb-4 sm:pb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900 mb-1 flex items-center gap-2">
-            <LayoutDashboard className="w-6 h-6 text-blue-600" /> Doubt Resolution Log
+          <h1 className="text-xl sm:text-2xl font-bold text-slate-900 mb-1 flex items-center gap-2">
+            <LayoutDashboard className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600" /> Doubt Resolution Log
           </h1>
-          <p className="text-slate-500 text-sm">&gt; Monitor student doubts and teacher responses.</p>
+          <p className="text-slate-500 text-xs sm:text-sm">&gt; Monitor student doubts and teacher responses.</p>
         </div>
       </div>
 
-      <div className="bg-white border border-slate-200 rounded-xl p-6">
+      <div className="bg-white/90 backdrop-blur-xl border border-slate-200/60 rounded-2xl p-4 sm:p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
         <div className="flex flex-col md:flex-row gap-4 mb-6">
-          <div className="flex-1 flex items-center gap-2 bg-slate-50 border border-slate-200 px-4 py-2 focus-within:border-blue-600 transition-colors">
+          <div className="flex-1 flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 focus-within:border-blue-600 focus-within:ring-2 focus-within:ring-blue-600/20 transition-all shadow-sm">
             <Search className="w-4 h-4 text-slate-500" />
             <input
               type="text"

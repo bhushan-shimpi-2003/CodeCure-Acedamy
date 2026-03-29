@@ -1,5 +1,5 @@
 import { motion } from "motion/react";
-import { LayoutDashboard, Users, FileText, Video, MessageSquare, X, LogOut, GraduationCap, User } from "lucide-react";
+import { LayoutDashboard, Users, FileText, Video, MessageSquare, X, LogOut, GraduationCap, User, Briefcase } from "lucide-react";
 import { Link } from "react-router-dom";
 
 export default function TeacherSidebar({ activeTab, setActiveTab, isOpen, setIsOpen }: any) {
@@ -11,6 +11,7 @@ export default function TeacherSidebar({ activeTab, setActiveTab, isOpen, setIsO
     { id: "students", label: "Students", icon: Users },
     { id: "assignments", label: "Assignments", icon: FileText },
     { id: "interviews", label: "Mock Interviews", icon: Video },
+    { id: "jobs", label: "Job Openings", icon: Briefcase },
     { id: "doubts", label: "Doubt Support", icon: MessageSquare },
     { id: "profile", label: "Profile", icon: User },
   ];

@@ -88,11 +88,22 @@ export default function Overview({ setActiveTab }: { setActiveTab?: (tab: string
 
   const activeCoursesCount = enrollments.filter(e => e.student_status === 'active').length;
 
+  const [completedLessonsCount, setCompletedLessonsCount] = useState(0);
+
+  useEffect(() => {
+    if (user) {
+      const key = `completed_lessons_${user.id}`;
+      const stored = localStorage.getItem(key);
+      const completed = stored ? JSON.parse(stored) : [];
+      setCompletedLessonsCount(completed.length);
+    }
+  }, [user]);
+
   const kpis = [
     { label: "My Courses", value: activeCoursesCount, icon: BookOpen, color: "bg-blue-50 text-blue-600 border-blue-200" },
     { label: "Pending Requests", value: requests.filter(r => r.status === 'pending').length, icon: Calendar, color: "bg-amber-50 text-amber-600 border-amber-200" },
     { label: "Available Courses", value: availableCourses.length, icon: Terminal, color: "bg-indigo-50 text-indigo-600 border-indigo-200" },
-    { label: "Completed Lessons", value: 12, icon: CheckCircle, color: "bg-emerald-50 text-emerald-600 border-emerald-200" }, // Mock data
+    { label: "Completed Lessons", value: completedLessonsCount, icon: CheckCircle, color: "bg-emerald-50 text-emerald-600 border-emerald-200" }, 
   ];
 
   const quickActions = [
@@ -121,20 +132,7 @@ export default function Overview({ setActiveTab }: { setActiveTab?: (tab: string
               Ready to continue your journey?
             </p>
           </div>
-          <div className="bg-slate-50 border border-slate-100 p-5 rounded-xl min-w-[240px]">
-            <div className="flex justify-between items-end mb-3">
-              <span className="text-sm font-medium text-slate-500">Overall Progress</span>
-              <span className="text-2xl font-bold text-blue-600">42%</span>
-            </div>
-            <div className="w-full bg-slate-200 rounded-full h-2.5 overflow-hidden">
-              <motion.div 
-                initial={{ width: 0 }}
-                animate={{ width: "42%" }}
-                transition={{ duration: 1, delay: 0.5 }}
-                className="bg-blue-600 h-2.5 rounded-full"
-              ></motion.div>
-            </div>
-          </div>
+
         </div>
       </motion.div>
 
@@ -200,87 +198,6 @@ export default function Overview({ setActiveTab }: { setActiveTab?: (tab: string
         </div>
       </div>
 
-      {/* Course Catalog Section */}
-      <motion.div 
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.5 }}
-        className="space-y-6 pt-6 border-t border-slate-200"
-      >
-        <div className="flex items-center gap-2 mb-2">
-          <Terminal className="w-6 h-6 text-blue-600" />
-          <h2 className="text-xl font-bold text-slate-900">Available Courses</h2>
-        </div>
-        
-        {isLoading ? (
-          <div className="flex justify-center p-12">
-            <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
-          </div>
-        ) : availableCourses.length === 0 ? (
-          <div className="bg-white border rounded-2xl p-12 text-center shadow-sm">
-            <GraduationCap className="w-12 h-12 text-slate-300 mx-auto mb-4" />
-            <h3 className="text-lg font-bold text-slate-700 mb-2">No Courses Available</h3>
-            <p className="text-slate-500 max-w-sm mx-auto">There are currently no public courses available. Please check back later.</p>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {availableCourses.map((course: any, i: number) => {
-              const status = getEnrollmentStatus(course.id);
-              
-              return (
-                <div key={course.id} className="bg-white border border-slate-200 rounded-2xl overflow-hidden hover:border-blue-300 transition-colors shadow-sm flex flex-col">
-                  {course.image_url ? (
-                    <div className="w-full h-48 bg-slate-100 overflow-hidden relative">
-                      <img src={course.image_url} alt={course.title} className="w-full h-full object-cover" />
-                      <div className="absolute top-4 left-4 bg-slate-900/80 backdrop-blur-sm text-white px-3 py-1 text-xs font-bold rounded-full">
-                        {course.duration || "8 Weeks"}
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="w-full h-48 bg-gradient-to-br from-slate-100 to-blue-50 flex flex-col items-center justify-center relative">
-                      <Terminal className="w-12 h-12 text-blue-200" />
-                      <div className="absolute top-4 left-4 bg-slate-900/80 backdrop-blur-sm text-white px-3 py-1 text-xs font-bold rounded-full">
-                        {course.duration || "8 Weeks"}
-                      </div>
-                    </div>
-                  )}
-                  
-                  <div className="p-6 flex-1 flex flex-col">
-                    <h3 className="font-bold text-lg text-slate-900 mb-2">{course.title}</h3>
-                    <p className="text-slate-500 text-sm mb-6 flex-1 line-clamp-2">
-                      {course.description || "Master the fundamentals and advanced concepts in this comprehensive course."}
-                    </p>
-                    
-                    <div className="mt-auto">
-                      {status === 'active' ? (
-                        <button disabled className="w-full py-2.5 rounded-xl text-sm font-bold bg-green-50 text-green-700 border border-green-200 flex items-center justify-center gap-2">
-                          <CheckCircle className="w-4 h-4" /> Enrolled
-                        </button>
-                      ) : status === 'pending' ? (
-                        <button disabled className="w-full py-2.5 rounded-xl text-sm font-bold bg-amber-50 text-amber-700 border border-amber-200 flex items-center justify-center gap-2">
-                          <Loader2 className="w-4 h-4 animate-spin" /> Request Pending
-                        </button>
-                      ) : (
-                        <button 
-                          onClick={() => handleRequestEnrollment(course.id)}
-                          disabled={isRequesting === course.id}
-                          className="w-full py-2.5 rounded-xl text-sm font-bold bg-blue-600 text-white hover:bg-blue-700 transition-colors flex items-center justify-center gap-2"
-                        >
-                          {isRequesting === course.id ? (
-                            <><Loader2 className="w-4 h-4 animate-spin" /> Requesting...</>
-                          ) : (
-                            "Request Access"
-                          )}
-                        </button>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        )}
-      </motion.div>
     </div>
   );
 }

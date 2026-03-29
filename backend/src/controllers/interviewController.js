@@ -5,8 +5,10 @@ const InterviewModel = require('../models/MockInterview');
 // @access  Private (teacher, admin)
 exports.scheduleInterview = async (req, res, next) => {
   try {
+    const { course_id, title, meeting_link, ...interviewData } = req.body;
     const interview = await InterviewModel.scheduleInterview({
-      ...req.body,
+      ...interviewData,
+      meet_link: meeting_link,
       teacher_id: req.user.id,
     });
     res.status(201).json({ success: true, data: interview });

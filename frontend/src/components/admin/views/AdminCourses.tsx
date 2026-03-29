@@ -203,20 +203,20 @@ export default function AdminCourses() {
 
  if (selectedCourse) {
    return (
-     <div className="space-y-6 max-w-5xl mx-auto pb-12 ">
-       <div className="border-b border-slate-200 pb-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
+     <div className="space-y-6 sm:space-y-8 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pb-20 pt-4 sm:pt-8 w-full overflow-x-hidden">
+       <div className="border-b border-slate-200 pb-4 sm:pb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
          <div className="flex items-center gap-4">
            <button 
              onClick={() => setSelectedCourse(null)} 
-             className="text-blue-600 hover:text-slate-900 bg-slate-50 border border-slate-200 p-2 transition-colors"
+             className="text-blue-600 hover:text-slate-900 bg-slate-50 border border-slate-200 p-2 sm:p-2.5 rounded-xl transition-colors shrink-0"
            >
              <ArrowLeft className="w-5 h-5" />
            </button>
            <div>
-             <h1 className="text-2xl font-bold text-slate-900 mb-1 flex items-center gap-2">
-               <LayoutDashboard className="w-6 h-6 text-blue-600" /> {selectedCourse.id === "new" ? 'New Course' : 'Edit Course'}
+             <h1 className="text-xl sm:text-2xl font-bold text-slate-900 mb-1 flex items-center gap-2">
+               <LayoutDashboard className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600" /> {selectedCourse.id === "new" ? 'New Course' : 'Edit Course'}
              </h1>
-             <p className="text-slate-500 text-sm ">&gt; {selectedCourse.title || 'Untitled Course'} [{selectedCourse.id}]</p>
+             <p className="text-slate-500 text-xs sm:text-sm ">&gt; {selectedCourse.title || 'Untitled Course'} [{selectedCourse.id}]</p>
            </div>
          </div>
          <div className="flex gap-3">
@@ -250,7 +250,7 @@ export default function AdminCourses() {
          <motion.div 
            initial={{ opacity: 0, y: 10 }}
            animate={{ opacity: 1, y: 0 }}
-           className="space-y-6 bg-white border border-slate-200 p-6 shadow-sm"
+           className="space-y-6 bg-white/90 backdrop-blur-xl border border-slate-200/60 p-4 sm:p-6 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)]"
          >
            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
              <div className="space-y-2 md:col-span-2">
@@ -279,26 +279,28 @@ export default function AdminCourses() {
 
              <div className="space-y-2">
                <label className="text-xs text-blue-600 font-bold ">Status</label>
-               <Select 
+               <select 
                  value={selectedCourse.status} 
-                 onChange={(e) => handleUpdateField('status', e.target.value)} 
+                 onChange={(e) => handleUpdateField('status', e.target.value as any)} 
+                 className="w-full bg-slate-50 border border-slate-200 px-4 py-3 text-slate-900 focus:border-blue-600 outline-none transition-colors"
                >
                  <option value="active">Active (Published)</option>
                  <option value="draft">Draft (Hidden)</option>
-               </Select>
+               </select>
              </div>
 
              <div className="space-y-2">
                <label className="text-xs text-blue-600 font-bold ">Assign Teacher</label>
-               <Select 
+               <select 
                  value={selectedCourse.instructor_id || ""} 
                  onChange={(e) => handleUpdateField('instructor_id', e.target.value)} 
+                 className="w-full bg-slate-50 border border-slate-200 px-4 py-3 text-slate-900 focus:border-blue-600 outline-none transition-colors"
                >
                  <option value="">-- Select Instructor --</option>
                  {teachers.map(t => (
                    <option key={t.id} value={t.id}>{t.name || t.email}</option>
                  ))}
-               </Select>
+               </select>
              </div>
 
              <div className="space-y-2 md:col-span-2">
@@ -321,7 +323,7 @@ export default function AdminCourses() {
            animate={{ opacity: 1, y: 0 }}
            className="space-y-6"
          >
-           <div className="flex justify-between items-center bg-white border border-slate-200 p-4">
+           <div className="flex justify-between items-center bg-white/90 backdrop-blur-xl border border-slate-200/60 p-4 rounded-2xl">
              <div>
                <h3 className="text-lg font-bold text-slate-900 flex items-center gap-2">
                  <Layers className="w-5 h-5 text-blue-600" /> Course Modules
@@ -338,7 +340,7 @@ export default function AdminCourses() {
 
            <div className="space-y-4">
              {selectedCourse.modules.length === 0 ? (
-               <div className="bg-white border border-slate-200 border-dashed p-12 text-center">
+               <div className="bg-white/90 backdrop-blur-xl border border-slate-200/60 p-12 text-center rounded-2xl">
                  <BookOpen className="w-12 h-12 text-slate-300 mx-auto mb-4" />
                  <p className="text-slate-500 font-bold mb-2">No Modules Yet</p>
                  <p className="text-slate-400 text-xs ">Click 'Add Module' to start building the curriculum.</p>
@@ -349,7 +351,7 @@ export default function AdminCourses() {
                    initial={{ opacity: 0, x: -20 }}
                    animate={{ opacity: 1, x: 0 }}
                    key={mod.id} 
-                   className="bg-white border border-slate-200 p-4 flex flex-col md:flex-row md:items-center gap-4 group hover:border-blue-600/60 transition-colors"
+                   className="bg-white/90 backdrop-blur-xl border border-slate-200/60 p-4 flex flex-col md:flex-row md:items-center gap-4 group hover:border-blue-600/60 transition-colors rounded-2xl"
                  >
                    <div className="flex items-center justify-center w-8 h-8 bg-blue-50 border border-slate-200 text-blue-600 font-bold text-sm shrink-0">
                      {idx + 1}
@@ -393,17 +395,17 @@ export default function AdminCourses() {
  }
 
  return (
-   <div className="space-y-6 max-w-7xl mx-auto pb-12 ">
+   <div className="space-y-6 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12 ">
      <div className="border-b border-slate-200 pb-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
        <div>
-         <h1 className="text-2xl font-bold text-slate-900 mb-1 flex items-center gap-2">
-           <LayoutDashboard className="w-6 h-6 text-blue-600" /> Course Management
+         <h1 className="text-xl sm:text-2xl font-bold text-slate-900 mb-1 flex items-center gap-2">
+           <LayoutDashboard className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600" /> Course Management
          </h1>
-         <p className="text-slate-500 text-sm ">&gt; Create courses, update modules, manage curriculum.</p>
+         <p className="text-slate-500 text-xs sm:text-sm ">&gt; Create courses, update modules, manage curriculum.</p>
        </div>
        <button 
          onClick={handleCreateCourse}
-         className="bg-blue-600 border border-blue-600 text-white px-4 py-2 rounded-xl text-xs font-bold hover:bg-blue-700 transition-colors shadow-sm flex items-center gap-2"
+         className="bg-blue-600 border border-blue-600 text-white px-4 py-2 sm:py-2.5 rounded-xl text-xs sm:text-sm font-bold hover:bg-blue-700 transition-colors shadow-[0_8px_30px_rgb(37,99,235,0.2)] flex items-center justify-center gap-2 w-full md:w-auto"
        >
          <Plus className="w-4 h-4" /> Create Course
        </button>
@@ -419,7 +421,7 @@ export default function AdminCourses() {
              initial={{ opacity: 0, y: 20 }}
              animate={{ opacity: 1, y: 0 }}
              transition={{ delay: i * 0.1 }}
-             className="bg-white border border-slate-200 rounded-xl p-6 relative group hover:border-blue-400 transition-colors flex flex-col"
+             className="bg-white/90 backdrop-blur-xl border border-slate-200/60 rounded-2xl p-5 relative group hover:border-blue-400 hover:shadow-[0_8px_30px_rgb(0,0,0,0.06)] hover:-translate-y-0.5 transition-all duration-300 flex flex-col"
            >
              <div className="absolute top-0 left-0 w-1 h-full bg-blue-100 group-hover:bg-blue-600 transition-colors"></div>
              <div className="flex justify-between items-start mb-4 pl-2">
@@ -454,13 +456,13 @@ export default function AdminCourses() {
              <div className="flex items-center gap-2 pl-2 border-t border-slate-100 pt-4 mt-auto">
                <button 
                  onClick={() => handleEditCourse(course)}
-                 className="flex-1 bg-transparent border border-blue-600 text-blue-600 hover:bg-slate-100 px-3 py-1.5 text-xs font-bold transition-colors flex items-center justify-center gap-2"
+                 className="flex-1 bg-transparent border border-blue-600 text-blue-600 hover:bg-blue-50 hover:shadow-sm px-3 py-2 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-2"
                >
                  <Edit className="w-3.5 h-3.5" /> Edit
                </button>
                <button 
                  onClick={() => handleDeleteCourse(course.id)}
-                 className="bg-transparent border border-red-200 text-red-600 hover:bg-red-50 px-3 py-1.5 text-xs font-bold transition-colors flex items-center justify-center"
+                 className="bg-transparent border border-red-200 text-red-600 hover:bg-red-50 hover:shadow-sm px-3 py-2 rounded-lg text-xs font-bold transition-all flex items-center justify-center"
                  title="Delete Course"
                >
                  <Trash2 className="w-3.5 h-3.5" />

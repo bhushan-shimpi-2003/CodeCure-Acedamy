@@ -66,6 +66,18 @@ exports.getMySubmissions = async (req, res, next) => {
   }
 };
 
+// @desc    Get submissions by assignment ID (teacher)
+// @route   GET /api/assignments/:id/submissions
+// @access  Private (teacher, admin)
+exports.getSubmissionsByAssignment = async (req, res, next) => {
+  try {
+    const submissions = await AssignmentModel.getSubmissionsByAssignment(req.params.id);
+    res.status(200).json({ success: true, data: submissions });
+  } catch (err) {
+    next(err);
+  }
+};
+
 // @desc    Grade a submission (teacher)
 // @route   PUT /api/assignments/submissions/:id/grade
 // @access  Private (teacher, admin)

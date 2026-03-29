@@ -35,13 +35,13 @@ export default function AdminFinance() {
   const totalDebit = transactions.filter(t => t.type === 'debit').reduce((sum, t) => sum + (Number(t.amount) || 0), 0);
 
   return (
-    <div className="space-y-6 max-w-7xl mx-auto pb-12 ">
-      <div className="border-b border-slate-200 pb-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <div className="space-y-6 sm:space-y-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20 pt-4 sm:pt-8 w-full overflow-x-hidden">
+      <div className="border-b border-slate-200 pb-4 sm:pb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900 mb-1 flex items-center gap-2">
-            <LayoutDashboard className="w-6 h-6 text-blue-600" /> Finance Log
+          <h1 className="text-xl sm:text-2xl font-bold text-slate-900 mb-1 flex items-center gap-2">
+            <LayoutDashboard className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600" /> Finance Log
           </h1>
-          <p className="text-slate-500 text-sm">&gt; Fee collection, pending dues, salary payout.</p>
+          <p className="text-slate-500 text-xs sm:text-sm">&gt; Fee collection, pending dues, salary payout.</p>
         </div>
       </div>
 
@@ -49,7 +49,7 @@ export default function AdminFinance() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-white border border-slate-200 rounded-xl p-6 relative overflow-hidden"
+          className="bg-white/90 backdrop-blur-xl border border-slate-200/60 rounded-2xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-md hover:-translate-y-1 transition-all relative overflow-hidden group"
         >
           <div className="absolute top-0 left-0 w-full h-1 bg-blue-600"></div>
           <div className="flex justify-between items-start mb-2">
@@ -63,7 +63,7 @@ export default function AdminFinance() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="bg-white border border-red-200 rounded-xl p-6 relative overflow-hidden"
+          className="bg-white/90 backdrop-blur-xl border border-red-200/60 rounded-2xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-md hover:-translate-y-1 transition-all relative overflow-hidden group"
         >
           <div className="absolute top-0 left-0 w-full h-1 bg-red-500"></div>
           <div className="flex justify-between items-start mb-2">
@@ -77,7 +77,7 @@ export default function AdminFinance() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="bg-white border border-slate-200 rounded-xl p-6 relative overflow-hidden"
+          className="bg-white/90 backdrop-blur-xl border border-slate-200/60 rounded-2xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-md hover:-translate-y-1 transition-all relative overflow-hidden group"
         >
           <div className="absolute top-0 left-0 w-full h-1 bg-green-600"></div>
           <div className="flex justify-between items-start mb-2">
@@ -92,7 +92,7 @@ export default function AdminFinance() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.3 }}
-        className="bg-white border border-slate-200 rounded-xl p-6"
+        className="bg-white/90 backdrop-blur-xl border border-slate-200/60 rounded-2xl p-4 sm:p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)]"
       >
         <h2 className="text-sm font-bold text-blue-600 mb-6 border-b border-slate-100 pb-2">Recent Transactions</h2>
         {isLoading ? (

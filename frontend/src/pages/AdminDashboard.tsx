@@ -14,6 +14,7 @@ import AdminFeedback from "../components/admin/views/AdminFeedback";
 import AdminSettings from "../components/admin/views/AdminSettings";
 import AdminProfile from "../components/admin/views/AdminProfile";
 import TeacherLessons from "../components/teacher/views/TeacherLessons";
+import JobsManagement from "../components/shared/JobsManagement";
 
 export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState("overview");
@@ -27,6 +28,7 @@ export default function AdminDashboard() {
       case "lessons": return <TeacherLessons />;
       case "assignments": return <AdminAssignments />;
       case "interviews": return <AdminInterviews />;
+      case "jobs": return <JobsManagement role="Admin" />;
       case "doubts": return <AdminDoubts />;
       case "staff": return <StaffManagement />;
       case "finance": return <AdminFinance />;

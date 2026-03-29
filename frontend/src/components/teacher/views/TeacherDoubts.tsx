@@ -104,29 +104,29 @@ export default function TeacherDoubts() {
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: i * 0.1 }}
-                className={`p-5 border rounded-xl ${doubt.status === 'open' ? 'bg-amber-50/50 border-amber-200' : 'bg-slate-50 border-slate-200'}`}
+                className={`p-5 border rounded-xl ${doubt.status === 'pending' ? 'bg-amber-50/50 border-amber-200' : 'bg-slate-50 border-slate-200'}`}
               >
                 <div className="flex justify-between items-start mb-3">
                   <div className="flex items-center gap-3">
-                    <span className="text-sm font-bold text-slate-900">{doubt.student_name || 'Student'}</span>
+                    <span className="text-sm font-bold text-slate-900">{doubt.profiles?.name || 'Student'}</span>
                     <span className="text-xs text-slate-500 flex items-center gap-1 font-medium">
                       <Clock className="w-3.5 h-3.5" /> {formatTime(doubt.created_at)}
                     </span>
                   </div>
                   <span className={`px-2.5 py-1 text-[10px] font-bold uppercase rounded-lg border ${
-                    doubt.status === 'open' 
+                    doubt.status === 'pending' 
                       ? 'bg-amber-100 text-amber-700 border-amber-200' 
                       : 'bg-green-100 text-green-700 border-green-200'
                   }`}>
-                    {doubt.status === 'open' ? 'unresolved' : 'resolved'}
+                    {doubt.status === 'pending' ? 'unresolved' : 'resolved'}
                   </span>
                 </div>
-                <p className="text-slate-700 mb-2 font-semibold">"{doubt.title || doubt.question}"</p>
+                <p className="text-slate-700 mb-2 font-semibold">"{doubt.subject}"</p>
                 {doubt.description && (
                   <p className="text-slate-500 text-sm mb-4">{doubt.description}</p>
                 )}
                 
-                {doubt.status === 'open' ? (
+                {doubt.status === 'pending' ? (
                   <div className="flex gap-3 mt-4">
                     <input 
                       type="text" 

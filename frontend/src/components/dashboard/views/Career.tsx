@@ -6,27 +6,32 @@ import { useAuth } from "../../../context/AuthContext";
 export default function Career() {
   const { token } = useAuth();
   const [interviews, setInterviews] = useState<any[]>([]);
+  const [jobs, setJobs] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const fetchInterviews = async () => {
+    const fetchData = async () => {
       setIsLoading(true);
       try {
         if (!token) return;
-        const res = await fetch("http://localhost:5000/api/interviews/me", {
-          headers: { "Authorization": `Bearer ${token}` }
-        });
-        const data = await res.json();
-        if (data.success) {
-          setInterviews(data.data);
-        }
+        
+        const [resInt, resJobs] = await Promise.all([
+          fetch("http://localhost:5000/api/interviews/me", { headers: { "Authorization": `Bearer ${token}` } }),
+          fetch("http://localhost:5000/api/jobs", { headers: { "Authorization": `Bearer ${token}` } })
+        ]);
+        
+        const dataInt = await resInt.json();
+        const dataJobs = await resJobs.json();
+        
+        if (dataInt.success) setInterviews(dataInt.data);
+        if (dataJobs.success) setJobs(dataJobs.data);
       } catch (err) {
-        console.error("Failed to fetch interviews", err);
+        console.error("Failed to fetch career data", err);
       } finally {
         setIsLoading(false);
       }
     };
-    fetchInterviews();
+    fetchData();
   }, [token]);
 
   const upcomingInterviews = interviews.filter(i => i.status === 'scheduled');
@@ -79,11 +84,10 @@ export default function Career() {
                       </p>
                     </div>
                     
-                    {interview.meeting_link && (
-                      <div>
-                        <p className="text-xs text-slate-500 font-semibold uppercase tracking-wider mb-1">Meeting Link</p>
-                        <a href={interview.meeting_link} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 text-sm text-blue-600 hover:text-blue-700 transition-colors bg-white px-4 py-2 rounded-lg border border-blue-100 font-medium shadow-sm break-all">
-                          <LinkIcon className="w-4 h-4 flex-shrink-0" /> {interview.meeting_link}
+                    {(interview.meeting_link || interview.meet_link) && (
+                      <div className="pt-2">
+                        <a href={interview.meeting_link || interview.meet_link} target="_blank" rel="noreferrer" className="inline-flex items-center justify-center gap-2 text-sm font-bold text-white hover:bg-blue-700 transition-colors bg-blue-600 px-5 py-2.5 rounded-xl shadow-sm w-full sm:w-auto">
+                          <Video className="w-4 h-4 flex-shrink-0" /> Join Meeting
                         </a>
                       </div>
                     )}
@@ -137,20 +141,27 @@ export default function Career() {
             className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm"
           >
             <h2 className="text-lg font-bold text-slate-900 flex items-center gap-2 mb-6 border-b border-slate-100 pb-4">
-              <Briefcase className="w-5 h-5 text-blue-600" /> Job Openings (Static Preview)
+              <Briefcase className="w-5 h-5 text-blue-600" /> Active Job Openings
             </h2>
-            <div className="space-y-4">
-              <div className="p-4 bg-slate-50 border border-slate-200 rounded-xl hover:border-blue-200 transition-colors">
-                <h4 className="font-bold text-slate-900 text-sm">SDET - Playwright</h4>
-                <p className="text-xs font-medium text-slate-500 mt-1">TechCorp Inc. • Remote</p>
-                <div className="mt-4 flex justify-between items-center">
-                  <span className="text-sm font-bold text-blue-600">12 LPA</span>
-                  <button className="text-xs font-semibold bg-white text-blue-600 border border-blue-200 px-4 py-1.5 rounded-lg hover:bg-blue-50 transition-colors shadow-sm">Apply</button>
+            <div className="space-y-4 max-h-[500px] overflow-y-auto pr-2">
+              {jobs.length > 0 ? (
+                jobs.map((job) => (
+                  <div key={job.id} className="p-4 bg-slate-50 border border-slate-200 rounded-xl hover:border-blue-200 transition-colors">
+                    <h4 className="font-bold text-slate-900 text-sm">{job.title}</h4>
+                    <p className="text-xs font-medium text-slate-500 mt-1">{job.company} • {job.location || 'Remote'}</p>
+                    <div className="mt-4 flex justify-between items-center">
+                      <span className="text-sm font-bold text-blue-600">{job.salary || 'Not specified'}</span>
+                      {job.apply_url && (
+                        <a href={job.apply_url} target="_blank" rel="noreferrer" className="text-xs font-semibold bg-white text-blue-600 border border-blue-200 px-4 py-1.5 rounded-lg hover:bg-blue-50 transition-colors shadow-sm inline-block">Apply</a>
+                      )}
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <div className="text-center p-6 text-slate-400 text-xs italic">
+                  No active job openings at the moment.
                 </div>
-              </div>
-              <button className="w-full text-sm font-semibold text-blue-600 hover:text-blue-700 flex items-center justify-center gap-1.5 mt-4 transition-colors">
-                View All Openings <ExternalLink className="w-4 h-4" />
-              </button>
+              )}
             </div>
           </motion.div>
         </div>

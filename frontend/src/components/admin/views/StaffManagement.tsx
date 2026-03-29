@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { motion } from "motion/react";
 import { UserCog, Plus, Loader2, Shield, X, Mail, Lock, User } from "lucide-react";
 import Select from "../../ui/Select";
@@ -92,17 +93,17 @@ export default function StaffManagement() {
   };
 
   return (
-    <div className="space-y-6 max-w-7xl mx-auto pb-12">
-      <div className="border-b border-slate-200 pb-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <div className="space-y-6 sm:space-y-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20 pt-4 sm:pt-8 w-full overflow-x-hidden">
+      <div className="border-b border-slate-200 pb-4 sm:pb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900 mb-1 flex items-center gap-2">
-            <UserCog className="w-6 h-6 text-blue-600" /> Staff Management
+          <h1 className="text-xl sm:text-2xl font-bold text-slate-900 mb-1 flex items-center gap-2">
+            <UserCog className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600" /> Staff Management
           </h1>
-          <p className="text-slate-500 text-sm">&gt; Manage instructors, admins, and roles.</p>
+          <p className="text-slate-500 text-xs sm:text-sm">&gt; Manage instructors, admins, and roles.</p>
         </div>
         <button
           onClick={() => { setShowModal(true); setFormError(""); setFormSuccess(""); }}
-          className="bg-blue-600 border border-blue-600 text-white px-4 py-2 rounded-xl text-xs font-bold hover:bg-blue-700 transition-colors shadow-sm flex items-center gap-2"
+          className="bg-blue-600 border border-blue-600 text-white px-4 py-2 sm:py-2.5 rounded-xl text-sm font-bold hover:bg-blue-700 transition-colors shadow-[0_8px_30px_rgb(37,99,235,0.2)] flex items-center justify-center gap-2 w-full md:w-auto"
         >
           <Plus className="w-4 h-4" /> Create Staff Account
         </button>
@@ -111,7 +112,7 @@ export default function StaffManagement() {
       {isLoading ? (
         <div className="flex justify-center p-12"><Loader2 className="w-8 h-8 animate-spin text-blue-600" /></div>
       ) : staff.length === 0 ? (
-        <div className="text-center p-12 bg-white rounded-xl border border-slate-200 text-slate-500">
+        <div className="text-center p-12 bg-white/50 backdrop-blur-xl rounded-2xl border border-slate-200/60 text-slate-500 shadow-sm">
           No staff members found. Click "Create Staff Account" to add teachers or admins.
         </div>
       ) : (
@@ -122,7 +123,7 @@ export default function StaffManagement() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.1 }}
-              className="bg-white border border-slate-200 rounded-xl p-6 relative group hover:border-blue-400 transition-colors flex flex-col"
+              className="bg-white/90 backdrop-blur-xl border border-slate-200/60 rounded-2xl p-6 relative group hover:border-blue-400 hover:shadow-[0_8px_30px_rgb(0,0,0,0.06)] hover:-translate-y-0.5 transition-all duration-300 flex flex-col"
             >
               <div className={`absolute top-0 left-0 w-1 h-full transition-colors ${member.role === "admin" ? "bg-purple-100 group-hover:bg-purple-600" : "bg-blue-100 group-hover:bg-blue-600"}`}></div>
               <div className="flex justify-between items-start mb-4 pl-2">
@@ -142,7 +143,7 @@ export default function StaffManagement() {
               <div className="flex items-center gap-2 pl-2 border-t border-slate-100 pt-4 mt-auto">
                 <button
                   onClick={() => handleChangeRole(member.id, member.role)}
-                  className="flex-1 bg-transparent border border-blue-600 text-blue-600 hover:bg-blue-50 px-3 py-1.5 text-xs font-bold transition-colors flex items-center justify-center gap-2"
+                  className="flex-1 bg-transparent border border-blue-600 text-blue-600 hover:bg-blue-50 hover:shadow-sm px-3 py-2 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-2"
                 >
                   <Shield className="w-3.5 h-3.5" /> Change Role
                 </button>
@@ -153,8 +154,8 @@ export default function StaffManagement() {
       )}
 
       {/* Create Staff Modal */}
-      {showModal && (
-        <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+      {showModal && createPortal(
+        <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
           <motion.div
             initial={{ opacity: 0, scale: 0.95, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -229,7 +230,8 @@ export default function StaffManagement() {
               </button>
             </form>
           </motion.div>
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );

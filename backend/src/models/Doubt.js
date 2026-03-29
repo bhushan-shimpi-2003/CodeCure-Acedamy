@@ -28,7 +28,7 @@ exports.getDoubtsByTeacher = async (teacherId) => {
   const { data, error } = await supabase
     .from('doubts')
     .select('*, profiles!student_id(id, name, email), courses(id, title)')
-    .eq('teacher_id', teacherId)
+    .or(`teacher_id.eq.${teacherId},status.eq.pending`)
     .order('created_at', { ascending: false });
   if (error) throw error;
   return data;

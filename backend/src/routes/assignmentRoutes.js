@@ -1,7 +1,7 @@
 const express = require('express');
 const {
   createAssignment, getAssignmentsByCourse, getAllAssignments,
-  submitAssignment, getMySubmissions, gradeSubmission,
+  submitAssignment, getMySubmissions, gradeSubmission, getSubmissionsByAssignment
 } = require('../controllers/assignmentController');
 const { protect, authorize } = require('../middlewares/authMiddleware');
 
@@ -9,6 +9,7 @@ const router = express.Router();
 
 // Teacher
 router.post('/', protect, authorize('teacher', 'admin'), createAssignment);
+router.get('/:id/submissions', protect, authorize('teacher', 'admin'), getSubmissionsByAssignment);
 
 // Student
 router.post('/:id/submit', protect, authorize('student'), submitAssignment);

@@ -44,7 +44,7 @@ export default function StudentDoubts() {
           "Authorization": `Bearer ${token}`,
           "Content-Type": "application/json"
         },
-        body: JSON.stringify({ text: doubtText })
+        body: JSON.stringify({ subject: doubtText })
       });
       const data = await res.json();
       
@@ -161,7 +161,7 @@ export default function StudentDoubts() {
                         {doubt.status ? doubt.status.charAt(0).toUpperCase() + doubt.status.slice(1) : "Pending"}
                       </span>
                     </div>
-                    <p className="text-sm text-slate-900 font-medium mb-4">{doubt.text}</p>
+                    <p className="text-sm text-slate-900 font-medium mb-4">{doubt.subject}</p>
                     
                     {doubt.reply && (
                       <div className="mt-4 pt-4 border-t border-slate-200 bg-white rounded-lg p-4 border shadow-sm">

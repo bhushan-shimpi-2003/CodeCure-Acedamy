@@ -71,3 +71,15 @@ exports.createJobOpening = async (req, res, next) => {
     next(err);
   }
 };
+
+// @desc    Delete a job opening
+// @route   DELETE /api/jobs/:id
+// @access  Private (admin/teacher)
+exports.deleteJobOpening = async (req, res, next) => {
+  try {
+    await JobModel.deleteJobOpening(req.params.id);
+    res.status(200).json({ success: true, data: {} });
+  } catch (err) {
+    next(err);
+  }
+};

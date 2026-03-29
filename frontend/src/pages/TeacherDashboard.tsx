@@ -11,6 +11,7 @@ import TeacherInterviews from "../components/teacher/views/TeacherInterviews";
 import TeacherDoubts from "../components/teacher/views/TeacherDoubts";
 import TeacherProfile from "../components/teacher/views/TeacherProfile";
 import TeacherLessons from "../components/teacher/views/TeacherLessons";
+import JobsManagement from "../components/shared/JobsManagement";
 
 export default function TeacherDashboard() {
   const [activeTab, setActiveTab] = useState("overview");
@@ -25,6 +26,7 @@ export default function TeacherDashboard() {
       case "students": return <TeacherStudents />;
       case "assignments": return <TeacherAssignments />;
       case "interviews": return <TeacherInterviews />;
+      case "jobs": return <JobsManagement role="Teacher" />;
       case "doubts": return <TeacherDoubts />;
       case "profile": return <TeacherProfile />;
       default: return <TeacherOverview />;

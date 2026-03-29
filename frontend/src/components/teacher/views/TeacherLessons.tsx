@@ -174,7 +174,7 @@ export default function TeacherLessons() {
                       value={editUrl}
                       onChange={(e) => setEditUrl(e.target.value)}
                       className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:border-blue-500 outline-none" 
-                      placeholder="YouTube URL"
+                      placeholder="Video Link or <iframe> code"
                     />
                     <textarea 
                       value={editContent}

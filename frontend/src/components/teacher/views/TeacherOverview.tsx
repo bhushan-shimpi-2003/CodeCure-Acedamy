@@ -180,17 +180,17 @@ export default function TeacherOverview({ setActiveTab }: { setActiveTab?: (tab:
             <div className="absolute top-0 right-0 w-32 h-32 bg-white opacity-5 rounded-full -translate-y-1/2 translate-x-1/2 blur-2xl"></div>
             <h3 className="text-lg font-bold mb-4 flex items-center gap-2"><BookOpen className="w-5 h-5 text-blue-300" /> Workflow Tips</h3>
             <ul className="space-y-4 text-sm font-medium text-slate-200">
-              <li className="flex gap-3">
-                <span className="bg-blue-500/30 w-6 h-6 rounded-full flex items-center justify-center shrink-0 border border-blue-400/30 text-xs">1</span>
-                Record a new video explanation and upload it to YouTube (Unlisted).
+              <li className="flex gap-3 items-start">
+                <span className="bg-blue-500/30 w-6 h-6 rounded-full flex items-center justify-center shrink-0 border border-blue-400/30 text-xs mt-0.5">1</span>
+                <span>Record a new video explanation and upload it to YouTube (Unlisted).</span>
               </li>
-              <li className="flex gap-3">
-                <span className="bg-blue-500/30 w-6 h-6 rounded-full flex items-center justify-center shrink-0 border border-blue-400/30 text-xs">2</span>
-                Use the <strong>Publish Lecture</strong> tool to distribute it to students enrolled in your active courses.
+              <li className="flex gap-3 items-start">
+                <span className="bg-blue-500/30 w-6 h-6 rounded-full flex items-center justify-center shrink-0 border border-blue-400/30 text-xs mt-0.5">2</span>
+                <span>Use the <strong>Publish Lecture</strong> tool to distribute it to students enrolled in your active courses.</span>
               </li>
-              <li className="flex gap-3">
-                <span className="bg-blue-500/30 w-6 h-6 rounded-full flex items-center justify-center shrink-0 border border-blue-400/30 text-xs">3</span>
-                Check back for student doubts under the <strong>Doubt Support</strong> tab to ensure high engagement.
+              <li className="flex gap-3 items-start">
+                <span className="bg-blue-500/30 w-6 h-6 rounded-full flex items-center justify-center shrink-0 border border-blue-400/30 text-xs mt-0.5">3</span>
+                <span>Check back for student doubts under the <strong>Doubt Support</strong> tab to ensure high engagement.</span>
               </li>
             </ul>
           </motion.div>

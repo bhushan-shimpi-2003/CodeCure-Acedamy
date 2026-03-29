@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "motion/react";
-import { PlayCircle, Youtube, FileText, Lock, MessageSquare, Send, BookOpen, Loader2 } from "lucide-react";
+import { PlayCircle, FileText, Lock, MessageSquare, Send, BookOpen, Loader2 } from "lucide-react";
 import Select from "../../ui/Select";
 import { useAuth } from "../../../context/AuthContext";
 
@@ -96,11 +96,49 @@ export default function Lectures() {
     fetchDoubts();
   }, [token]);
 
-  const extractVideoId = (url: string) => {
-    if (!url) return null;
-    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
-    const match = url.match(regExp);
-    return (match && match[2].length === 11) ? match[2] : null;
+  // Track lesson completion (at least 30 minutes watched => 1800000ms)
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    if (user && selectedLesson) {
+      const thirtyMins = 30 * 60 * 1000;
+      timer = setTimeout(() => {
+        const key = `completed_lessons_${user.id}`;
+        const stored = localStorage.getItem(key);
+        const completed = stored ? JSON.parse(stored) : [];
+        if (!completed.includes(selectedLesson.id)) {
+          completed.push(selectedLesson.id);
+          localStorage.setItem(key, JSON.stringify(completed));
+          console.log("Lesson marked as completed after 30 mins:", selectedLesson.title);
+        }
+      }, thirtyMins);
+    }
+    return () => clearTimeout(timer);
+  }, [selectedLesson, user]);
+
+  const getEmbedUrl = (input: string) => {
+    if (!input) return null;
+    
+    let urlToProcess = input;
+    
+    // 1. Check if it's an HTML iframe embed and extract the src
+    if (input.includes('<iframe') && input.includes('src=')) {
+      const srcMatch = input.match(/src="([^"]+)"/);
+      if (srcMatch && srcMatch[1]) {
+        urlToProcess = srcMatch[1];
+      }
+    }
+    
+    // 2. Standard YouTube URL extraction
+    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?"]*).*/;
+    const match = urlToProcess.match(regExp);
+    if (match && match[2].length === 11) {
+      return `https://www.youtube-nocookie.com/embed/${match[2]}?rel=0&modestbranding=1`;
+    }
+    
+    // 3. Direct URL fallback
+    if (urlToProcess.startsWith('http')) return urlToProcess;
+    
+    return null;
   };
 
   const handleAskDoubt = async (e: React.FormEvent) => {
@@ -114,7 +152,7 @@ export default function Lectures() {
           "Authorization": `Bearer ${token}`,
           "Content-Type": "application/json"
         },
-        body: JSON.stringify({ text: doubtText, course_id: selectedCourseId })
+        body: JSON.stringify({ subject: doubtText, course_id: selectedCourseId })
       });
       const data = await res.json();
       if (data.success) {
@@ -163,7 +201,12 @@ export default function Lectures() {
     );
   }
 
-  const videoId = selectedLesson ? extractVideoId(selectedLesson.youtube_url) : null;
+  const embedUrl = selectedLesson ? getEmbedUrl(selectedLesson.video_url || selectedLesson.youtube_url) : null;
+
+  // Debug logging — check browser console if video doesn't load
+  console.log('[Lectures] selectedLesson:', selectedLesson);
+  console.log('[Lectures] raw video_url:', selectedLesson?.video_url);
+  console.log('[Lectures] embedUrl:', embedUrl);
 
   return (
     <div className="max-w-5xl mx-auto space-y-6 pb-12">
@@ -175,21 +218,47 @@ export default function Lectures() {
           <p className="text-slate-500 text-sm">Access the latest lecture and materials.</p>
         </div>
 
-        {/* Course Selector */}
-        {enrolledCourses.length > 1 && (
-            <Select
-              value={selectedCourseId}
-              onChange={(e) => setSelectedCourseId(e.target.value)}
-              icon={<BookOpen className="w-4 h-4 text-slate-400" />}
-            >
-              {enrolledCourses.map((c) => (
-                <option key={c.id} value={c.id}>{c.title}</option>
-              ))}
-            </Select>
-        )}
+        <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
+          {/* Course Selector */}
+          {enrolledCourses.length > 1 && (
+            <div className="w-full sm:w-auto">
+              <span className="block text-xs font-bold text-slate-500 mb-1.5 ml-1">Course</span>
+              <Select
+                value={selectedCourseId}
+                onChange={(e) => setSelectedCourseId(e.target.value)}
+                icon={<BookOpen className="w-4 h-4 text-slate-400" />}
+              >
+                {enrolledCourses.map((c) => (
+                  <option key={c.id} value={c.id}>{c.title}</option>
+                ))}
+              </Select>
+            </div>
+          )}
+
+          {/* Mobile Lesson Selector */}
+          {lessons.length > 1 && embedUrl && (
+            <div className="lg:hidden w-full sm:min-w-[200px]">
+              <span className="block text-xs font-bold text-slate-500 mb-1.5 ml-1">Current Lesson</span>
+              <Select
+                value={selectedLesson?.id || ""}
+                onChange={(e) => {
+                  const lesson = lessons.find(l => l.id === e.target.value);
+                  if (lesson) setSelectedLesson(lesson);
+                }}
+                icon={<PlayCircle className="w-4 h-4 text-slate-400" />}
+              >
+                {lessons.map((lesson, idx) => (
+                  <option key={lesson.id} value={lesson.id}>
+                    {idx + 1}. {lesson.title}
+                  </option>
+                ))}
+              </Select>
+            </div>
+          )}
+        </div>
       </div>
 
-      {videoId ? (
+      {embedUrl ? (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2 space-y-6">
             <motion.div 
@@ -198,8 +267,8 @@ export default function Lectures() {
               className="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm"
             >
               <div className="p-4 md:p-6 border-b border-slate-100 bg-white flex items-center gap-3">
-                <div className="bg-red-50 p-2 rounded-lg">
-                  <Youtube className="w-6 h-6 text-red-600" />
+                <div className="bg-blue-50 p-2 rounded-lg">
+                  <PlayCircle className="w-6 h-6 text-blue-600" />
                 </div>
                 <h2 className="text-xl font-bold text-slate-900">{selectedLesson?.title || "Latest Lecture"}</h2>
                 {selectedLesson?.is_live && (
@@ -210,73 +279,44 @@ export default function Lectures() {
                 )}
               </div>
               
-              <div className="aspect-video w-full bg-slate-900">
+              <div className="w-full bg-slate-900 overflow-hidden">
                 <iframe 
-                  width="100%" 
-                  height="100%" 
-                  src={`https://www.youtube.com/embed/${videoId}`} 
-                  title="YouTube video player" 
+                  className="w-full aspect-video"
+                  src={embedUrl} 
+                  title="Course Video Player" 
                   frameBorder="0" 
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                  referrerPolicy="strict-origin-when-cross-origin"
                   allowFullScreen
                 ></iframe>
               </div>
 
-              {selectedLesson?.notes && (
+              {selectedLesson?.content && (
                 <div className="p-6 bg-white border-t border-slate-100">
                   <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2 mb-4">
                     <FileText className="w-4 h-4 text-blue-600" /> Lecture Notes
                   </h3>
                   <div className="bg-slate-50 border border-slate-200 p-6 rounded-xl">
                     <p className="text-slate-700 whitespace-pre-wrap leading-relaxed text-sm">
-                      {selectedLesson.notes}
+                      {selectedLesson.content}
                     </p>
                   </div>
                 </div>
               )}
             </motion.div>
 
-            {/* Lesson List */}
-            {lessons.length > 1 && (
-              <div className="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm">
-                <h3 className="text-sm font-bold text-slate-900 mb-3 px-2">All Lessons ({lessons.length})</h3>
-                <div className="space-y-1 max-h-[300px] overflow-y-auto">
-                  {lessons.map((lesson, idx) => (
-                    <button
-                      key={lesson.id}
-                      onClick={() => setSelectedLesson(lesson)}
-                      className={`w-full text-left px-4 py-3 rounded-xl text-sm transition-all flex items-center gap-3 ${
-                        selectedLesson?.id === lesson.id
-                          ? 'bg-blue-50 border border-blue-200 text-blue-700 font-semibold'
-                          : 'hover:bg-slate-50 text-slate-700'
-                      }`}
-                    >
-                      <span className={`w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold ${
-                        selectedLesson?.id === lesson.id ? 'bg-blue-600 text-white' : 'bg-slate-100 text-slate-500'
-                      }`}>
-                        {idx + 1}
-                      </span>
-                      {lesson.title}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* Doubt Support Sidebar */}
-          <div className="lg:col-span-1">
+            {/* Doubt Support Below Video */}
             <motion.div 
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              className="bg-white border border-slate-200 rounded-2xl h-full flex flex-col shadow-sm overflow-hidden"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="bg-white border border-slate-200 rounded-2xl flex flex-col shadow-sm overflow-hidden"
             >
               <div className="p-4 border-b border-slate-100 bg-slate-50 flex items-center gap-2">
                 <MessageSquare className="w-5 h-5 text-blue-600" />
                 <h3 className="text-sm font-bold text-slate-900">Lecture Doubts</h3>
               </div>
               
-              <div className="flex-1 p-4 overflow-y-auto min-h-[300px] max-h-[500px] space-y-4 bg-white">
+              <div className="flex-1 p-4 overflow-y-auto max-h-[400px] space-y-4 bg-white">
                 {doubts.length === 0 ? (
                   <div className="text-center text-slate-500 text-sm py-8 flex flex-col items-center gap-3">
                     <MessageSquare className="w-8 h-8 text-slate-300" />
@@ -297,7 +337,7 @@ export default function Lectures() {
                           {doubt.status}
                         </span>
                       </div>
-                      <p className="text-sm text-slate-700">{doubt.text}</p>
+                      <p className="text-sm text-slate-700">{doubt.subject}</p>
                       {doubt.reply && (
                         <div className="mt-3 pt-3 border-t border-slate-200 bg-white rounded-lg p-3 text-xs">
                           <span className="font-bold text-blue-600 block mb-1">Reply:</span>
@@ -328,6 +368,39 @@ export default function Lectures() {
                 </form>
               </div>
             </motion.div>
+          </div>
+
+          {/* Lesson List Sidebar (Desktop Only) */}
+          <div className="hidden lg:block lg:col-span-1 space-y-6">
+            {lessons.length > 1 && (
+              <motion.div 
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                className="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm sticky top-8"
+              >
+                <h3 className="text-sm font-bold text-slate-900 mb-3 px-2">All Lessons ({lessons.length})</h3>
+                <div className="space-y-1 max-h-[600px] overflow-y-auto">
+                  {lessons.map((lesson, idx) => (
+                    <button
+                      key={lesson.id}
+                      onClick={() => setSelectedLesson(lesson)}
+                      className={`w-full text-left px-4 py-3 rounded-xl text-sm transition-all flex items-center gap-3 ${
+                        selectedLesson?.id === lesson.id
+                          ? 'bg-blue-50 border border-blue-200 text-blue-700 font-semibold'
+                          : 'hover:bg-slate-50 text-slate-700'
+                      }`}
+                    >
+                      <span className={`w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold shrink-0 ${
+                        selectedLesson?.id === lesson.id ? 'bg-blue-600 text-white' : 'bg-slate-100 text-slate-500'
+                      }`}>
+                        {idx + 1}
+                      </span>
+                      <span className="truncate">{lesson.title}</span>
+                    </button>
+                  ))}
+                </div>
+              </motion.div>
+            )}
           </div>
         </div>
       ) : (

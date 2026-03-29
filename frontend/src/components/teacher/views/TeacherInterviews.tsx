@@ -342,12 +342,24 @@ export default function TeacherInterviews() {
                 </div>
                 <div className="flex items-center gap-3">
                   {iv.status === 'scheduled' && (
-                    <button
-                      onClick={() => handleComplete(iv.id)}
-                      className="px-3 py-1.5 text-xs font-bold bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors opacity-0 group-hover:opacity-100"
-                    >
-                      Complete
-                    </button>
+                    <>
+                      {(iv.meet_link || iv.meeting_link) && (
+                        <a
+                          href={iv.meet_link || iv.meeting_link}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="px-3 py-1.5 text-xs font-bold bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-1.5"
+                        >
+                          <Video className="w-3.5 h-3.5" /> Join Meeting
+                        </a>
+                      )}
+                      <button
+                        onClick={() => handleComplete(iv.id)}
+                        className="px-3 py-1.5 text-xs font-bold bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors"
+                      >
+                        Complete
+                      </button>
+                    </>
                   )}
                   <span className={`px-2.5 py-1 text-[10px] font-bold uppercase rounded-lg border ${
                     iv.status === 'completed' 

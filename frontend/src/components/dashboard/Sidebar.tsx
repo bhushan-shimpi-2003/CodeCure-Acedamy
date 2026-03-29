@@ -1,5 +1,5 @@
 import { motion } from "motion/react";
-import { LayoutDashboard, PlayCircle, FileText, Briefcase, MessageSquare, X, LogOut, GraduationCap, User } from "lucide-react";
+import { LayoutDashboard, PlayCircle, FileText, Briefcase, MessageSquare, X, LogOut, GraduationCap, User, BookOpen } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 
@@ -9,6 +9,7 @@ export default function Sidebar({ activeTab, setActiveTab, isOpen, setIsOpen }: 
 
   const navItems = [
     { id: "overview", label: "Overview", icon: LayoutDashboard },
+    { id: "courses", label: "Available Courses", icon: BookOpen },
     { id: "lectures", label: "Lectures", icon: PlayCircle },
     { id: "assignments", label: "Assignment", icon: FileText },
     { id: "career", label: "Career", icon: Briefcase },

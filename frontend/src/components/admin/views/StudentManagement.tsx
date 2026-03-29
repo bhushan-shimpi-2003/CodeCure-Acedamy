@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { motion } from "motion/react";
 import { Users, Search, CheckSquare, XSquare, MoreVertical, Shield, X, Bell, Download, Loader2 } from "lucide-react";
 import { useAuth } from "../../../context/AuthContext";
@@ -117,20 +118,20 @@ export default function StudentManagement() {
   };
 
   return (
-    <div className="space-y-6 max-w-7xl mx-auto pb-12">
-      <div className="border-b border-slate-200 pb-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <div className="space-y-6 sm:space-y-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20 pt-4 sm:pt-8 w-full overflow-x-hidden">
+      <div className="border-b border-slate-200 pb-4 sm:pb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900 mb-1 flex items-center gap-2">
-            <Users className="w-6 h-6 text-blue-600" /> Student Management
+          <h1 className="text-xl sm:text-2xl font-bold text-slate-900 mb-1 flex items-center gap-2">
+            <Users className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600" /> Student Management
           </h1>
-          <p className="text-slate-500 text-sm">Manage enrollments, progress, and access.</p>
+          <p className="text-slate-500 text-xs sm:text-sm">Manage enrollments, progress, and access.</p>
         </div>
         <button className="flex items-center gap-2 bg-white border border-slate-200 text-slate-700 px-4 py-2 rounded-lg text-sm font-medium hover:bg-slate-50 transition-colors">
           <Download className="w-4 h-4" /> Export CSV
         </button>
       </div>
 
-      <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
+      <div className="bg-white/90 backdrop-blur-xl border border-slate-200/60 rounded-2xl p-4 sm:p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
         <div className="flex flex-col md:flex-row gap-4 mb-6">
           <div className="flex-1 flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-lg px-4 py-2 focus-within:border-blue-500 focus-within:ring-1 focus-within:ring-blue-500 transition-all">
             <Search className="w-4 h-4 text-slate-400" />
@@ -241,13 +242,13 @@ export default function StudentManagement() {
       </div>
 
       {/* Access Management Modal */}
-      {isModalOpen && selectedStudent && (
-        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+      {isModalOpen && selectedStudent && createPortal(
+        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
           <motion.div
             initial={{ opacity: 0, scale: 0.95, y: 10 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 10 }}
-            className="bg-white rounded-2xl max-w-xl w-full shadow-2xl overflow-hidden border border-slate-200/60"
+            className="bg-white/95 backdrop-blur-2xl rounded-2xl max-w-xl w-full shadow-2xl overflow-hidden border border-slate-200/60"
           >
             {/* Modal Header */}
             <div className="bg-slate-50/80 px-6 py-5 border-b border-slate-100 flex justify-between items-start">
@@ -365,7 +366,8 @@ export default function StudentManagement() {
               </button>
             </div>
           </motion.div>
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );
