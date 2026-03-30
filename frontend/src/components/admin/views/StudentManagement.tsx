@@ -3,6 +3,7 @@ import { createPortal } from "react-dom";
 import { motion } from "motion/react";
 import { Users, Search, CheckSquare, XSquare, MoreVertical, Shield, X, Bell, Download, Loader2 } from "lucide-react";
 import { useAuth } from "../../../context/AuthContext";
+import Select from "../../ui/Select";
 
 export default function StudentManagement() {
   const { token } = useAuth();
@@ -85,12 +86,7 @@ export default function StudentManagement() {
     }
   };
 
-  const handleChangeRole = async (userId: string, currentRole: string) => {
-    const newRole = prompt(`Current role: ${currentRole}. Enter new role (student, teacher, admin):`, currentRole);
-    if (!newRole || !["student", "teacher", "admin"].includes(newRole.toLowerCase())) {
-      if (newRole) alert("Invalid role.");
-      return;
-    }
+  const handleChangeRole = async (userId: string, newRole: string) => {
     try {
       const res = await fetch(`http://localhost:5000/api/admin/users/${userId}/role`, {
         method: "PUT",
@@ -98,17 +94,16 @@ export default function StudentManagement() {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ role: newRole.toLowerCase() }),
+        body: JSON.stringify({ role: newRole }),
       });
       const data = await res.json();
       if (data.success) {
-        alert("Role updated!");
         fetchData();
       } else {
-        alert(data.error || "Failed");
+        alert(data.error || "Failed to update role");
       }
     } catch {
-      alert("Error");
+      alert("Error updating role");
     }
   };
 
@@ -211,7 +206,7 @@ export default function StudentManagement() {
                           </span>
                         </td>
                         <td className="p-4 text-right">
-                          <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <div className="flex items-center justify-end gap-2 opacity-100 group-hover:opacity-100 transition-opacity">
                             <button
                               onClick={() => openAccessModal(student)}
                               className={`flex items-center gap-1 px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${
@@ -223,13 +218,19 @@ export default function StudentManagement() {
                             >
                               <Shield className="w-3.5 h-3.5" /> Access
                             </button>
-                            <button
-                              onClick={() => handleChangeRole(student.id, student.role)}
-                              className="flex items-center gap-1 px-3 py-1.5 text-xs font-medium rounded-md bg-blue-50 text-blue-700 hover:bg-blue-100 transition-colors"
-                              title="Change Role"
-                            >
-                              <Shield className="w-3.5 h-3.5" /> Role
-                            </button>
+                            <div className="relative w-32">
+                              <Select
+                                size="sm"
+                                value={student.role}
+                                onChange={(e) => handleChangeRole(student.id, e.target.value)}
+                                className="!bg-blue-50/50 !border-blue-200/50 !text-blue-700 hover:!bg-blue-100/50 !pl-8 !py-1"
+                              >
+                                <option value="student">Student</option>
+                                <option value="teacher">Teacher</option>
+                                <option value="admin">Admin</option>
+                              </Select>
+                              <Shield className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-blue-600 pointer-events-none z-10" />
+                            </div>
                           </div>
                         </td>
                       </motion.tr>

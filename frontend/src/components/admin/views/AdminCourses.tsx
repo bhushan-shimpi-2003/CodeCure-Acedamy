@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "motion/react";
-import { BookOpen, Plus, Edit, Trash2, LayoutDashboard, Layers, ArrowLeft, Save, IndianRupee, Loader2, Users } from "lucide-react";
+import { BookOpen, Plus, Edit, Trash2, LayoutDashboard, Layers, ArrowLeft, Save, IndianRupee, Loader2, Users, Upload, UserCog, Activity } from "lucide-react";
 import Select from "../../ui/Select";
 import { useAuth } from "../../../context/AuthContext";
 
@@ -19,6 +19,7 @@ interface Course {
  status: "active" | "draft";
  price: string | number;
  instructor_id?: string;
+ image_url?: string;
  profiles?: { id?: string; name?: string; email?: string };
 }
 
@@ -28,6 +29,7 @@ export default function AdminCourses() {
  const [teachers, setTeachers] = useState<{id: string, name: string, email: string}[]>([]);
  const [isLoading, setIsLoading] = useState(true);
  const [isSaving, setIsSaving] = useState(false);
+ const [isUploading, setIsUploading] = useState(false);
 
  const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
  const [activeTab, setActiveTab] = useState<'basic' | 'curriculum'>('basic');
@@ -98,7 +100,8 @@ export default function AdminCourses() {
      students: 0,
      status: "draft",
      price: 0,
-     instructor_id: ""
+     instructor_id: "",
+     image_url: ""
    };
    setSelectedCourse(newCourse);
    setActiveTab('basic');
@@ -117,7 +120,8 @@ export default function AdminCourses() {
        title: selectedCourse.title,
        description: selectedCourse.description,
        status: selectedCourse.status,
-       price: Number(selectedCourse.price) || 0
+       price: Number(selectedCourse.price) || 0,
+       image_url: selectedCourse.image_url || null
      };
 
      if (selectedCourse.instructor_id) {
@@ -151,6 +155,34 @@ export default function AdminCourses() {
  const handleUpdateField = (field: keyof Course, value: any) => {
    if (selectedCourse) {
      setSelectedCourse({ ...selectedCourse, [field]: value });
+   }
+ };
+
+ const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+   const file = e.target.files?.[0];
+   if (!file) return;
+
+   setIsUploading(true);
+   const formData = new FormData();
+   formData.append('image', file);
+
+   try {
+     const res = await fetch("http://localhost:5000/api/upload/image", {
+       method: "POST",
+       headers: { "Authorization": `Bearer ${token}` },
+       body: formData
+     });
+     const data = await res.json();
+     if (data.success) {
+       handleUpdateField('image_url', data.url);
+     } else {
+       alert(data.error || "Failed to upload image");
+     }
+   } catch (err) {
+     console.error(err);
+     alert("Error uploading image");
+   } finally {
+     setIsUploading(false);
    }
  };
 
@@ -278,29 +310,55 @@ export default function AdminCourses() {
              </div>
 
              <div className="space-y-2">
-               <label className="text-xs text-blue-600 font-bold ">Status</label>
-               <select 
-                 value={selectedCourse.status} 
-                 onChange={(e) => handleUpdateField('status', e.target.value as any)} 
-                 className="w-full bg-slate-50 border border-slate-200 px-4 py-3 text-slate-900 focus:border-blue-600 outline-none transition-colors"
-               >
-                 <option value="active">Active (Published)</option>
-                 <option value="draft">Draft (Hidden)</option>
-               </select>
+               <label className="text-xs text-blue-600 font-bold ">Cover Image URL or Upload</label>
+               <div className="flex gap-2">
+                 <input 
+                   type="text" 
+                   value={selectedCourse.image_url || ""} 
+                   onChange={(e) => handleUpdateField('image_url', e.target.value)} 
+                   placeholder="e.g. https://example.com/image.jpg"
+                   className="flex-1 w-full bg-slate-50 border border-slate-200 px-4 py-3 text-slate-900 focus:border-blue-600 outline-none transition-colors" 
+                 />
+                 <div className="relative flex items-center shrink-0 border border-slate-200 bg-slate-100 hover:bg-slate-200 transition-colors">
+                   <input 
+                     type="file" 
+                     accept="image/*" 
+                     onChange={handleImageUpload} 
+                     className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                     title="Upload Image"
+                   />
+                   <button type="button" disabled={isUploading} className="flex items-center gap-2 px-4 py-3 text-slate-700 font-bold disabled:opacity-50">
+                     {isUploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
+                     Upload
+                   </button>
+                 </div>
+               </div>
              </div>
 
              <div className="space-y-2">
-               <label className="text-xs text-blue-600 font-bold ">Assign Teacher</label>
-               <select 
+               <Select 
+                 label="Status"
+                 icon={<Activity className="w-4 h-4 text-blue-600" />}
+                 value={selectedCourse.status} 
+                 onChange={(e) => handleUpdateField('status', e.target.value as any)} 
+               >
+                 <option value="active">Active (Published)</option>
+                 <option value="draft">Draft (Hidden)</option>
+               </Select>
+             </div>
+
+             <div className="space-y-2">
+               <Select 
+                 label="Assign Teacher"
+                 icon={<UserCog className="w-4 h-4 text-blue-600" />}
                  value={selectedCourse.instructor_id || ""} 
                  onChange={(e) => handleUpdateField('instructor_id', e.target.value)} 
-                 className="w-full bg-slate-50 border border-slate-200 px-4 py-3 text-slate-900 focus:border-blue-600 outline-none transition-colors"
                >
                  <option value="">-- Select Instructor --</option>
                  {teachers.map(t => (
                    <option key={t.id} value={t.id}>{t.name || t.email}</option>
                  ))}
-               </select>
+               </Select>
              </div>
 
              <div className="space-y-2 md:col-span-2">
@@ -423,7 +481,18 @@ export default function AdminCourses() {
              transition={{ delay: i * 0.1 }}
              className="bg-white/90 backdrop-blur-xl border border-slate-200/60 rounded-2xl p-5 relative group hover:border-blue-400 hover:shadow-[0_8px_30px_rgb(0,0,0,0.06)] hover:-translate-y-0.5 transition-all duration-300 flex flex-col"
            >
-             <div className="absolute top-0 left-0 w-1 h-full bg-blue-100 group-hover:bg-blue-600 transition-colors"></div>
+             <div className="absolute top-0 left-0 w-1 h-full bg-blue-100 group-hover:bg-blue-600 transition-colors z-10"></div>
+             
+             {course.image_url ? (
+               <div className="w-full h-32 mb-4 rounded-xl overflow-hidden relative border border-slate-100 ml-1">
+                 <img src={course.image_url} alt={course.title} className="w-full h-full object-cover" />
+               </div>
+             ) : (
+               <div className="w-full h-32 mb-4 rounded-xl overflow-hidden relative border border-slate-100 bg-slate-50 flex items-center justify-center ml-1">
+                 <div className="text-slate-300 flex items-center gap-2 font-bold text-xs"><LayoutDashboard className="w-4 h-4" /> No Image</div>
+               </div>
+             )}
+
              <div className="flex justify-between items-start mb-4 pl-2">
                <div>
                  <h3 className="font-bold text-slate-900 text-lg line-clamp-1" title={course.title}>{course.title}</h3>

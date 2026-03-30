@@ -41,21 +41,15 @@ export default function StaffManagement() {
     if (token) fetchStaff();
   }, [token]);
 
-  const handleChangeRole = async (userId: string, currentRole: string) => {
-    const newR = prompt(`Current role: ${currentRole}. Enter new role (student, teacher, admin):`, currentRole);
-    if (!newR || !["student", "teacher", "admin"].includes(newR.toLowerCase())) {
-      if (newR) alert("Invalid role. Use student, teacher, or admin.");
-      return;
-    }
+  const handleChangeRole = async (userId: string, newRole: string) => {
     try {
       const res = await fetch(`${API}/admin/users/${userId}/role`, {
         method: "PUT",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-        body: JSON.stringify({ role: newR.toLowerCase() }),
+        body: JSON.stringify({ role: newRole }),
       });
       const data = await res.json();
       if (data.success) {
-        alert("Role updated!");
         fetchStaff();
       } else {
         alert(data.error || "Failed to update role");
@@ -141,12 +135,19 @@ export default function StaffManagement() {
               </div>
 
               <div className="flex items-center gap-2 pl-2 border-t border-slate-100 pt-4 mt-auto">
-                <button
-                  onClick={() => handleChangeRole(member.id, member.role)}
-                  className="flex-1 bg-transparent border border-blue-600 text-blue-600 hover:bg-blue-50 hover:shadow-sm px-3 py-2 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-2"
-                >
-                  <Shield className="w-3.5 h-3.5" /> Change Role
-                </button>
+                <div className="flex-1 relative flex items-center">
+                  <Select
+                    size="sm"
+                    value={member.role}
+                    onChange={(e) => handleChangeRole(member.id, e.target.value)}
+                    className="w-full !bg-transparent border-blue-600 !text-blue-600 hover:!bg-blue-50 hover:shadow-sm !pl-8 text-center"
+                  >
+                    <option value="student">Student</option>
+                    <option value="teacher">Teacher</option>
+                    <option value="admin">Admin</option>
+                  </Select>
+                  <Shield className="w-3.5 h-3.5 absolute left-3 text-blue-600 pointer-events-none z-10" />
+                </div>
               </div>
             </motion.div>
           ))}

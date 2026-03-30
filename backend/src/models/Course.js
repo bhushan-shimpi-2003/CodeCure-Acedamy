@@ -51,10 +51,16 @@ exports.getCoursesByInstructor = async (instructorId) => {
 exports.getAllCourses = async () => {
   const { data, error } = await supabase
     .from('courses')
-    .select('*, profiles!instructor_id(id, name, email)')
+    .select('*, profiles!instructor_id(id, name, email), modules(*), enrollments(*)')
     .order('created_at', { ascending: false });
   if (error) throw error;
-  return data;
+  
+  // map the enrollments array to count
+  const mappedData = data.map(course => ({
+    ...course,
+    enrollment_count: course.enrollments ? course.enrollments.length : 0
+  }));
+  return mappedData;
 };
 
 exports.createCourse = async (courseData) => {
