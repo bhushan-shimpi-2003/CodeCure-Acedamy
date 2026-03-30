@@ -1,3 +1,4 @@
+import { API_URL, API_BASE_URL } from '../../config';
 import { motion } from "motion/react";
 import { LayoutDashboard, PlayCircle, FileText, Briefcase, MessageSquare, X, LogOut, GraduationCap, User, BookOpen } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
@@ -19,7 +20,7 @@ export default function Sidebar({ activeTab, setActiveTab, isOpen, setIsOpen }: 
 
   const handleLogout = async () => {
     try {
-      await fetch("http://localhost:5000/api/auth/logout", {
+      await fetch(`${API_URL}/auth/logout`, {
         method: "POST",
         headers: {
           "Authorization": `Bearer ${token}`

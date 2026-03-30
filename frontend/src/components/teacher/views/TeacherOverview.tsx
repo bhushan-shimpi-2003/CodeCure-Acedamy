@@ -1,3 +1,4 @@
+import { API_URL, API_BASE_URL } from '../../../config';
 import React, { useState, useEffect } from "react";
 import { motion } from "motion/react";
 import { 
@@ -15,7 +16,7 @@ import {
 } from "lucide-react";
 import { useAuth } from "../../../context/AuthContext";
 
-const API = "http://localhost:5000/api";
+const API = API_URL;
 
 export default function TeacherOverview({ setActiveTab }: { setActiveTab?: (tab: string) => void }) {
   const { token, user } = useAuth();

@@ -1,3 +1,4 @@
+import { API_URL, API_BASE_URL } from '../../../config';
 import React, { useState, useEffect } from "react";
 import { motion } from "motion/react";
 import { MessageSquare, Send, Search, HelpCircle, Loader2 } from "lucide-react";
@@ -16,7 +17,7 @@ export default function StudentDoubts() {
       setIsLoading(true);
       if (!token) return;
       try {
-        const res = await fetch("http://localhost:5000/api/doubts/me", {
+        const res = await fetch(`${API_URL}/doubts/me`, {
           headers: { "Authorization": `Bearer ${token}` }
         });
         const data = await res.json();
@@ -38,7 +39,7 @@ export default function StudentDoubts() {
     
     setIsSubmitting(true);
     try {
-      const res = await fetch("http://localhost:5000/api/doubts", {
+      const res = await fetch(`${API_URL}/doubts`, {
         method: "POST",
         headers: { 
           "Authorization": `Bearer ${token}`,

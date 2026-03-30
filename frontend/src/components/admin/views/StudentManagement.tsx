@@ -1,3 +1,4 @@
+import { API_URL, API_BASE_URL } from '../../../config';
 import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { motion } from "motion/react";
@@ -19,14 +20,14 @@ export default function StudentManagement() {
   const fetchData = async () => {
     setIsLoading(true);
     try {
-      const studentsRes = await fetch("http://localhost:5000/api/admin/students", {
+      const studentsRes = await fetch(`${API_URL}/admin/students`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       const studentsData = await studentsRes.json();
       if (studentsData.success) setStudents(studentsData.data);
 
       try {
-        const requestsRes = await fetch("http://localhost:5000/api/enrollments/requests/pending", {
+        const requestsRes = await fetch(`${API_URL}/enrollments/requests/pending`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         const requestsData = await requestsRes.json();
@@ -34,7 +35,7 @@ export default function StudentManagement() {
       } catch (err) { console.error(err); }
 
       try {
-        const enrollmentsRes = await fetch("http://localhost:5000/api/enrollments", {
+        const enrollmentsRes = await fetch(`${API_URL}/enrollments`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         const enrollmentsData = await enrollmentsRes.json();
@@ -53,7 +54,7 @@ export default function StudentManagement() {
 
   const handleResolveRequest = async (requestId: string, status: "approved" | "rejected") => {
     try {
-      const res = await fetch(`http://localhost:5000/api/enrollments/requests/${requestId}`, {
+      const res = await fetch(`${API_URL}/enrollments/requests/${requestId}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -71,7 +72,7 @@ export default function StudentManagement() {
   const handleRemoveAccess = async (enrollmentId: string) => {
     if (!confirm("Are you sure you want to remove access to this course?")) return;
     try {
-      const res = await fetch(`http://localhost:5000/api/enrollments/${enrollmentId}`, {
+      const res = await fetch(`${API_URL}/enrollments/${enrollmentId}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -88,7 +89,7 @@ export default function StudentManagement() {
 
   const handleChangeRole = async (userId: string, newRole: string) => {
     try {
-      const res = await fetch(`http://localhost:5000/api/admin/users/${userId}/role`, {
+      const res = await fetch(`${API_URL}/admin/users/${userId}/role`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

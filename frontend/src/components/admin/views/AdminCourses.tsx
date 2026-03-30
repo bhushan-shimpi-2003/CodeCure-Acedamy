@@ -1,3 +1,4 @@
+import { API_URL, API_BASE_URL } from '../../../config';
 import React, { useState, useEffect } from "react";
 import { motion } from "motion/react";
 import { BookOpen, Plus, Edit, Trash2, LayoutDashboard, Layers, ArrowLeft, Save, IndianRupee, Loader2, Users, Upload, UserCog, Activity } from "lucide-react";
@@ -45,7 +46,7 @@ export default function AdminCourses() {
  const fetchCourses = async () => {
    setIsLoading(true);
    try {
-     const res = await fetch("http://localhost:5000/api/courses/admin/all", {
+     const res = await fetch(`${API_URL}/courses/admin/all`, {
        headers: { "Authorization": `Bearer ${token}` }
      });
      const data = await res.json();
@@ -66,7 +67,7 @@ export default function AdminCourses() {
 
  const fetchTeachers = async () => {
    try {
-     const res = await fetch("http://localhost:5000/api/admin/staff", {
+     const res = await fetch(`${API_URL}/admin/staff`, {
        headers: { "Authorization": `Bearer ${token}` }
      });
      const data = await res.json();
@@ -89,7 +90,7 @@ export default function AdminCourses() {
    setSelectedCourse({ ...course });
    setActiveTab('basic');
    try {
-     const res = await fetch(`http://localhost:5000/api/courses/${course.id}/modules`);
+     const res = await fetch(`${API_URL}/courses/${course.id}/modules`);
      const data = await res.json();
      if (data.success) {
        setSelectedCourse(prev => prev ? { ...prev, modules: data.data } : null);
@@ -121,7 +122,7 @@ export default function AdminCourses() {
    
    try {
      const isNew = selectedCourse.id === "new";
-     const url = isNew ? "http://localhost:5000/api/courses" : `http://localhost:5000/api/courses/${selectedCourse.id}`;
+     const url = isNew ? `${API_URL}/courses` : `${API_URL}/courses/${selectedCourse.id}`;
      const method = isNew ? "POST" : "PUT";
 
      const payload: any = {
@@ -176,7 +177,7 @@ export default function AdminCourses() {
    formData.append('image', file);
 
    try {
-     const res = await fetch("http://localhost:5000/api/upload/image", {
+     const res = await fetch(`${API_URL}/upload/image`, {
        method: "POST",
        headers: { "Authorization": `Bearer ${token}` },
        body: formData
@@ -230,7 +231,7 @@ export default function AdminCourses() {
  const handleDeleteCourse = async (id: string) => {
    if (!confirm("Are you sure you want to delete this course?")) return;
    try {
-     const res = await fetch(`http://localhost:5000/api/courses/${id}`, {
+     const res = await fetch(`${API_URL}/courses/${id}`, {
        method: "DELETE",
        headers: { "Authorization": `Bearer ${token}` }
      });

@@ -1,3 +1,4 @@
+import { API_URL, API_BASE_URL } from '../../../config';
 import React, { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { motion } from "motion/react";
@@ -5,7 +6,7 @@ import { UserCog, Plus, Loader2, Shield, X, Mail, Lock, User } from "lucide-reac
 import Select from "../../ui/Select";
 import { useAuth } from "../../../context/AuthContext";
 
-const API = "http://localhost:5000/api";
+const API = API_URL;
 
 export default function StaffManagement() {
   const { token } = useAuth();

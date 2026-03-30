@@ -1,10 +1,11 @@
+import { API_URL, API_BASE_URL } from '../../../config';
 import { useState, useEffect } from "react";
 import { motion } from "motion/react";
 import { PlayCircle, Edit, Trash2, LayoutDashboard, Loader2, Save, X, BookOpen } from "lucide-react";
 import Select from "../../ui/Select";
 import { useAuth } from "../../../context/AuthContext";
 
-const API = "http://localhost:5000/api";
+const API = API_URL;
 
 export default function TeacherLessons() {
   const { token, user } = useAuth();

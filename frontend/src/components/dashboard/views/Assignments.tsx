@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { motion } from "motion/react";
 import { FileCode2, UploadCloud, CheckSquare, Clock, FileText, Loader2 } from "lucide-react";
 import { useAuth } from "../../../context/AuthContext";
+import { API_URL } from "../../../config";
 
 export default function Assignments() {
   const { token } = useAuth();
@@ -16,7 +17,7 @@ export default function Assignments() {
         if (!token) return;
         
         // 1. Fetch active courses
-        const enrollRes = await fetch("http://localhost:5000/api/enrollments/me", {
+        const enrollRes = await fetch(`${API_URL}/enrollments/me`, {
           headers: { "Authorization": `Bearer ${token}` }
         });
         const enrollData = await enrollRes.json();
@@ -29,7 +30,7 @@ export default function Assignments() {
         for (const course of activeCourses) {
           try {
             const courseId = course.course_id;
-            const assignRes = await fetch(`http://localhost:5000/api/assignments/course/${courseId}`, {
+            const assignRes = await fetch(`${API_URL}/assignments/course/${courseId}`, {
               headers: { "Authorization": `Bearer ${token}` }
             });
             const assignData = await assignRes.json();
@@ -44,7 +45,7 @@ export default function Assignments() {
 
         // 3. Fetch submissions for current student
         try {
-          const subRes = await fetch("http://localhost:5000/api/assignments/submissions/me", {
+          const subRes = await fetch(`${API_URL}/assignments/submissions/me`, {
             headers: { "Authorization": `Bearer ${token}` }
           });
           const subData = await subRes.json();
@@ -69,7 +70,7 @@ export default function Assignments() {
     if (!link) return;
     
     try {
-      const res = await fetch(`http://localhost:5000/api/assignments/${assignmentId}/submit`, {
+      const res = await fetch(`${API_URL}/assignments/${assignmentId}/submit`, {
         method: "POST",
         headers: { 
           "Authorization": `Bearer ${token}`,

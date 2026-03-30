@@ -1,3 +1,4 @@
+import { API_URL, API_BASE_URL } from '../../../config';
 import { useState, useEffect } from "react";
 import { motion } from "motion/react";
 import {
@@ -7,7 +8,7 @@ import {
 } from "lucide-react";
 import { useAuth } from "../../../context/AuthContext";
 
-const API = "http://localhost:5000/api";
+const API = API_URL;
 
 interface PlatformStats {
   students: number;

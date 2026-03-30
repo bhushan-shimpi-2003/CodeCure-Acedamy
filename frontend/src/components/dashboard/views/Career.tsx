@@ -1,3 +1,4 @@
+import { API_URL, API_BASE_URL } from '../../../config';
 import { useState, useEffect } from "react";
 import { motion } from "motion/react";
 import { Briefcase, Video, ExternalLink, Calendar, Link as LinkIcon, Loader2 } from "lucide-react";
@@ -16,8 +17,8 @@ export default function Career() {
         if (!token) return;
         
         const [resInt, resJobs] = await Promise.all([
-          fetch("http://localhost:5000/api/interviews/me", { headers: { "Authorization": `Bearer ${token}` } }),
-          fetch("http://localhost:5000/api/jobs", { headers: { "Authorization": `Bearer ${token}` } })
+          fetch(`${API_URL}/interviews/me`, { headers: { "Authorization": `Bearer ${token}` } }),
+          fetch(`${API_URL}/jobs`, { headers: { "Authorization": `Bearer ${token}` } })
         ]);
         
         const dataInt = await resInt.json();

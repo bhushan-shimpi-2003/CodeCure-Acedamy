@@ -1,3 +1,4 @@
+import { API_URL, API_BASE_URL } from '../../../config';
 import { useState, useEffect } from "react";
 import { motion } from "motion/react";
 import { Play, Calendar, Users, Terminal, Youtube, BookOpen, CheckCircle, GraduationCap, Loader2, FileText, Video, MessageSquare, ArrowRight } from "lucide-react";
@@ -16,7 +17,7 @@ export default function Overview({ setActiveTab }: { setActiveTab?: (tab: string
     setIsLoading(true);
     try {
       // Fetch all public courses
-      const coursesRes = await fetch("http://localhost:5000/api/courses");
+      const coursesRes = await fetch(`${API_URL}/courses`);
       const coursesData = await coursesRes.json();
       if (coursesData.success) {
         setAvailableCourses(coursesData.data);
@@ -24,7 +25,7 @@ export default function Overview({ setActiveTab }: { setActiveTab?: (tab: string
 
       // Fetch my enrollments and requests
       if (token) {
-        const enrollRes = await fetch("http://localhost:5000/api/enrollments/me", {
+        const enrollRes = await fetch(`${API_URL}/enrollments/me`, {
           headers: { "Authorization": `Bearer ${token}` }
         });
         const enrollData = await enrollRes.json();
@@ -32,7 +33,7 @@ export default function Overview({ setActiveTab }: { setActiveTab?: (tab: string
           setEnrollments(enrollData.data);
         }
 
-        const reqRes = await fetch("http://localhost:5000/api/enrollments/requests/me", {
+        const reqRes = await fetch(`${API_URL}/enrollments/requests/me`, {
           headers: { "Authorization": `Bearer ${token}` }
         });
         const reqData = await reqRes.json();
@@ -54,7 +55,7 @@ export default function Overview({ setActiveTab }: { setActiveTab?: (tab: string
   const handleRequestEnrollment = async (courseId: string) => {
     setIsRequesting(courseId);
     try {
-      const res = await fetch("http://localhost:5000/api/enrollments/request", {
+      const res = await fetch(`${API_URL}/enrollments/request`, {
         method: "POST",
         headers: { 
           "Content-Type": "application/json",

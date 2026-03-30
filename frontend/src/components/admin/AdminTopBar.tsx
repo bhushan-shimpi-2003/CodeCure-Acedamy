@@ -1,3 +1,4 @@
+import { API_URL, API_BASE_URL } from '../../config';
 import { Menu, Bell, Search, User } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
 
@@ -35,7 +36,7 @@ export default function AdminTopBar({ setIsSidebarOpen }: any) {
           </div>
           <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 border border-blue-200 overflow-hidden">
             {user?.profile_picture && user.profile_picture !== 'no-photo.jpg' ? (
-              <img src={user.profile_picture.startsWith('http') ? user.profile_picture : `http://localhost:5000${user.profile_picture}`} alt="Profile" className="w-full h-full object-cover" />
+              <img src={user.profile_picture.startsWith('http') ? user.profile_picture : `${API_BASE_URL}${user.profile_picture}`} alt="Profile" className="w-full h-full object-cover" />
             ) : (
               <User className="w-5 h-5" />
             )}

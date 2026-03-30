@@ -1,9 +1,10 @@
+import { API_URL, API_BASE_URL } from '../../../config';
 import { useState, useEffect } from "react";
 import { motion } from "motion/react";
 import { DollarSign, ArrowUpRight, LayoutDashboard, CreditCard, Loader2 } from "lucide-react";
 import { useAuth } from "../../../context/AuthContext";
 
-const API = "http://localhost:5000/api";
+const API = API_URL;
 
 export default function AdminFinance() {
   const { token } = useAuth();

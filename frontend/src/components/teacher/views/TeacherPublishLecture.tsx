@@ -1,10 +1,11 @@
+import { API_URL, API_BASE_URL } from '../../../config';
 import React, { useState, useEffect } from "react";
 import { motion } from "motion/react";
 import { CheckCircle, Link as LinkIcon, Type, FileText, LayoutDashboard, Loader2, BookOpen, Video, Film } from "lucide-react";
 import Select from "../../ui/Select";
 import { useAuth } from "../../../context/AuthContext";
 
-const API = "http://localhost:5000/api";
+const API = API_URL;
 
 export default function TeacherPublishLecture() {
   const { token } = useAuth();
