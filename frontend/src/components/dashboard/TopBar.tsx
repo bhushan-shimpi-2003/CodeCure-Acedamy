@@ -1,9 +1,7 @@
-import { Menu, Bell, Search, User } from "lucide-react";
-import { useAuth } from "../../context/AuthContext";
-import { API_BASE_URL } from "../../config";
+import { Menu, Bell, Search } from "lucide-react";
+import UserMenu from "./UserMenu";
 
-export default function TopBar({ setIsSidebarOpen }: any) {
-  const { user } = useAuth();
+export default function TopBar({ setIsSidebarOpen, setActiveTab }: any) {
 
   return (
     <header className="h-16 bg-white/80 backdrop-blur-md border-b border-slate-200 flex items-center justify-between px-4 md:px-8 sticky top-0 z-30">
@@ -29,19 +27,7 @@ export default function TopBar({ setIsSidebarOpen }: any) {
           <Bell className="w-5 h-5" />
           <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
         </button>
-        <div className="flex items-center gap-3 pl-4 border-l border-slate-200">
-          <div className="hidden md:block text-right">
-            <p className="text-sm font-semibold text-slate-900">{user?.name || "Student"}</p>
-            <p className="text-xs text-slate-500 capitalize">{user?.role || "Student"}</p>
-          </div>
-          <div className="w-9 h-9 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 border border-blue-200 overflow-hidden">
-            {user?.profile_picture && user?.profile_picture !== 'no-photo.jpg' ? (
-              <img src={user.profile_picture.startsWith('http') ? user.profile_picture : `${API_BASE_URL}${user.profile_picture}`} alt={user.name} className="w-full h-full object-cover" />
-            ) : (
-              <User className="w-5 h-5" />
-            )}
-          </div>
-        </div>
+        <UserMenu onProfileClick={() => setActiveTab('profile')} />
       </div>
     </header>
   );

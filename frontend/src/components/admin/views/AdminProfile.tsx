@@ -15,8 +15,6 @@ export default function AdminProfile() {
   const [password, setPassword] = useState("");
   const [isSaving, setIsSaving] = useState(false);
   const [saved, setSaved] = useState(false);
-  const [profilePic, setProfilePic] = useState<string | null>(null);
-  const [isUploading, setIsUploading] = useState(false);
   const [error, setError] = useState("");
 
   useEffect(() => {
@@ -24,38 +22,8 @@ export default function AdminProfile() {
       setName(user.name || "");
       setEmail(user.email || "");
       setPhone(user.phone || "");
-      if (user.profile_picture && user.profile_picture !== 'no-photo.jpg') {
-        setProfilePic(user.profile_picture);
-      }
     }
   }, [user]);
-
-  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    setIsUploading(true);
-    const formData = new FormData();
-    formData.append("image", file);
-
-    try {
-      const res = await fetch(`${API}/upload/image`, {
-        method: "POST",
-        headers: { Authorization: `Bearer ${token}` },
-        body: formData,
-      });
-      const data = await res.json();
-      if (data.success) {
-        setProfilePic(data.url);
-      } else {
-        setError(data.error || "Failed to upload image");
-      }
-    } catch {
-      setError("Server error during upload");
-    } finally {
-      setIsUploading(false);
-    }
-  };
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -66,7 +34,7 @@ export default function AdminProfile() {
       const res = await fetch(`${API}/auth/me`, {
         method: "PUT",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-        body: JSON.stringify({ name, email, phone, profile_picture: profilePic, ...(password && { password }) }),
+        body: JSON.stringify({ name, email, phone, ...(password && { password }) }),
       });
       const data = await res.json();
       if (data.success) {
@@ -83,6 +51,8 @@ export default function AdminProfile() {
     }
   };
 
+  const getInitials = (n: string) => n.split(' ').map(x => x[0]).join('').toUpperCase().slice(0, 2);
+
   return (
     <div className="space-y-6 max-w-2xl mx-auto pb-12">
       <div className="border-b border-slate-200 pb-4">
@@ -98,37 +68,15 @@ export default function AdminProfile() {
         animate={{ opacity: 1, y: 0 }}
         className="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden"
       >
-        {/* Header Banner */}
-        <div className="h-24 bg-linear-to-r from-blue-600 via-indigo-600 to-violet-600 relative">
-          <div className="absolute -bottom-10 left-6">
-            <label className="w-20 h-20 bg-white rounded-2xl shadow-lg border-4 border-white flex items-center justify-center relative group overflow-hidden cursor-pointer cursor-allowed disabled:cursor-not-allowed">
-              {profilePic ? (
-                <img src={profilePic.startsWith("http") ? profilePic : `${API_BASE_URL}${profilePic}`} className="w-full h-full object-cover" alt="Profile" />
-              ) : (
-                <User className="w-10 h-10 text-blue-600" />
-              )}
-              <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                {isUploading ? <Loader2 className="w-5 h-5 text-white animate-spin" /> : <Camera className="w-6 h-6 text-white" />}
-              </div>
-              <input type="file" accept="image/*" className="hidden" onChange={handleImageUpload} disabled={isUploading} />
-            </label>
-          </div>
-        </div>
-
-        <div className="pt-14 px-6 pb-2">
-          <div className="flex items-center gap-3">
-            <p className="text-lg font-bold text-slate-900">{user?.name || "User"}</p>
-            <span className={`px-2.5 py-0.5 text-[10px] font-bold rounded-full border ${
-              user?.role === "admin"
-                ? "bg-purple-50 text-purple-700 border-purple-200"
-                : user?.role === "teacher"
-                ? "bg-blue-50 text-blue-700 border-blue-200"
-                : "bg-green-50 text-green-700 border-green-200"
-            }`}>
-              {(user?.role || "student").toUpperCase()}
-            </span>
-          </div>
-          <p className="text-sm text-slate-500 mt-1">{user?.email}</p>
+        {/* Header Banner - Simple Gradient */}
+        <div className="h-32 bg-linear-to-r from-blue-600 via-indigo-600 to-violet-600 flex items-center px-8">
+            <div className="w-20 h-20 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center text-white text-2xl font-bold border border-white/30">
+                {getInitials(user?.name || "CC")}
+            </div>
+            <div className="ml-6 text-white">
+                <h2 className="text-xl font-bold">{user?.name}</h2>
+                <p className="text-blue-100 text-sm uppercase tracking-wider font-bold">{user?.role}</p>
+            </div>
         </div>
 
         {/* Form */}

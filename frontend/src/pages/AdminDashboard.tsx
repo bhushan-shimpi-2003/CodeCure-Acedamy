@@ -43,7 +43,7 @@ export default function AdminDashboard() {
     <div className="admin-theme h-screen w-full bg-slate-50 text-slate-900 flex overflow-hidden selection:bg-blue-100 selection:text-blue-900">
       <AdminSidebar activeTab={activeTab} setActiveTab={setActiveTab} isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen} />
       <div className="flex-1 flex flex-col h-screen overflow-hidden relative z-10">
-        <AdminTopBar setIsSidebarOpen={setIsSidebarOpen} />
+        <AdminTopBar setIsSidebarOpen={setIsSidebarOpen} setActiveTab={setActiveTab} />
         <main className="flex-1 overflow-y-auto p-4 md:p-8 min-h-0">
           <AnimatePresence mode="wait">
             <motion.div
