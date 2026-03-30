@@ -3,7 +3,7 @@ import { motion } from "motion/react";
 import { User, Mail, Phone, Shield, Save, Loader2, CheckCircle, Lock, Camera } from "lucide-react";
 import { useAuth } from "../../../context/AuthContext";
 
-import { API_URL } from '../../../config';
+import { API_URL, API_BASE_URL } from '../../../config';
 const API = API_URL;
 
 export default function StudentProfile() {
@@ -102,7 +102,7 @@ export default function StudentProfile() {
           <div className="absolute -bottom-10 left-6">
             <label className="w-20 h-20 bg-white rounded-2xl shadow-lg border-4 border-white flex items-center justify-center relative group overflow-hidden cursor-pointer cursor-allowed disabled:cursor-not-allowed">
               {profilePic ? (
-                <img src={profilePic.startsWith("http") ? profilePic : `http://localhost:5000${profilePic}`} className="w-full h-full object-cover" alt="Profile" />
+                <img src={profilePic.startsWith("http") ? profilePic : `${API_BASE_URL}${profilePic}`} className="w-full h-full object-cover" alt="Profile" />
               ) : (
                 <User className="w-10 h-10 text-blue-600" />
               )}
