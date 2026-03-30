@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { motion } from "motion/react";
 import { Search, Filter, BookOpen, Clock, Star, ArrowRight, GraduationCap, Loader2 } from "lucide-react";
 import { Link } from "react-router-dom";
+import { API_URL, API_BASE_URL } from "../config";
 
 export default function Courses() {
   const [courses, setCourses] = useState<any[]>([]);
@@ -11,7 +12,7 @@ export default function Courses() {
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        const res = await fetch("http://localhost:5000/api/courses");
+        const res = await fetch(`${API_URL}/courses`);
         const data = await res.json();
         if (data.success) {
           setCourses(data.data);
@@ -47,7 +48,7 @@ export default function Courses() {
           transition={{ delay: 0.1 }}
           className="text-4xl md:text-5xl font-bold text-slate-900 mb-6 tracking-tight"
         >
-          Master <span className="text-blue-600">Automation</span>
+          Explore Our <span className="text-blue-600">Courses</span>
         </motion.h1>
         <motion.p 
           initial={{ opacity: 0, y: 20 }}
@@ -55,7 +56,7 @@ export default function Courses() {
           transition={{ delay: 0.2 }}
           className="text-slate-600 max-w-2xl mx-auto text-lg"
         >
-          Industry-aligned curriculum designed to transform you into a top-tier SDET.
+          Master any skill with industry-aligned curriculum designed to transform your career.
         </motion.p>
       </div>
 
@@ -94,8 +95,12 @@ export default function Courses() {
               className="bg-white border border-slate-200 rounded-3xl overflow-hidden group hover:shadow-xl hover:border-blue-200 transition-all flex flex-col"
             >
               <div className="relative h-48 overflow-hidden bg-slate-100 flex items-center justify-center">
-                {course.thumbnail_url ? (
-                  <img src={course.thumbnail_url} alt={course.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                {course.thumbnail && course.thumbnail !== 'no-course-photo.jpg' ? (
+                  <img 
+                    src={course.thumbnail.startsWith('http') ? course.thumbnail : `${API_BASE_URL}/uploads/${course.thumbnail}`} 
+                    alt={course.title} 
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
+                  />
                 ) : (
                   <GraduationCap className="w-16 h-16 text-slate-300" />
                 )}

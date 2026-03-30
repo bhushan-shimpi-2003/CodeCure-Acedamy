@@ -4,7 +4,8 @@ import { FileCode2, Send, Calendar, FileText, GraduationCap, Loader2, BookOpen, 
 import Select from "../../ui/Select";
 import { useAuth } from "../../../context/AuthContext";
 
-const API = "http://localhost:5000/api";
+import { API_URL } from '../../../config';
+const API = API_URL;
 
 export default function TeacherAssignments() {
   const { token } = useAuth();
@@ -172,7 +173,7 @@ export default function TeacherAssignments() {
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-white border border-slate-200 rounded-2xl p-6 md:p-8 relative overflow-hidden shadow-sm"
+        className="bg-white border border-slate-200 rounded-2xl p-6 md:p-8 relative shadow-sm"
       >
         <div className="absolute top-0 left-0 w-full h-1.5 bg-blue-600"></div>
         
@@ -220,7 +221,7 @@ export default function TeacherAssignments() {
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-slate-700 mb-2 flex items-center gap-2">
+              <label className="flex text-sm font-semibold text-slate-700 mb-2 items-center gap-2">
                 <FileText className="w-4 h-4 text-slate-400" /> Assignment Title
               </label>
               <input 
@@ -234,7 +235,7 @@ export default function TeacherAssignments() {
             </div>
             
             <div>
-              <label className="block text-sm font-semibold text-slate-700 mb-2 flex items-center gap-2">
+              <label className="flex text-sm font-semibold text-slate-700 mb-2 items-center gap-2">
                 <FileText className="w-4 h-4 text-slate-400" /> Description
               </label>
               <textarea 
@@ -248,7 +249,7 @@ export default function TeacherAssignments() {
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-slate-700 mb-2 flex items-center gap-2">
+              <label className="flex text-sm font-semibold text-slate-700 mb-2 items-center gap-2">
                 <Calendar className="w-4 h-4 text-slate-400" /> Due Date
               </label>
               <input 
@@ -301,7 +302,7 @@ export default function TeacherAssignments() {
                     <div>
                       <h3 className="font-bold text-slate-900 group-hover:text-blue-600 transition-colors">{a.title}</h3>
                       <p className="text-xs text-slate-500 mt-0.5">
-                        Due: {new Date(a.due_date).toLocaleString()}
+                        Due: {a.due_date ? new Date(a.due_date).toLocaleString() : "No deadline"}
                       </p>
                     </div>
                     <div>

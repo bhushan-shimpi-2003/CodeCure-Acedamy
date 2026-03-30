@@ -1,12 +1,15 @@
 import { useState, useEffect } from "react";
 import { motion } from "motion/react";
-import { BookOpen, Eye, GraduationCap, Loader2, Users } from "lucide-react";
+import { BookOpen, Eye, GraduationCap, Loader2, Users, ExternalLink } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../../context/AuthContext";
 
-const API = "http://localhost:5000/api";
+import { API_URL } from '../../../config';
+const API = API_URL;
 
-export default function TeacherClasses() {
+export default function TeacherClasses({ onSelectCourse }: { onSelectCourse: (id: string) => void }) {
   const { token } = useAuth();
+  const navigate = useNavigate();
   const [courses, setCourses] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -64,7 +67,7 @@ export default function TeacherClasses() {
               <div className="flex justify-between items-start mb-6 pl-4">
                 <div>
                   <h3 className="font-bold text-slate-900 text-lg">{course.title}</h3>
-                  <p className="text-sm text-blue-600 font-semibold mt-1">{course.status === 'published' ? 'Published' : 'Draft'}</p>
+                  <p className="text-sm text-blue-600 font-semibold mt-1">{course.status === 'active' ? 'Published' : 'Draft'}</p>
                 </div>
                 <div className="bg-blue-50 p-2 rounded-lg">
                   <BookOpen className="w-5 h-5 text-blue-600" />
@@ -86,9 +89,18 @@ export default function TeacherClasses() {
                 </div>
               </div>
 
-              <div className="flex items-center gap-3 pl-4 border-t border-slate-100 pt-5">
-                <button className="flex-1 bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 hover:text-blue-600 px-4 py-2.5 rounded-xl text-sm font-semibold transition-colors flex items-center justify-center gap-2 shadow-sm">
-                  <Eye className="w-4 h-4" /> View Details
+              <div className="flex flex-col sm:flex-row items-center gap-3 pl-4 border-t border-slate-100 pt-5 mt-auto">
+                <button 
+                  onClick={() => onSelectCourse(course.id)}
+                  className="w-full sm:w-auto flex-1 bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 hover:text-blue-600 px-4 py-2.5 rounded-xl text-sm font-bold transition-all flex items-center justify-center gap-2 shadow-sm"
+                >
+                  <Eye className="w-4 h-4" /> View Insights
+                </button>
+                <button 
+                  onClick={() => navigate(`/courses/${course.slug || course.id}`)}
+                  className="w-full sm:w-auto flex-1 bg-blue-50 text-blue-700 hover:bg-blue-600 hover:text-white px-4 py-2.5 rounded-xl text-sm font-bold transition-all flex items-center justify-center gap-2"
+                >
+                  <ExternalLink className="w-4 h-4" /> Preview
                 </button>
               </div>
             </motion.div>

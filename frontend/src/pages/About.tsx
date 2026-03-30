@@ -1,4 +1,4 @@
-﻿import { motion } from "motion/react";
+import { motion } from "motion/react";
 import { Target, Zap, Users, Shield, Info } from "lucide-react";
 
 export default function About() {
@@ -19,7 +19,7 @@ export default function About() {
           transition={{ delay: 0.1 }}
           className="text-4xl md:text-5xl font-bold text-slate-900 mb-6 tracking-tight"
         >
-          Empowering the Next Generation<br />of <span className="text-blue-600">Automation Engineers</span>
+          Empowering the Next Generation<br />of <span className="text-blue-600">Tech Professionals</span>
         </motion.h1>
       </div>
 

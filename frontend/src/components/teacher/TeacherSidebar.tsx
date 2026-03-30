@@ -1,19 +1,19 @@
 import { motion } from "motion/react";
-import { LayoutDashboard, Users, FileText, Video, MessageSquare, X, LogOut, GraduationCap, User, Briefcase } from "lucide-react";
+import { LayoutDashboard, Users, FileText, Video, MessageSquare, X, LogOut, GraduationCap, User, Briefcase, SendHorizontal, Youtube, BookOpen, FileCode2 } from "lucide-react";
 import { Link } from "react-router-dom";
 
 export default function TeacherSidebar({ activeTab, setActiveTab, isOpen, setIsOpen }: any) {
   const navItems = [
     { id: "overview", label: "Overview", icon: LayoutDashboard },
-    { id: "publish", label: "Publish Lecture", icon: Video },
-    { id: "lessons", label: "Published Content", icon: FileText },
-    { id: "courses", label: "Active Courses", icon: FileText },
+    { id: "publish", label: "Publish Lecture", icon: SendHorizontal },
+    { id: "lessons", label: "Published Content", icon: Youtube },
+    { id: "courses", label: "Assigned Courses", icon: BookOpen },
     { id: "students", label: "Students", icon: Users },
-    { id: "assignments", label: "Assignments", icon: FileText },
+    { id: "assignments", label: "Assignments", icon: FileCode2 },
     { id: "interviews", label: "Mock Interviews", icon: Video },
-    { id: "jobs", label: "Job Openings", icon: Briefcase },
+    { id: "jobs", label: "Job Postings", icon: Briefcase },
     { id: "doubts", label: "Doubt Support", icon: MessageSquare },
-    { id: "profile", label: "Profile", icon: User },
+    { id: "profile", label: "Settings", icon: User },
   ];
 
   return (

@@ -1,4 +1,4 @@
-﻿import { motion } from "motion/react";
+import { motion } from "motion/react";
 import { ArrowRight, Rocket } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "../components/ui/button";
@@ -25,11 +25,11 @@ export default function FinalCTA() {
           
           <h2 className="text-4xl md:text-6xl font-bold text-white mb-6 leading-tight">
             Ready to Launch Your <br className="hidden md:block" />
-            <span className="text-blue-200">Automation Career?</span>
+            <span className="text-blue-200">Tech Career?</span>
           </h2>
           
           <p className="text-lg text-blue-100 mb-10 max-w-2xl mx-auto leading-relaxed">
-            Join Codecure Acedamy today and transform from a manual tester to a highly-paid SDET in just 12 weeks.
+            Join Codecure Acedamy today and transform your future with industry-led certification programs.
           </p>
           
           <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">

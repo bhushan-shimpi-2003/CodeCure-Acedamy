@@ -1,4 +1,4 @@
-﻿import { Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { BookOpen, Mail, Phone, MapPin, Linkedin, Twitter, Youtube } from "lucide-react";
 
 export default function Footer() {
@@ -13,11 +13,11 @@ export default function Footer() {
                 <BookOpen className="w-5 h-5" />
               </div>
               <span className="font-bold text-xl tracking-tight text-slate-900">
-                Codecure Acedamy
+                Codecure Academy
               </span>
             </Link>
             <p className="text-slate-600 text-sm leading-relaxed">
-              Empowering the next generation of SDETs and Automation Engineers with real-world skills and industry-standard frameworks.
+              Empowering the next generation of modern tech professionals with real-world skills and industry-standard training.
             </p>
             <div className="flex gap-4 pt-2">
               <a href="#" className="bg-slate-50 p-2 rounded-full border border-slate-200 text-slate-600 hover:bg-blue-50 hover:text-blue-600 hover:border-blue-200 transition-colors">
@@ -39,7 +39,7 @@ export default function Footer() {
               <li><Link to="/courses" className="text-slate-600 hover:text-blue-600 text-sm transition-colors">Course Catalog</Link></li>
               <li><Link to="/about" className="text-slate-600 hover:text-blue-600 text-sm transition-colors">About Us</Link></li>
               <li><Link to="/contact" className="text-slate-600 hover:text-blue-600 text-sm transition-colors">Contact</Link></li>
-              <li><a href="/#curriculum" className="text-slate-600 hover:text-blue-600 text-sm transition-colors">Curriculum</a></li>
+              <li><Link to="/courses" className="text-slate-600 hover:text-blue-600 text-sm transition-colors">Syllabus</Link></li>
             </ul>
           </div>
 

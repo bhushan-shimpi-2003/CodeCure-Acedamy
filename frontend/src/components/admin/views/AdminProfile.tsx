@@ -3,7 +3,8 @@ import { motion } from "motion/react";
 import { User, Mail, Phone, Shield, Save, Loader2, CheckCircle, Lock, Camera } from "lucide-react";
 import { useAuth } from "../../../context/AuthContext";
 
-const API = "http://localhost:5000/api";
+import { API_URL } from '../../../config';
+const API = API_URL;
 
 export default function AdminProfile() {
   const { user, token, updateUser } = useAuth();
@@ -97,7 +98,7 @@ export default function AdminProfile() {
         className="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden"
       >
         {/* Header Banner */}
-        <div className="h-24 bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 relative">
+        <div className="h-24 bg-linear-to-r from-blue-600 via-indigo-600 to-violet-600 relative">
           <div className="absolute -bottom-10 left-6">
             <label className="w-20 h-20 bg-white rounded-2xl shadow-lg border-4 border-white flex items-center justify-center relative group overflow-hidden cursor-pointer cursor-allowed disabled:cursor-not-allowed">
               {profilePic ? (
@@ -141,7 +142,7 @@ export default function AdminProfile() {
           )}
 
           <div>
-            <label className="block text-sm font-semibold text-slate-700 mb-2 flex items-center gap-2">
+            <label className="flex text-sm font-semibold text-slate-700 mb-2 items-center gap-2">
               <User className="w-4 h-4 text-slate-400" /> Full Name
             </label>
             <input
@@ -152,7 +153,7 @@ export default function AdminProfile() {
           </div>
 
           <div>
-            <label className="block text-sm font-semibold text-slate-700 mb-2 flex items-center gap-2">
+            <label className="flex text-sm font-semibold text-slate-700 mb-2 items-center gap-2">
               <Mail className="w-4 h-4 text-slate-400" /> Email Address
             </label>
             <input
@@ -163,7 +164,7 @@ export default function AdminProfile() {
           </div>
 
           <div>
-            <label className="block text-sm font-semibold text-slate-700 mb-2 flex items-center gap-2">
+            <label className="flex text-sm font-semibold text-slate-700 mb-2 items-center gap-2">
               <Lock className="w-4 h-4 text-slate-400" /> New Password
             </label>
             <input
@@ -175,7 +176,7 @@ export default function AdminProfile() {
           </div>
 
           <div>
-            <label className="block text-sm font-semibold text-slate-700 mb-2 flex items-center gap-2">
+            <label className="flex text-sm font-semibold text-slate-700 mb-2 items-center gap-2">
               <Phone className="w-4 h-4 text-slate-400" /> Phone Number
             </label>
             <input
@@ -187,7 +188,7 @@ export default function AdminProfile() {
           </div>
 
           <div>
-            <label className="block text-sm font-semibold text-slate-700 mb-2 flex items-center gap-2">
+            <label className="flex text-sm font-semibold text-slate-700 mb-2 items-center gap-2">
               <Shield className="w-4 h-4 text-slate-400" /> Role
             </label>
             <input

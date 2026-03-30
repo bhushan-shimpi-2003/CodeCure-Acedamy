@@ -4,24 +4,24 @@ import { TrendingDown, Clock, Compass } from "lucide-react";
 const painPoints = [
   {
     icon: Clock,
-    title: "Stuck in Manual Testing",
-    desc: "Spending hours on repetitive tasks while missing out on learning opportunities and career growth.",
+    title: "High Educational Costs",
+    desc: "Premium education shouldn't break the bank. We provide world-class training at affordable rates.",
     color: "text-rose-500",
     bg: "bg-rose-50",
     border: "border-rose-100"
   },
   {
     icon: TrendingDown,
-    title: "Stagnant Salary Growth",
-    desc: "Manual testers often face slower salary growth compared to automation engineers who earn significantly more.",
+    title: "Lack of Mentorship",
+    desc: "Most online courses leave you stranded. We provide 24/7 doubt support from real industry developers.",
     color: "text-amber-500",
     bg: "bg-amber-50",
     border: "border-amber-100"
   },
   {
     icon: Compass,
-    title: "Unclear Career Roadmap",
-    desc: "Feeling overwhelmed by the sheer number of tools and outdated tutorials, unsure of where to start.",
+    title: "Outdated Curriculum",
+    desc: "Stop learning tools that nobody uses. Master the exact technologies that modern tech companies demand.",
     color: "text-blue-500",
     bg: "bg-blue-50",
     border: "border-blue-100"
@@ -34,10 +34,10 @@ export default function PainPoints() {
       <div className="container mx-auto px-4 md:px-6">
         <div className="text-center max-w-3xl mx-auto mb-16">
           <h2 className="text-3xl md:text-5xl font-bold text-slate-900 mb-6">
-            Are You Facing These <span className="text-blue-600">Challenges?</span>
+            Stop Struggling with <span className="text-blue-600">Old Education</span>
           </h2>
           <p className="text-lg text-slate-600">
-            Many testers struggle to transition into automation. We understand the hurdles you're facing.
+            Join the modern learning revolution and launch your career with confidence.
           </p>
         </div>
 

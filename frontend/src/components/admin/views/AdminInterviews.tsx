@@ -3,7 +3,8 @@ import { motion } from "motion/react";
 import { Video, LayoutDashboard, Search, Loader2, CheckSquare } from "lucide-react";
 import { useAuth } from "../../../context/AuthContext";
 
-const API = "http://localhost:5000/api";
+import { API_URL } from '../../../config';
+const API = API_URL;
 
 export default function AdminInterviews() {
   const { token } = useAuth();

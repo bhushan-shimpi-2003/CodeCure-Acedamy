@@ -4,7 +4,8 @@ import { PlayCircle, FileText, Lock, MessageSquare, Send, BookOpen, Loader2 } fr
 import Select from "../../ui/Select";
 import { useAuth } from "../../../context/AuthContext";
 
-const API = "http://localhost:5000/api";
+import { API_URL } from '../../../config';
+const API = API_URL;
 
 export default function Lectures() {
   const { user, token } = useAuth();

@@ -3,7 +3,8 @@ import { motion } from "motion/react";
 import { MessageSquare, CheckCircle, Clock, GraduationCap, Loader2, Send } from "lucide-react";
 import { useAuth } from "../../../context/AuthContext";
 
-const API = "http://localhost:5000/api";
+import { API_URL } from '../../../config';
+const API = API_URL;
 
 export default function TeacherDoubts() {
   const { token } = useAuth();

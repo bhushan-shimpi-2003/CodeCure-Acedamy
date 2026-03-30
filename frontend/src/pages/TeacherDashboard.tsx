@@ -12,17 +12,26 @@ import TeacherDoubts from "../components/teacher/views/TeacherDoubts";
 import TeacherProfile from "../components/teacher/views/TeacherProfile";
 import TeacherLessons from "../components/teacher/views/TeacherLessons";
 import JobsManagement from "../components/shared/JobsManagement";
+import TeacherCourseDetail from "../components/teacher/views/TeacherCourseDetail";
 
 export default function TeacherDashboard() {
   const [activeTab, setActiveTab] = useState("overview");
+  const [selectedCourseId, setSelectedCourseId] = useState<string | null>(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  const handleSelectCourse = (courseId: string) => {
+    setSelectedCourseId(courseId);
+    setActiveTab("course-detail");
+  };
 
   const renderView = () => {
     switch (activeTab) {
       case "overview": return <TeacherOverview setActiveTab={setActiveTab} />;
       case "publish": return <TeacherPublishLecture />;
       case "lessons": return <TeacherLessons />;
-      case "courses": return <TeacherClasses />;
+      case "courses": return <TeacherClasses onSelectCourse={handleSelectCourse} />;
+      case "course-detail": 
+        return selectedCourseId ? <TeacherCourseDetail courseId={selectedCourseId} onBack={() => setActiveTab("courses")} /> : <TeacherClasses onSelectCourse={handleSelectCourse} />;
       case "students": return <TeacherStudents />;
       case "assignments": return <TeacherAssignments />;
       case "interviews": return <TeacherInterviews />;

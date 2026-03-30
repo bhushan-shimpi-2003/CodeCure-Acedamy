@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { motion } from "motion/react";
 import { Briefcase, Building, MapPin, DollarSign, Link as LinkIcon, Plus, Loader2, Trash2 } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
+import { API_URL } from '../../config';
 
 export default function JobsManagement({ role = "Admin" }: { role?: "Admin" | "Teacher" }) {
   const { token } = useAuth();
@@ -22,7 +23,7 @@ export default function JobsManagement({ role = "Admin" }: { role?: "Admin" | "T
     setIsLoading(true);
     try {
       if (!token) return;
-      const res = await fetch("http://localhost:5000/api/jobs", {
+      const res = await fetch(`${API_URL}/jobs`, {
         headers: { "Authorization": `Bearer ${token}` }
       });
       const data = await res.json();
@@ -46,7 +47,7 @@ export default function JobsManagement({ role = "Admin" }: { role?: "Admin" | "T
     
     setIsSubmitting(true);
     try {
-      const res = await fetch("http://localhost:5000/api/jobs", {
+      const res = await fetch(`${API_URL}/jobs`, {
         method: "POST",
         headers: {
           "Authorization": `Bearer ${token}`,
@@ -73,7 +74,7 @@ export default function JobsManagement({ role = "Admin" }: { role?: "Admin" | "T
   const handleDelete = async (id: string) => {
     if (!window.confirm("Are you sure you want to delete this job posting?")) return;
     try {
-      const res = await fetch(`http://localhost:5000/api/jobs/${id}`, {
+      const res = await fetch(`${API_URL}/jobs/${id}`, {
         method: "DELETE",
         headers: { "Authorization": `Bearer ${token}` }
       });
@@ -177,7 +178,7 @@ export default function JobsManagement({ role = "Admin" }: { role?: "Admin" | "T
                 <div className="flex justify-between text-sm">
                   <span className="flex items-center gap-2 text-slate-500"><LinkIcon className="w-4 h-4" /> Apply URL</span>
                   {job.apply_url ? (
-                    <a href={job.apply_url} target="_blank" rel="noreferrer" className="font-bold text-blue-600 hover:underline truncate max-w-[150px] block">Link</a>
+                    <a href={job.apply_url} target="_blank" rel="noreferrer" className="font-bold text-blue-600 hover:underline truncate max-w-50 block">Link</a>
                   ) : <span className="font-bold text-slate-400">None</span>}
                 </div>
               </div>

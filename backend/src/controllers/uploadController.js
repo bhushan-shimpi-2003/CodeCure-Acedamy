@@ -37,7 +37,8 @@ exports.uploadImage = (req, res) => {
       return res.status(400).json({ success: false, error: 'No file uploaded' });
     }
     // Return relative path so it can be prefixed by frontend if running on same server, or full absolute URL
-    const fileUrl = `http://localhost:5000/uploads/${req.file.filename}`;
+    const baseUrl = process.env.BACKEND_URL || process.env.RENDER_EXTERNAL_URL || `http://localhost:${process.env.PORT || 5000}`;
+    const fileUrl = `${baseUrl}/uploads/${req.file.filename}`;
     res.status(200).json({ success: true, url: fileUrl });
   });
 };

@@ -10,7 +10,8 @@ import {
   Video, 
   MessageSquare,
   ArrowRight,
-  GraduationCap
+  GraduationCap,
+  FileCode2
 } from "lucide-react";
 import { useAuth } from "../../../context/AuthContext";
 
@@ -69,7 +70,7 @@ export default function TeacherOverview({ setActiveTab }: { setActiveTab?: (tab:
       });
       const doubtsData = await doubtsRes.json();
       if (doubtsData.success) {
-        setPendingDoubtsCount(doubtsData.data.filter((d: any) => d.status === 'open').length);
+        setPendingDoubtsCount(doubtsData.data.filter((d: any) => d.status === 'pending').length);
       }
 
     } catch (err) {
@@ -89,7 +90,7 @@ export default function TeacherOverview({ setActiveTab }: { setActiveTab?: (tab:
   const quickActions = [
     { label: "Publish New Lecture", desc: "Upload Youtube video links", icon: Youtube, tab: "publish", color: "text-red-600 bg-red-50 hover:bg-red-100 border-red-200" },
     { label: "Schedule Interview", desc: "Set up Google Meet sessions", icon: Video, tab: "interviews", color: "text-blue-600 bg-blue-50 hover:bg-blue-100 border-blue-200" },
-    { label: "Distribute Assignment", desc: "Test your students' knowledge", icon: FileText, tab: "assignments", color: "text-emerald-600 bg-emerald-50 hover:bg-emerald-100 border-emerald-200" },
+    { label: "Distribute Assignment", desc: "Test your students' knowledge", icon: FileCode2, tab: "assignments", color: "text-emerald-600 bg-emerald-50 hover:bg-emerald-100 border-emerald-200" },
     { label: "Resolve Doubts", desc: "Reply to student questions", icon: MessageSquare, tab: "doubts", color: "text-amber-600 bg-amber-50 hover:bg-amber-100 border-amber-200" },
   ];
 

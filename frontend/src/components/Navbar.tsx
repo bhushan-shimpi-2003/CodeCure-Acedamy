@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { BookOpen, Menu, X } from "lucide-react";
 import { Button } from "./ui/button";
@@ -29,7 +29,7 @@ export default function Navbar() {
             <BookOpen className="w-5 h-5" />
           </div>
           <span className="font-bold text-xl tracking-tight text-slate-900">
-            Codecure Acedamy
+            Codecure Academy
           </span>
         </Link>
 

@@ -133,8 +133,8 @@ export default function Checkout() {
             <div className="space-y-4 mb-6">
               <div className="flex justify-between items-start">
                 <div>
-                  <div className="font-bold text-slate-900">Playwright Master</div>
-                  <div className="text-sm text-slate-500 mt-1">12 Weeks Track</div>
+                  <div className="font-bold text-slate-900">Premium Course Enrollment</div>
+                  <div className="text-sm text-slate-500 mt-1">Full Certification Track</div>
                 </div>
                 <div className="font-bold text-slate-900">₹15,000</div>
               </div>

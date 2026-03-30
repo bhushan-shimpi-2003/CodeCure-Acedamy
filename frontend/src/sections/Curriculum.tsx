@@ -49,7 +49,7 @@ export default function Curriculum() {
   const [openModule, setOpenModule] = useState<number | null>(0);
 
   return (
-    <section id="curriculum" className="py-24 relative bg-white">
+    <section id="curriculum" className="py-4 relative bg-white">
       <div className="container mx-auto px-4 md:px-6 max-w-4xl">
         <div className="text-center mb-16">
           <div className="inline-flex items-center gap-2 px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm font-semibold mb-4">

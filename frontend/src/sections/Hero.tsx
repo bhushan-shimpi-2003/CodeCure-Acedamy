@@ -27,11 +27,11 @@ export default function Hero() {
             </div>
             
             <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-slate-900 mb-6 leading-[1.15]">
-              Master Software Testing & <span className="text-blue-600">Automation</span>
+              Master Any Skill with <span className="text-blue-600">Industry Experts</span>
             </h1>
             
             <p className="text-lg sm:text-xl text-slate-600 mb-8 leading-relaxed">
-              Join our intensive 12-week program. Learn modern tools like Playwright and Selenium, build real-world projects, and launch your career as an SDET.
+              Unlock your true potential today. Join 2,000+ students mastering Web Development, AI, Automation, and more with industry-led mentorship.
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4 mb-10 w-full">

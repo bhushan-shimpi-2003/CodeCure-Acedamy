@@ -2,14 +2,8 @@ import { motion } from "motion/react";
 import Hero from "../sections/Hero";
 import TrustBar from "../sections/TrustBar";
 import PainPoints from "../sections/PainPoints";
-import Solution from "../sections/Solution";
-import CourseOutcome from "../sections/CourseOutcome";
-import Curriculum from "../sections/Curriculum";
-import Projects from "../sections/Projects";
-import Trainer from "../sections/Trainer";
-import Testimonials from "../sections/Testimonials";
+import FeaturedCourses from "../sections/FeaturedCourses";
 import PlacementSupport from "../sections/PlacementSupport";
-import BatchDetails from "../sections/BatchDetails";
 import FAQ from "../sections/FAQ";
 import FinalCTA from "../sections/FinalCTA";
 
@@ -24,14 +18,8 @@ export default function LandingPage() {
       <Hero />
       <TrustBar />
       <PainPoints />
-      <Solution />
-      <Curriculum />
-      <Projects />
-      <CourseOutcome />
-      <Trainer />
-      <Testimonials />
+      <FeaturedCourses />
       <PlacementSupport />
-      <BatchDetails />
       <FAQ />
       <FinalCTA />
     </motion.div>

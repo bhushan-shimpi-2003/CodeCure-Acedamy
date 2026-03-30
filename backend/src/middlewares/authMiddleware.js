@@ -1,4 +1,5 @@
 const supabase = require('../config/supabaseClient');
+const jwt = require('jsonwebtoken');
 
 /**
  * Protect routes - Verify Supabase Auth token
@@ -24,10 +25,14 @@ exports.protect = async (req, res, next) => {
 
   try {
     // Verify the token with Supabase Auth
-    const { data: { user }, error } = await supabase.auth.getUser(token);
+    // Use the public client for verification to avoid "Auth session missing" errors 
+    // common when using the service-role client on the server.
+    const authResult = await supabase.supabasePublic.auth.getUser(token);
+    const user = authResult.data?.user;
+    const error = authResult.error;
 
     if (error || !user) {
-      console.error('Supabase getUser error:', error);
+      console.error('Supabase getUser error:', error?.message || 'Unauthorized');
       return res.status(401).json({
         success: false,
         error: 'Not authorized - invalid token',

@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { motion } from "motion/react";
 import { Clock, Star, BookOpen, CheckCircle, Play, Shield, ArrowRight, ChevronLeft, GraduationCap, LayoutList, Loader2 } from "lucide-react";
 import { Link, useParams } from "react-router-dom";
+import { API_URL, API_BASE_URL } from "../config";
 
 export default function CourseDetail() {
   const { id } = useParams();
@@ -13,7 +14,7 @@ export default function CourseDetail() {
     const fetchCourse = async () => {
       setIsLoading(true);
       try {
-        const res = await fetch(`http://localhost:5000/api/courses/${id}`);
+        const res = await fetch(`${API_URL}/courses/${id}`);
         const data = await res.json();
         if (data.success) {
           setCourse(data.data);
@@ -58,13 +59,6 @@ export default function CourseDetail() {
   const price = course.price ? `₹${course.price}` : "Free";
   const rating = 4.9;
   const students = 1240;
-  const modules = [
-    "Introduction & Setup",
-    "Core Concepts & Architecture",
-    "Advanced Topics",
-    "Real-World Projects",
-    "Final Assessment"
-  ];
   const features = [
     "Detailed Video Content",
     "Real-world Project Implementation",
@@ -145,14 +139,23 @@ export default function CourseDetail() {
               <LayoutList className="w-6 h-6 text-blue-600" /> Course Curriculum
             </h2>
             <div className="space-y-4">
-              {modules.map((mod, i) => (
-                <div key={i} className="bg-white border border-slate-200 rounded-2xl p-5 flex items-center gap-5 hover:border-blue-200 hover:shadow-md transition-all group">
-                  <div className="w-10 h-10 bg-slate-50 text-slate-500 rounded-xl flex items-center justify-center font-bold text-sm group-hover:bg-blue-50 group-hover:text-blue-600 transition-colors">
-                    {i + 1 < 10 ? `0${i+1}` : i + 1}
+              {course.modules && course.modules.length > 0 ? (
+                course.modules.map((mod: any, i: number) => (
+                  <div key={mod.id || i} className="bg-white border border-slate-200 rounded-2xl p-5 flex items-center gap-5 hover:border-blue-200 hover:shadow-md transition-all group">
+                    <div className="w-10 h-10 bg-slate-50 text-slate-500 rounded-xl flex items-center justify-center font-bold text-sm group-hover:bg-blue-50 group-hover:text-blue-600 transition-colors">
+                      {i + 1 < 10 ? `0${i+1}` : i + 1}
+                    </div>
+                    <div className="flex-1">
+                      <div className="text-slate-700 font-bold group-hover:text-slate-900 transition-colors">{mod.title}</div>
+                      {mod.duration && <div className="text-xs text-slate-400 mt-1 font-medium">{mod.duration}</div>}
+                    </div>
                   </div>
-                  <div className="text-slate-700 font-medium group-hover:text-slate-900 transition-colors">{mod}</div>
+                ))
+              ) : (
+                <div className="p-8 text-center bg-slate-50 rounded-2xl border border-dashed border-slate-200">
+                  <p className="text-slate-500 italic">Curriculum details are being finalized. Check back soon!</p>
                 </div>
-              ))}
+              )}
             </div>
           </div>
         </div>
@@ -165,9 +168,13 @@ export default function CourseDetail() {
             className="bg-white border border-slate-200 rounded-3xl shadow-xl sticky top-24 overflow-hidden"
           >
             <div className="relative h-56 overflow-hidden bg-slate-100 flex items-center justify-center">
-              {course.thumbnail_url ? (
+              {course.thumbnail && course.thumbnail !== 'no-course-photo.jpg' ? (
                 <>
-                  <img src={course.thumbnail_url} alt={course.title} className="w-full h-full object-cover" />
+                  <img 
+                    src={course.thumbnail.startsWith('http') ? course.thumbnail : `${API_BASE_URL}/uploads/${course.thumbnail}`} 
+                    alt={course.title} 
+                    className="w-full h-full object-cover" 
+                  />
                   <div className="absolute inset-0 bg-black/20 flex items-center justify-center z-20 group cursor-pointer hover:bg-black/30 transition-colors">
                     <div className="w-16 h-16 bg-white/90 rounded-full backdrop-blur-sm flex items-center justify-center group-hover:scale-110 transition-transform shadow-lg">
                       <Play className="w-6 h-6 text-blue-600 ml-1" />

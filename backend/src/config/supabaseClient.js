@@ -21,4 +21,14 @@ const supabase = createClient(supabaseUrl, supabaseKey, {
   },
 });
 
+// For public auth verification (bypasses service-role session confusion)
+const supabasePublic = createClient(supabaseUrl, process.env.SUPABASE_ANON_KEY, {
+  auth: {
+    autoRefreshToken: false,
+    persistSession: false,
+  },
+});
+
+// Add extra property while keeping default export
+supabase.supabasePublic = supabasePublic;
 module.exports = supabase;

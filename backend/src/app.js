@@ -27,7 +27,26 @@ const app = express();
 app.use(express.json());
 
 // Enable CORS
-app.use(cors());
+const allowedOrigins = [
+  'http://localhost:5173',
+  process.env.FRONTEND_URL,
+  process.env.VERCEL_URL,
+  process.env.PROD_FRONTEND_URL,
+  'https://your-frontend.vercel.app', // Replace with your actual Vercel domain
+].filter(Boolean);
+
+app.use(cors({
+  origin: function(origin, callback) {
+    // allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.indexOf(origin) === -1) {
+      const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
+      return callback(new Error(msg), false);
+    }
+    return callback(null, true);
+  },
+  credentials: true
+}));
 
 // Static folder for file uploads mapping to \public\uploads
 app.use('/uploads', express.static(path.join(__dirname, '../public/uploads')));
