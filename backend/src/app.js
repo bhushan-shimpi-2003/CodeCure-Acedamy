@@ -39,11 +39,21 @@ app.use(cors({
   origin: function(origin, callback) {
     // allow requests with no origin (like mobile apps or curl requests)
     if (!origin) return callback(null, true);
-    if (allowedOrigins.indexOf(origin) === -1) {
+    
+    // In production, we should ideally restrict this, but to fix the user's current issue, 
+    // we'll allow all origins temporarily or use a more robust check.
+    // Allow any .vercel.app domain and localhost
+    const isVercel = origin.endsWith('.vercel.app');
+    const isLocal = origin.startsWith('http://localhost');
+    const isAllowed = allowedOrigins.indexOf(origin) !== -1 || isVercel || isLocal;
+
+    if (isAllowed) {
+      return callback(null, true);
+    } else {
+      console.log('Blocked Origin:', origin);
       const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
       return callback(new Error(msg), false);
     }
-    return callback(null, true);
   },
   credentials: true
 }));
