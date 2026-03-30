@@ -33,8 +33,12 @@ export default function TeacherTopBar({ setIsSidebarOpen }: any) {
             <p className="text-sm font-semibold text-slate-900">{user?.name || 'Teacher'}</p>
             <p className="text-xs text-slate-500 font-medium capitalize">{user?.role || 'Instructor'}</p>
           </div>
-          <div className="w-9 h-9 rounded-full bg-blue-100 flex items-center justify-center text-blue-600">
-            <User className="w-5 h-5" />
+          <div className="w-9 h-9 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 overflow-hidden">
+            {user?.profile_picture && user.profile_picture !== 'no-photo.jpg' ? (
+              <img src={user.profile_picture.startsWith('http') ? user.profile_picture : `http://localhost:5000${user.profile_picture}`} alt="Profile" className="w-full h-full object-cover" />
+            ) : (
+              <User className="w-5 h-5" />
+            )}
           </div>
         </div>
       </div>

@@ -1,18 +1,20 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "motion/react";
-import { User, Mail, Phone, Shield, Save, Loader2, CheckCircle, Lock } from "lucide-react";
+import { User, Mail, Phone, Shield, Save, Loader2, CheckCircle, Lock, Camera } from "lucide-react";
 import { useAuth } from "../../../context/AuthContext";
 
 const API = "http://localhost:5000/api";
 
 export default function TeacherProfile() {
-  const { user, token } = useAuth();
+  const { user, token, updateUser } = useAuth();
   const [name, setName] = useState(user?.name || "");
   const [email, setEmail] = useState(user?.email || "");
   const [phone, setPhone] = useState(user?.phone || "");
   const [password, setPassword] = useState("");
   const [isSaving, setIsSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [profilePic, setProfilePic] = useState<string | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
   const [error, setError] = useState("");
 
   useEffect(() => {
@@ -20,8 +22,38 @@ export default function TeacherProfile() {
       setName(user.name || "");
       setEmail(user.email || "");
       setPhone(user.phone || "");
+      if (user.profile_picture && user.profile_picture !== 'no-photo.jpg') {
+        setProfilePic(user.profile_picture);
+      }
     }
   }, [user]);
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setIsUploading(true);
+    const formData = new FormData();
+    formData.append("image", file);
+
+    try {
+      const res = await fetch(`${API}/upload/image`, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+        body: formData,
+      });
+      const data = await res.json();
+      if (data.success) {
+        setProfilePic(data.url);
+      } else {
+        setError(data.error || "Failed to upload image");
+      }
+    } catch {
+      setError("Server error during upload");
+    } finally {
+      setIsUploading(false);
+    }
+  };
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -32,11 +64,12 @@ export default function TeacherProfile() {
       const res = await fetch(`${API}/auth/me`, {
         method: "PUT",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-        body: JSON.stringify({ name, email, phone, ...(password && { password }) }),
+        body: JSON.stringify({ name, email, phone, profile_picture: profilePic, ...(password && { password }) }),
       });
       const data = await res.json();
       if (data.success) {
         setSaved(true);
+        updateUser(data.data);
         setTimeout(() => setSaved(false), 3000);
       } else {
         setError(data.error || "Failed to update profile");
@@ -64,9 +97,17 @@ export default function TeacherProfile() {
       >
         <div className="h-24 bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 relative">
           <div className="absolute -bottom-10 left-6">
-            <div className="w-20 h-20 bg-white rounded-2xl shadow-lg border-4 border-white flex items-center justify-center">
-              <User className="w-10 h-10 text-blue-600" />
-            </div>
+            <label className="w-20 h-20 bg-white rounded-2xl shadow-lg border-4 border-white flex items-center justify-center relative group overflow-hidden cursor-pointer cursor-allowed disabled:cursor-not-allowed">
+              {profilePic ? (
+                <img src={profilePic.startsWith("http") ? profilePic : `http://localhost:5000${profilePic}`} className="w-full h-full object-cover" alt="Profile" />
+              ) : (
+                <User className="w-10 h-10 text-blue-600" />
+              )}
+              <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                {isUploading ? <Loader2 className="w-5 h-5 text-white animate-spin" /> : <Camera className="w-6 h-6 text-white" />}
+              </div>
+              <input type="file" accept="image/*" className="hidden" onChange={handleImageUpload} disabled={isUploading} />
+            </label>
           </div>
         </div>
 

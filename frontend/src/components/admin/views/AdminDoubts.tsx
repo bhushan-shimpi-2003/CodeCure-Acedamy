@@ -34,10 +34,13 @@ export default function AdminDoubts() {
 
   const filtered = doubts.filter((d) => {
     const q = searchQuery.toLowerCase();
+    const subjectTitle = d.subject || d.title || d.question || "";
+    const studentName = d.student?.name || d.profiles_student?.name || d.student_name || "";
+    const teacherName = d.teacher?.name || d.teacher_name || "";
     return (
-      (d.title || d.question || "").toLowerCase().includes(q) ||
-      (d.student_name || "").toLowerCase().includes(q) ||
-      (d.teacher_name || "").toLowerCase().includes(q)
+      subjectTitle.toLowerCase().includes(q) ||
+      studentName.toLowerCase().includes(q) ||
+      teacherName.toLowerCase().includes(q)
     );
   });
 
@@ -94,8 +97,8 @@ export default function AdminDoubts() {
                     className="hover:bg-slate-50 transition-colors"
                   >
                     <td className="p-4 text-xs text-blue-600 font-bold">{(doubt.id || "").slice(0, 8)}</td>
-                    <td className="p-4 text-sm text-slate-900 font-bold">{doubt.student_name || "Student"}</td>
-                    <td className="p-4 text-sm text-slate-800">{doubt.title || doubt.question || "-"}</td>
+                    <td className="p-4 text-sm text-slate-900 font-bold">{doubt.student?.name || doubt.profiles_student?.name || doubt.student_name || "Student"}</td>
+                    <td className="p-4 text-sm text-slate-800">{doubt.subject || doubt.title || doubt.question || "-"}</td>
                     <td className="p-4">
                       <span className={`px-2 py-0.5 text-[10px] font-bold border ${
                         doubt.status === 'open'

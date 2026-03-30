@@ -9,7 +9,7 @@ const supabase = require('../config/supabaseClient');
 exports.getModulesByCourse = async (courseId) => {
   const { data, error } = await supabase
     .from('modules')
-    .select('*')
+    .select('*, lessons(*)')
     .eq('course_id', courseId)
     .order('module_order', { ascending: true });
   if (error) throw error;

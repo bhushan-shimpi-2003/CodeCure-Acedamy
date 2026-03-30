@@ -33,8 +33,12 @@ export default function AdminTopBar({ setIsSidebarOpen }: any) {
             <p className="text-sm font-bold text-slate-900">{user?.name || 'Admin'}</p>
             <p className="text-xs text-slate-500 capitalize">{user?.role || 'Administrator'}</p>
           </div>
-          <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 border border-blue-200">
-            <User className="w-5 h-5" />
+          <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 border border-blue-200 overflow-hidden">
+            {user?.profile_picture && user.profile_picture !== 'no-photo.jpg' ? (
+              <img src={user.profile_picture.startsWith('http') ? user.profile_picture : `http://localhost:5000${user.profile_picture}`} alt="Profile" className="w-full h-full object-cover" />
+            ) : (
+              <User className="w-5 h-5" />
+            )}
           </div>
         </div>
       </div>

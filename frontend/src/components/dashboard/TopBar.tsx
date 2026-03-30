@@ -35,7 +35,7 @@ export default function TopBar({ setIsSidebarOpen }: any) {
           </div>
           <div className="w-9 h-9 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 border border-blue-200 overflow-hidden">
             {user?.profile_picture && user?.profile_picture !== 'no-photo.jpg' ? (
-              <img src={user.profile_picture} alt={user.name} className="w-full h-full object-cover" />
+              <img src={user.profile_picture.startsWith('http') ? user.profile_picture : `http://localhost:5000${user.profile_picture}`} alt={user.name} className="w-full h-full object-cover" />
             ) : (
               <User className="w-5 h-5" />
             )}

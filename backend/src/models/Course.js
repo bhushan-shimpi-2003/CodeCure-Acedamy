@@ -51,7 +51,7 @@ exports.getCoursesByInstructor = async (instructorId) => {
 exports.getAllCourses = async () => {
   const { data, error } = await supabase
     .from('courses')
-    .select('*, profiles!instructor_id(id, name, email), modules(*), enrollments(*)')
+    .select('*, profiles!instructor_id(id, name, email), modules(*, lessons(*)), enrollments(*)')
     .order('created_at', { ascending: false });
   if (error) throw error;
   

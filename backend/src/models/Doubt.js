@@ -47,7 +47,7 @@ exports.getPendingDoubts = async () => {
 exports.getAllDoubts = async () => {
   const { data, error } = await supabase
     .from('doubts')
-    .select('*')
+    .select('*, student:profiles!student_id(id, name, email), teacher:profiles!teacher_id(id, name, email), courses(id, title)')
     .order('created_at', { ascending: false });
   if (error) throw error;
   return data;

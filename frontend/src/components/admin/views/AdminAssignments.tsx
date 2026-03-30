@@ -34,10 +34,12 @@ export default function AdminAssignments() {
 
   const filtered = assignments.filter((a) => {
     const q = searchQuery.toLowerCase();
+    const courseName = a.courses?.title || a.course_title || "";
+    const teacherName = a.profiles?.name || a.teacher_name || "";
     return (
       (a.title || "").toLowerCase().includes(q) ||
-      (a.course_title || "").toLowerCase().includes(q) ||
-      (a.teacher_name || "").toLowerCase().includes(q)
+      courseName.toLowerCase().includes(q) ||
+      teacherName.toLowerCase().includes(q)
     );
   });
 
@@ -95,7 +97,7 @@ export default function AdminAssignments() {
                   >
                     <td className="p-4 text-xs text-blue-600 font-bold">{(asn.id || "").slice(0, 8)}</td>
                     <td className="p-4 text-sm text-slate-900 font-bold">{asn.title}</td>
-                    <td className="p-4 text-sm text-slate-800">{asn.course_title || asn.course_id?.slice(0, 8) || "-"}</td>
+                    <td className="p-4 text-sm text-slate-800">{asn.courses?.title || asn.course_title || asn.course_id?.slice(0, 8) || "-"}</td>
                     <td className="p-4 text-sm text-slate-500">{asn.due_date ? new Date(asn.due_date).toLocaleDateString() : "No due date"}</td>
                     <td className="p-4 text-sm text-slate-500 text-right">{asn.created_at ? new Date(asn.created_at).toLocaleDateString() : "-"}</td>
                   </motion.tr>

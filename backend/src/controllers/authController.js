@@ -136,11 +136,12 @@ exports.logout = async (req, res, next) => {
 // @access  Private
 exports.updateMe = async (req, res, next) => {
   try {
-    const { name, phone, email, password } = req.body;
+    const { name, phone, email, password, profile_picture } = req.body;
     let updates = {};
 
     if (name) updates.name = name;
     if (phone !== undefined) updates.phone = phone;
+    if (profile_picture !== undefined) updates.profile_picture = profile_picture;
 
     // 1. Update Auth user (email, password)
     const authUpdates = {};

@@ -4,10 +4,18 @@ import { BookOpen, Plus, Edit, Trash2, LayoutDashboard, Layers, ArrowLeft, Save,
 import Select from "../../ui/Select";
 import { useAuth } from "../../../context/AuthContext";
 
+interface Lesson {
+  id: string;
+  title: string;
+  duration?: string;
+  video_url?: string;
+}
+
 interface Module {
- id: string;
- title: string;
- duration: string;
+  id: string;
+  title: string;
+  duration: string;
+  lessons?: Lesson[];
 }
 
 interface Course {
@@ -19,7 +27,7 @@ interface Course {
  status: "active" | "draft";
  price: string | number;
  instructor_id?: string;
- image_url?: string;
+ thumbnail?: string;
  profiles?: { id?: string; name?: string; email?: string };
 }
 
@@ -101,7 +109,7 @@ export default function AdminCourses() {
      status: "draft",
      price: 0,
      instructor_id: "",
-     image_url: ""
+     thumbnail: ""
    };
    setSelectedCourse(newCourse);
    setActiveTab('basic');
@@ -121,7 +129,8 @@ export default function AdminCourses() {
        description: selectedCourse.description,
        status: selectedCourse.status,
        price: Number(selectedCourse.price) || 0,
-       image_url: selectedCourse.image_url || null
+       thumbnail: selectedCourse.thumbnail || null,
+        modules: selectedCourse.modules || []
      };
 
      if (selectedCourse.instructor_id) {
@@ -174,7 +183,7 @@ export default function AdminCourses() {
      });
      const data = await res.json();
      if (data.success) {
-       handleUpdateField('image_url', data.url);
+       handleUpdateField('thumbnail', data.url);
      } else {
        alert(data.error || "Failed to upload image");
      }
@@ -314,8 +323,8 @@ export default function AdminCourses() {
                <div className="flex gap-2">
                  <input 
                    type="text" 
-                   value={selectedCourse.image_url || ""} 
-                   onChange={(e) => handleUpdateField('image_url', e.target.value)} 
+                   value={selectedCourse.thumbnail || ""} 
+                   onChange={(e) => handleUpdateField('thumbnail', e.target.value)} 
                    placeholder="e.g. https://example.com/image.jpg"
                    className="flex-1 w-full bg-slate-50 border border-slate-200 px-4 py-3 text-slate-900 focus:border-blue-600 outline-none transition-colors" 
                  />
@@ -483,9 +492,9 @@ export default function AdminCourses() {
            >
              <div className="absolute top-0 left-0 w-1 h-full bg-blue-100 group-hover:bg-blue-600 transition-colors z-10"></div>
              
-             {course.image_url ? (
+             {course.thumbnail ? (
                <div className="w-full h-32 mb-4 rounded-xl overflow-hidden relative border border-slate-100 ml-1">
-                 <img src={course.image_url} alt={course.title} className="w-full h-full object-cover" />
+                 <img src={course.thumbnail} alt={course.title} className="w-full h-full object-cover" />
                </div>
              ) : (
                <div className="w-full h-32 mb-4 rounded-xl overflow-hidden relative border border-slate-100 bg-slate-50 flex items-center justify-center ml-1">

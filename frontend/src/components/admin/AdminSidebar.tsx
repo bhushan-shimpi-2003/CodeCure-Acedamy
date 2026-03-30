@@ -13,8 +13,8 @@ export default function AdminSidebar({ activeTab, setActiveTab, isOpen, setIsOpe
     { id: "jobs", label: "Job Openings", icon: Briefcase },
     { id: "doubts", label: "Doubts", icon: MessageSquare },
     { id: "staff", label: "Staff", icon: UserCog },
-    { id: "finance", label: "Finance", icon: DollarSign },
-    { id: "feedback", label: "Feedback", icon: MessageSquare },
+    //{ id: "finance", label: "Finance", icon: DollarSign },
+    //{ id: "feedback", label: "Feedback", icon: MessageSquare },
     { id: "settings", label: "Settings", icon: Settings },
     { id: "profile", label: "Profile", icon: User },
   ];

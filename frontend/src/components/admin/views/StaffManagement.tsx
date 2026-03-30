@@ -87,7 +87,7 @@ export default function StaffManagement() {
   };
 
   return (
-    <div className="space-y-6 sm:space-y-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20 pt-4 sm:pt-8 w-full overflow-x-hidden">
+    <div className="space-y-6 sm:space-y-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-32 pt-4 sm:pt-8 w-full border-none">
       <div className="border-b border-slate-200 pb-4 sm:pb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 className="text-xl sm:text-2xl font-bold text-slate-900 mb-1 flex items-center gap-2">
@@ -111,46 +111,82 @@ export default function StaffManagement() {
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {staff.map((member, i) => (
-            <motion.div
-              key={member.id}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.1 }}
-              className="bg-white/90 backdrop-blur-xl border border-slate-200/60 rounded-2xl p-6 relative group hover:border-blue-400 hover:shadow-[0_8px_30px_rgb(0,0,0,0.06)] hover:-translate-y-0.5 transition-all duration-300 flex flex-col"
-            >
-              <div className={`absolute top-0 left-0 w-1 h-full transition-colors ${member.role === "admin" ? "bg-purple-100 group-hover:bg-purple-600" : "bg-blue-100 group-hover:bg-blue-600"}`}></div>
-              <div className="flex justify-between items-start mb-4 pl-2">
-                <div>
-                  <h3 className="font-bold text-slate-900 text-lg">{member.name || "Unnamed"}</h3>
-                  <p className="text-xs text-slate-500 mt-1 line-clamp-1">{member.email}</p>
+          {staff.map((member, i) => {
+            const isAdmin = member.role === "admin";
+            const initials = String(member.name || member.email || "U").substring(0, 2).toUpperCase();
+            
+            return (
+              <motion.div
+                key={member.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.1 }}
+                className={`relative group bg-white/90 backdrop-blur-xl border rounded-2xl p-6 transition-all duration-300 flex flex-col hover:-translate-y-1 hover:shadow-xl hover:z-[60] focus-within:z-[60] ${
+                  isAdmin ? 'hover:border-purple-300 hover:shadow-purple-500/10 border-slate-200/60' : 'hover:border-blue-300 hover:shadow-blue-500/10 border-slate-200/60'
+                }`}
+              >
+                <div className="absolute inset-0 overflow-hidden rounded-2xl pointer-events-none">
+                  <div className={`absolute top-0 right-0 w-40 h-40 -mr-12 -mt-12 rounded-full blur-[40px] opacity-20 transition-all duration-500 group-hover:opacity-50 group-hover:scale-110 ${
+                    isAdmin ? 'bg-purple-500' : 'bg-blue-500'
+                  }`}></div>
                 </div>
-                <span className={`px-2 py-0.5 text-[10px] font-bold border ${member.role === "admin" ? "bg-purple-50 text-purple-700 border-purple-200" : "bg-blue-50 text-blue-700 border-blue-200"}`}>
-                  {member.role.toUpperCase()}
-                </span>
-              </div>
-
-              <div className="pl-2 mb-6 flex-1 text-sm text-slate-600">
-                User ID: <span className="font-mono text-xs">{member.id.substring(0, 8)}...</span>
-              </div>
-
-              <div className="flex items-center gap-2 pl-2 border-t border-slate-100 pt-4 mt-auto">
-                <div className="flex-1 relative flex items-center">
-                  <Select
-                    size="sm"
-                    value={member.role}
-                    onChange={(e) => handleChangeRole(member.id, e.target.value)}
-                    className="w-full !bg-transparent border-blue-600 !text-blue-600 hover:!bg-blue-50 hover:shadow-sm !pl-8 text-center"
-                  >
-                    <option value="student">Student</option>
-                    <option value="teacher">Teacher</option>
-                    <option value="admin">Admin</option>
-                  </Select>
-                  <Shield className="w-3.5 h-3.5 absolute left-3 text-blue-600 pointer-events-none z-10" />
+                
+                <div className="flex justify-between items-start mb-6 relative z-10 w-full">
+                  <div className="flex items-center gap-4 w-full">
+                    <div className={`w-12 h-12 shrink-0 rounded-2xl flex items-center justify-center font-bold text-lg shadow-sm border transition-colors ${
+                      isAdmin ? 'bg-gradient-to-br from-purple-50 to-purple-100 text-purple-700 border-purple-200' : 'bg-gradient-to-br from-blue-50 to-blue-100 text-blue-700 border-blue-200'
+                    }`}>
+                      {initials}
+                    </div>
+                    <div className="min-w-0 pr-2">
+                      <h3 className="font-bold text-slate-900 text-lg group-hover:text-current transition-colors truncate">{member.name || "Unnamed Profile"}</h3>
+                      <p className="text-xs font-medium text-slate-500 flex items-center gap-1.5 mt-0.5 truncate"><Mail className="w-3.5 h-3.5 shrink-0" /> <span className="truncate">{member.email}</span></p>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </motion.div>
-          ))}
+
+                <div className="mb-6 flex-1 space-y-3 relative z-10">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Current Role</span>
+                    <span className={`px-2.5 py-1 text-[10px] uppercase font-bold tracking-widest rounded-lg border shadow-[0_2px_10px_rgb(0,0,0,0.02)] ${
+                      isAdmin ? "bg-gradient-to-r from-purple-50 to-fuchsia-50 text-purple-700 border-purple-200/60" : "bg-gradient-to-r from-blue-50 to-cyan-50 text-blue-700 border-blue-200/60"
+                    }`}>
+                      {member.role}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">User ID</span>
+                    <span className="font-mono text-xs text-slate-600 bg-slate-50 px-2 py-1.5 rounded-lg border border-slate-100 font-medium">{member.id.substring(0, 8)}</span>
+                  </div>
+                </div>
+
+                <div className="relative z-10 pt-5 border-t border-slate-100 mt-auto">
+                  <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2.5 block flex items-center gap-1.5">
+                    <UserCog className="w-3.5 h-3.5" /> Identity Assignment
+                  </label>
+                  <div className="relative flex items-center group/select w-full group-focus-within:z-[70]">
+                    <Select
+                      size="sm"
+                      value={member.role}
+                      onChange={(e) => handleChangeRole(member.id, e.target.value)}
+                      className={`w-full !pl-10 !py-2.5 shadow-sm transition-all focus:ring-2 !font-bold ${
+                        isAdmin 
+                          ? '!bg-purple-50 border-purple-200 !text-purple-700 hover:border-purple-300 focus:border-purple-500 focus:ring-purple-500/20' 
+                          : '!bg-blue-50 border-blue-200 !text-blue-700 hover:border-blue-300 focus:border-blue-500 focus:ring-blue-500/20'
+                      }`}
+                    >
+                      <option value="student">Student</option>
+                      <option value="teacher">Teacher</option>
+                      <option value="admin">Admin</option>
+                    </Select>
+                    <Shield className={`w-4 h-4 absolute left-3.5 pointer-events-none z-10 transition-colors ${
+                      isAdmin ? 'text-purple-600 group-hover/select:text-purple-700' : 'text-blue-600 group-hover/select:text-blue-700'
+                    }`} />
+                  </div>
+                </div>
+              </motion.div>
+            );
+          })}
         </div>
       )}
 

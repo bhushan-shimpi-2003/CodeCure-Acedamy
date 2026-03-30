@@ -116,9 +116,9 @@ export default function AvailableCourses() {
               
               return (
                 <div key={course.id} className="bg-white border border-slate-200 rounded-2xl overflow-hidden hover:border-blue-300 transition-colors shadow-sm flex flex-col">
-                  {course.image_url ? (
+                  {course.thumbnail ? (
                     <div className="w-full h-48 bg-slate-100 overflow-hidden relative">
-                      <img src={course.image_url} alt={course.title} className="w-full h-full object-cover" />
+                      <img src={course.thumbnail} alt={course.title} className="w-full h-full object-cover" />
                       <div className="absolute top-4 left-4 bg-slate-900/80 backdrop-blur-sm text-white px-3 py-1 text-xs font-bold rounded-full">
                         {course.duration || "8 Weeks"}
                       </div>

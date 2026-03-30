@@ -1,5 +1,39 @@
 const CourseModel = require('../models/Course');
 const ModuleModel = require('../models/Module');
+const supabase = require('../config/supabaseClient');
+
+const saveModulesAndLessons = async (courseId, modules) => {
+  // 1. Delete existing modules unconditionally to avoid complex diff logic for demo
+  await supabase.from('modules').delete().eq('course_id', courseId);
+  
+  // 2. Insert new modules and lessons
+  for (let i = 0; i < modules.length; i++) {
+    const m = modules[i];
+    const { data: modData, error: modError } = await supabase
+      .from('modules')
+      .insert({
+        course_id: courseId,
+        title: m.title || `Module ${i+1}`,
+        duration: m.duration || null,
+        module_order: i
+      })
+      .select().single();
+      
+    if (modError) continue;
+
+    if (m.lessons && m.lessons.length > 0) {
+      const lessonsToInsert = m.lessons.map((l, lIdx) => ({
+        course_id: courseId,
+        module_id: modData.id,
+        title: l.title || `Lesson ${lIdx+1}`,
+        video_url: l.video_url || null,
+        duration: l.duration || null,
+        lesson_order: lIdx
+      }));
+      await supabase.from('lessons').insert(lessonsToInsert);
+    }
+  }
+};
 
 // @desc    Get all published courses (public catalog)
 // @route   GET /api/courses
@@ -55,7 +89,13 @@ exports.createCourse = async (req, res, next) => {
       ...req.body,
       instructor_id,
     };
-    const course = await CourseModel.createCourse(courseData);
+    const { modules, ...courseUpdateData } = courseData;
+    const course = await CourseModel.createCourse(courseUpdateData);
+
+    if (modules && Array.isArray(modules)) {
+      await saveModulesAndLessons(course.id, modules);
+    }
+
     res.status(201).json({ success: true, data: course });
   } catch (err) {
     next(err);
@@ -77,7 +117,13 @@ exports.updateCourse = async (req, res, next) => {
       return res.status(403).json({ success: false, error: 'Not authorized to update this course' });
     }
 
-    const updated = await CourseModel.updateCourse(req.params.id, req.body);
+    const { modules, ...updateData } = req.body;
+    const updated = await CourseModel.updateCourse(req.params.id, updateData);
+
+    if (modules && Array.isArray(modules)) {
+      await saveModulesAndLessons(req.params.id, modules);
+    }
+
     res.status(200).json({ success: true, data: updated });
   } catch (err) {
     next(err);

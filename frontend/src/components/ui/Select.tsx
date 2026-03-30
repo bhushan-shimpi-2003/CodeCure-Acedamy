@@ -60,7 +60,7 @@ export default function Select({ icon, label, containerClassName = "", className
           {props.required && <span className="text-red-500">*</span>}
         </label>
       )}
-      <div className="relative group min-w-[120px]">
+      <div className={`relative group min-w-[120px] ${isOpen ? "z-[200]" : "z-10"}`}>
         {/* Hidden native select for form compatibility if needed */}
         <select {...props} className="hidden">
           {children}
@@ -101,11 +101,12 @@ export default function Select({ icon, label, containerClassName = "", className
         <AnimatePresence>
           {isOpen && (
             <motion.div
+              key="dropdown-list"
               initial={{ opacity: 0, y: 10, scale: 0.98 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 10, scale: 0.98 }}
               transition={{ duration: 0.15, ease: "easeOut" }}
-              className="absolute z-50 w-full min-w-max mt-1 bg-white/95 backdrop-blur-xl border border-slate-200 rounded-xl shadow-xl overflow-hidden right-0"
+              className="absolute z-[100] w-full min-w-max mt-2 bg-white/95 backdrop-blur-2xl border border-slate-200 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.15)] left-0 origin-top overflow-hidden"
             >
               <ul className="max-h-60 overflow-y-auto p-1.5 space-y-0.5" style={{ scrollbarWidth: 'thin' }}>
                 {options.map((option, index) => {
@@ -135,6 +136,7 @@ export default function Select({ icon, label, containerClassName = "", className
           )}
         </AnimatePresence>
       </div>
+
     </div>
   );
 }

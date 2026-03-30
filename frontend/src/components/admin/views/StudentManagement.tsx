@@ -145,7 +145,8 @@ export default function StudentManagement() {
             <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
           </div>
         ) : (
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto pb-60 -mb-60">
+            <div className="min-w-full inline-block align-middle">
             <table className="w-full text-left border-collapse">
               <thead>
                 <tr className="border-b border-slate-200 text-slate-500 text-xs tracking-wider bg-slate-50">
@@ -239,6 +240,7 @@ export default function StudentManagement() {
               </tbody>
             </table>
           </div>
+        </div>
         )}
       </div>
 
