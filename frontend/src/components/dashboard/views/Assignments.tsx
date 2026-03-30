@@ -16,45 +16,29 @@ export default function Assignments() {
       try {
         if (!token) return;
         
-        // 1. Fetch active courses
-        const enrollRes = await fetch(`${API_URL}/enrollments/me`, {
-          headers: { "Authorization": `Bearer ${token}` }
-        });
-        const enrollData = await enrollRes.json();
-        const activeCourses = enrollData.success 
-          ? enrollData.data.filter((e: any) => e.student_status === 'active')
-          : [];
-
-        // 2. Map over active courses and fetch assignments
-        let allAssignments: any[] = [];
-        for (const course of activeCourses) {
-          try {
-            const courseId = course.course_id;
-            const assignRes = await fetch(`${API_URL}/assignments/course/${courseId}`, {
-              headers: { "Authorization": `Bearer ${token}` }
-            });
-            const assignData = await assignRes.json();
-            if (assignData.success && assignData.data.length > 0) {
-              allAssignments = [...allAssignments, ...assignData.data];
-            }
-          } catch (err) {
-            console.error("Failed to fetch assignments for course:", course.course_id);
-          }
-        }
-        setAssignments(allAssignments);
-
-        // 3. Fetch submissions for current student
-        try {
-          const subRes = await fetch(`${API_URL}/assignments/submissions/me`, {
+        // Use Promise.all to fetch assignments and submissions in parallel
+        const [assignRes, subRes] = await Promise.all([
+          fetch(`${API_URL}/assignments/my-assignments`, {
             headers: { "Authorization": `Bearer ${token}` }
-          });
-          const subData = await subRes.json();
-          if (subData.success) {
-            setSubmissions(subData.data);
-          }
-        } catch (err) {
-          console.error("Failed to fetch submissions");
+          }),
+          fetch(`${API_URL}/assignments/submissions/me`, {
+            headers: { "Authorization": `Bearer ${token}` }
+          })
+        ]);
+
+        const [assignData, subData] = await Promise.all([
+          assignRes.json(),
+          subRes.json()
+        ]);
+
+        if (assignData.success) {
+          setAssignments(assignData.data);
         }
+        
+        if (subData.success) {
+          setSubmissions(subData.data);
+        }
+
       } catch (err) {
         console.error("Error fetching assignments data:", err);
       } finally {

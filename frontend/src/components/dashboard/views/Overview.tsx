@@ -16,30 +16,18 @@ export default function Overview({ setActiveTab }: { setActiveTab?: (tab: string
   const fetchDashboardData = async () => {
     setIsLoading(true);
     try {
-      // Fetch all public courses
-      const coursesRes = await fetch(`${API_URL}/courses`);
-      const coursesData = await coursesRes.json();
-      if (coursesData.success) {
-        setAvailableCourses(coursesData.data);
-      }
-
-      // Fetch my enrollments and requests
+      const ps = [fetch(`${API_URL}/courses`)];
       if (token) {
-        const enrollRes = await fetch(`${API_URL}/enrollments/me`, {
-          headers: { "Authorization": `Bearer ${token}` }
-        });
-        const enrollData = await enrollRes.json();
-        if (enrollData.success) {
-          setEnrollments(enrollData.data);
-        }
-
-        const reqRes = await fetch(`${API_URL}/enrollments/requests/me`, {
-          headers: { "Authorization": `Bearer ${token}` }
-        });
-        const reqData = await reqRes.json();
-        if (reqData.success) {
-          setRequests(reqData.data);
-        }
+        ps.push(fetch(`${API_URL}/enrollments/me`, { headers: { "Authorization": `Bearer ${token}` } }));
+        ps.push(fetch(`${API_URL}/enrollments/requests/me`, { headers: { "Authorization": `Bearer ${token}` } }));
+      }
+      const rs = await Promise.all(ps);
+      const ds = await Promise.all(rs.map(r => r.json()));
+      
+      if (ds[0].success) setAvailableCourses(ds[0].data);
+      if (token) {
+        if (ds[1]?.success) setEnrollments(ds[1].data);
+        if (ds[2]?.success) setRequests(ds[2].data);
       }
     } catch (err) {
       console.error("Failed to load dashboard data", err);

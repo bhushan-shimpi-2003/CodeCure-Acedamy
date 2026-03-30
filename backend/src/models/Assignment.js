@@ -80,3 +80,24 @@ exports.gradeSubmission = async (submissionId, score, feedback) => {
   if (error) throw error;
   return data;
 };
+
+exports.getAssignmentsByStudentEnrollments = async (studentId) => {
+  const { data: enrollments, error: enrollError } = await supabase
+    .from('enrollments')
+    .select('course_id')
+    .eq('student_id', studentId)
+    .eq('student_status', 'active');
+  
+  if (enrollError) throw enrollError;
+  const courseIds = enrollments.map(e => e.course_id);
+  if (courseIds.length === 0) return [];
+
+  const { data, error } = await supabase
+    .from('assignments')
+    .select('*, courses(id, title)')
+    .in('course_id', courseIds)
+    .order('due_date', { ascending: true });
+    
+  if (error) throw error;
+  return data;
+};

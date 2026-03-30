@@ -66,6 +66,18 @@ exports.getMySubmissions = async (req, res, next) => {
   }
 };
 
+// @desc    Get assignments for all my enrolled courses (student)
+// @route   GET /api/assignments/my-assignments
+// @access  Private (student)
+exports.getMyAssignments = async (req, res, next) => {
+  try {
+    const assignments = await AssignmentModel.getAssignmentsByStudentEnrollments(req.user.id);
+    res.status(200).json({ success: true, data: assignments });
+  } catch (err) {
+    next(err);
+  }
+};
+
 // @desc    Get submissions by assignment ID (teacher)
 // @route   GET /api/assignments/:id/submissions
 // @access  Private (teacher, admin)
