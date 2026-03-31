@@ -29,33 +29,32 @@ app.use(express.json());
 // Enable CORS
 const allowedOrigins = [
   'http://localhost:5173',
+  'http://localhost:3000',
   process.env.FRONTEND_URL,
   process.env.VERCEL_URL,
   process.env.PROD_FRONTEND_URL,
-  'https://your-frontend.vercel.app', // Replace with your actual Vercel domain
 ].filter(Boolean);
 
 app.use(cors({
   origin: function(origin, callback) {
-    // allow requests with no origin (like mobile apps or curl requests)
+    // Allow requests with no origin (like mobile apps or curl requests)
     if (!origin) return callback(null, true);
     
-    // In production, we should ideally restrict this, but to fix the user's current issue, 
-    // we'll allow all origins temporarily or use a more robust check.
-    // Allow any .vercel.app domain and localhost
-    const isVercel = origin.endsWith('.vercel.app');
+    // In development or if it matches our list
     const isLocal = origin.startsWith('http://localhost');
-    const isAllowed = allowedOrigins.indexOf(origin) !== -1 || isVercel || isLocal;
+    const isVercel = origin.endsWith('.vercel.app');
+    const isAllowed = allowedOrigins.includes(origin) || isLocal || isVercel;
 
     if (isAllowed) {
       return callback(null, true);
     } else {
-      console.log('Blocked Origin:', origin);
-      const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
-      return callback(new Error(msg), false);
+      console.error('CORS Blocked for Origin:', origin);
+      return callback(new Error('CORS Policy: Access denied from this origin.'), false);
     }
   },
-  credentials: true
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
 }));
 
 // Static folder for file uploads mapping to \public\uploads
