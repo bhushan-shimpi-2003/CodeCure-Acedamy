@@ -204,3 +204,23 @@ exports.createStaff = async (req, res, next) => {
     next(err);
   }
 };
+
+// @desc    Delete own profile
+// @route   DELETE /api/auth/me
+// @access  Private
+exports.deleteMe = async (req, res, next) => {
+  try {
+    // 1. Delete user from auth.users (cascades to profile if triggers setup, but we'll be safe)
+    const { error: authError } = await supabase.auth.admin.deleteUser(req.user.id);
+    if (authError) {
+      return res.status(400).json({ success: false, error: authError.message });
+    }
+
+    // 2. Explicitly delete from profile table if it's not cascaded
+    await UserModel.deleteProfile(req.user.id);
+
+    res.status(200).json({ success: true, data: {} });
+  } catch (err) {
+    next(err);
+  }
+};

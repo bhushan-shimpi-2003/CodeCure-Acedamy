@@ -47,3 +47,9 @@ exports.updateUserRole = async (userId, role) => {
   if (error) throw error;
   return data;
 };
+
+exports.deleteProfile = async (userId) => {
+  const { error } = await supabase.from('profiles').delete().eq('id', userId);
+  if (error) throw error;
+  return true;
+};
