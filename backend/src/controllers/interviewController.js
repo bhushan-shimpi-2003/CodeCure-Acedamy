@@ -17,6 +17,30 @@ exports.scheduleInterview = async (req, res, next) => {
   }
 };
 
+// @desc    Update an interview (teacher)
+// @route   PUT /api/interviews/:id
+// @access  Private (teacher, admin)
+exports.updateInterview = async (req, res, next) => {
+  try {
+    const interview = await InterviewModel.updateInterview(req.params.id, req.body);
+    res.status(200).json({ success: true, data: interview });
+  } catch (err) {
+    next(err);
+  }
+};
+
+// @desc    Delete an interview (teacher)
+// @route   DELETE /api/interviews/:id
+// @access  Private (teacher, admin)
+exports.deleteInterview = async (req, res, next) => {
+  try {
+    await InterviewModel.deleteInterview(req.params.id);
+    res.status(200).json({ success: true, data: {} });
+  } catch (err) {
+    next(err);
+  }
+};
+
 // @desc    Get my interviews (student)
 // @route   GET /api/interviews/me
 // @access  Private (student)

@@ -13,6 +13,30 @@ exports.createAssignment = async (req, res, next) => {
   }
 };
 
+// @desc    Update assignment (teacher)
+// @route   PUT /api/assignments/:id
+// @access  Private (teacher, admin)
+exports.updateAssignment = async (req, res, next) => {
+  try {
+    const assignment = await AssignmentModel.updateAssignment(req.params.id, req.body);
+    res.status(200).json({ success: true, data: assignment });
+  } catch (err) {
+    next(err);
+  }
+};
+
+// @desc    Delete assignment (teacher)
+// @route   DELETE /api/assignments/:id
+// @access  Private (teacher, admin)
+exports.deleteAssignment = async (req, res, next) => {
+  try {
+    await AssignmentModel.deleteAssignment(req.params.id);
+    res.status(200).json({ success: true, data: {} });
+  } catch (err) {
+    next(err);
+  }
+};
+
 // @desc    Get assignments for a course
 // @route   GET /api/assignments/course/:courseId
 // @access  Private
@@ -98,6 +122,30 @@ exports.gradeSubmission = async (req, res, next) => {
     const { score, feedback } = req.body;
     const graded = await AssignmentModel.gradeSubmission(req.params.id, score, feedback);
     res.status(200).json({ success: true, data: graded });
+  } catch (err) {
+    next(err);
+  }
+};
+
+// @desc    Update submission (student)
+// @route   PUT /api/assignments/submissions/:id
+// @access  Private (student, admin)
+exports.updateSubmission = async (req, res, next) => {
+  try {
+    const submission = await AssignmentModel.updateSubmission(req.params.id, req.body);
+    res.status(200).json({ success: true, data: submission });
+  } catch (err) {
+    next(err);
+  }
+};
+
+// @desc    Delete submission (student)
+// @route   DELETE /api/assignments/submissions/:id
+// @access  Private (student, admin)
+exports.deleteSubmission = async (req, res, next) => {
+  try {
+    await AssignmentModel.deleteSubmission(req.params.id);
+    res.status(200).json({ success: true, data: {} });
   } catch (err) {
     next(err);
   }

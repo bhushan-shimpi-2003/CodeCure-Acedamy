@@ -103,3 +103,27 @@ exports.updateEnrollment = async (req, res, next) => {
     next(err);
   }
 };
+
+// @desc    Delete enrollment
+// @route   DELETE /api/enrollments/:id
+// @access  Private (admin)
+exports.deleteEnrollment = async (req, res, next) => {
+  try {
+    await EnrollmentModel.deleteEnrollment(req.params.id);
+    res.status(200).json({ success: true, data: {} });
+  } catch (err) {
+    next(err);
+  }
+};
+
+// @desc    Delete enrollment request
+// @route   DELETE /api/enrollments/requests/:id
+// @access  Private (admin, student)
+exports.deleteRequest = async (req, res, next) => {
+  try {
+    await EnrollmentModel.deleteEnrollmentRequest(req.params.id);
+    res.status(200).json({ success: true, data: {} });
+  } catch (err) {
+    next(err);
+  }
+};

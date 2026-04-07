@@ -102,3 +102,15 @@ exports.updateEnrollmentRequest = async (requestId, updates) => {
   if (error) throw error;
   return data;
 };
+
+exports.deleteEnrollment = async (enrollmentId) => {
+  const { error } = await supabase.from('enrollments').delete().eq('id', enrollmentId);
+  if (error) throw error;
+  return true;
+};
+
+exports.deleteEnrollmentRequest = async (requestId) => {
+  const { error } = await supabase.from('enrollment_requests').delete().eq('id', requestId);
+  if (error) throw error;
+  return true;
+};

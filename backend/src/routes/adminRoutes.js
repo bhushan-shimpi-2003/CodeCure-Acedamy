@@ -1,7 +1,7 @@
 const express = require('express');
 const {
-  getStudents, getStaff, updateUserRole,
-  getTransactions, createTransaction,
+  getStudents, getStaff, updateUserRole, deleteUser,
+  getTransactions, createTransaction, updateTransaction, deleteTransaction,
   getFeedback, resolveComplaint,
   getSettings, updateSetting,
 } = require('../controllers/adminController');
@@ -18,10 +18,13 @@ router.get('/students', getStudents);
 router.get('/staff', getStaff);
 router.post('/staff', createStaff);
 router.put('/users/:id/role', updateUserRole);
+router.delete('/users/:id', deleteUser);
 
 // Finance
 router.get('/transactions', getTransactions);
 router.post('/transactions', createTransaction);
+router.put('/transactions/:id', updateTransaction);
+router.delete('/transactions/:id', deleteTransaction);
 
 // Feedback
 router.get('/feedback', getFeedback);

@@ -42,6 +42,18 @@ exports.getAllInterviews = async () => {
   return data;
 };
 
+exports.updateInterview = async (interviewId, updates) => {
+  const { data, error } = await supabase.from('mock_interviews').update(updates).eq('id', interviewId).select().single();
+  if (error) throw error;
+  return data;
+};
+
+exports.deleteInterview = async (interviewId) => {
+  const { error } = await supabase.from('mock_interviews').delete().eq('id', interviewId);
+  if (error) throw error;
+  return true;
+};
+
 exports.completeInterview = async (interviewId, score, notes) => {
   const { data, error } = await supabase
     .from('mock_interviews')

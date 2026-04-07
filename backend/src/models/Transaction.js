@@ -30,3 +30,14 @@ exports.getTransactionsByType = async (type) => {
   if (error) throw error;
   return data;
 };
+exports.updateTransaction = async (txnId, updates) => {
+  const { data, error } = await supabase.from('transactions').update(updates).eq('id', txnId).select().single();
+  if (error) throw error;
+  return data;
+};
+
+exports.deleteTransaction = async (txnId) => {
+  const { error } = await supabase.from('transactions').delete().eq('id', txnId);
+  if (error) throw error;
+  return true;
+};

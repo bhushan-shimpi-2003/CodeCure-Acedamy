@@ -33,6 +33,12 @@ exports.createAssignment = async (assignmentData) => {
   return data;
 };
 
+exports.updateAssignment = async (assignmentId, updates) => {
+  const { data, error } = await supabase.from('assignments').update(updates).eq('id', assignmentId).select().single();
+  if (error) throw error;
+  return data;
+};
+
 exports.deleteAssignment = async (assignmentId) => {
   const { error } = await supabase.from('assignments').delete().eq('id', assignmentId);
   if (error) throw error;
@@ -68,6 +74,23 @@ exports.submitAssignment = async (submissionData) => {
     .single();
   if (error) throw error;
   return data;
+};
+
+exports.updateSubmission = async (submissionId, updates) => {
+  const { data, error } = await supabase
+    .from('assignment_submissions')
+    .update(updates)
+    .eq('id', submissionId)
+    .select()
+    .single();
+  if (error) throw error;
+  return data;
+};
+
+exports.deleteSubmission = async (submissionId) => {
+  const { error } = await supabase.from('assignment_submissions').delete().eq('id', submissionId);
+  if (error) throw error;
+  return true;
 };
 
 exports.gradeSubmission = async (submissionId, score, feedback) => {

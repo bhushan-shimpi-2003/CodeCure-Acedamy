@@ -42,6 +42,20 @@ exports.updateUserRole = async (req, res, next) => {
   }
 };
 
+// @desc    Delete a user (admin)
+// @route   DELETE /api/admin/users/:id
+// @access  Private (admin)
+exports.deleteUser = async (req, res, next) => {
+  try {
+    // Note: This should use supabase.auth.admin.deleteUser if you want to delete from auth.users too
+    // For now, removing from profile
+    await UserModel.deleteProfile(req.params.id);
+    res.status(200).json({ success: true, data: {} });
+  } catch (err) {
+    next(err);
+  }
+};
+
 // --- Finance ---
 
 // @desc    Get all transactions (admin)
@@ -67,6 +81,31 @@ exports.createTransaction = async (req, res, next) => {
     next(err);
   }
 };
+
+// @desc    Update a transaction (admin)
+// @route   PUT /api/admin/transactions/:id
+// @access  Private (admin)
+exports.updateTransaction = async (req, res, next) => {
+  try {
+    const txn = await TransactionModel.updateTransaction(req.params.id, req.body);
+    res.status(200).json({ success: true, data: txn });
+  } catch (err) {
+    next(err);
+  }
+};
+
+// @desc    Delete a transaction (admin)
+// @route   DELETE /api/admin/transactions/:id
+// @access  Private (admin)
+exports.deleteTransaction = async (req, res, next) => {
+  try {
+    await TransactionModel.deleteTransaction(req.params.id);
+    res.status(200).json({ success: true, data: {} });
+  } catch (err) {
+    next(err);
+  }
+};
+  
 
 // --- Feedback ---
 

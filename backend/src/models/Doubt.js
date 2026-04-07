@@ -53,6 +53,18 @@ exports.getAllDoubts = async () => {
   return data;
 };
 
+exports.updateDoubt = async (doubtId, updates) => {
+  const { data, error } = await supabase.from('doubts').update(updates).eq('id', doubtId).select().single();
+  if (error) throw error;
+  return data;
+};
+
+exports.deleteDoubt = async (doubtId) => {
+  const { error } = await supabase.from('doubts').delete().eq('id', doubtId);
+  if (error) throw error;
+  return true;
+};
+
 exports.resolveDoubt = async (doubtId, reply, teacherId) => {
   const { data, error } = await supabase
     .from('doubts')
