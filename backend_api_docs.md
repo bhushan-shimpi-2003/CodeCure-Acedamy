@@ -322,6 +322,12 @@ This document contains a comprehensive list of all **GET**, **POST**, **PUT**, a
 **URL:** `http://localhost:5000/api/admin/transactions/:id`
 **Status:** ✅ Working
 
+### 8.7 Get All Students List
+**Method:** GET
+**URL:** `http://localhost:5000/api/admin/students`
+**Status:** ✅ Working (Admin only)
+
+
 ---
 
 *(Note: GET endpoints follow the same patterns as listed in the previous documentation version.)*
