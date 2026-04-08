@@ -18,6 +18,7 @@ router.get('/admin/all', protect, authorize('admin'), getAllCoursesAdmin);
 
 // Modules - specific routes before wildcards
 router.put('/modules/:id', protect, authorize('teacher', 'admin'), updateModule);
+router.patch('/modules/:id', protect, authorize('teacher', 'admin'), updateModule);
 router.delete('/modules/:id', protect, authorize('teacher', 'admin'), deleteModule);
 
 // Public - single course (wildcard - must be LAST among GET routes)
@@ -27,6 +28,7 @@ router.get('/:courseId/modules', getModules);
 // Create / Update / Delete
 router.post('/', protect, authorize('teacher', 'admin'), createCourse);
 router.put('/:id', protect, authorize('teacher', 'admin'), updateCourse);
+router.patch('/:id', protect, authorize('teacher', 'admin'), updateCourse);
 router.delete('/:id', protect, authorize('admin'), deleteCourse);
 
 // Modules

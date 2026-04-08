@@ -38,7 +38,7 @@ This document contains a comprehensive list of all **GET**, **POST**, **PUT**, a
 **Status:** ✅ Working
 
 ### 1.4 Update My Profile
-**Method:** PUT
+**Method:** PUT / PATCH
 **URL:** `http://localhost:5000/api/auth/me`
 **Request Body:**
 ```json
@@ -86,7 +86,7 @@ This document contains a comprehensive list of all **GET**, **POST**, **PUT**, a
 **Status:** ✅ Working
 
 ### 2.3 Update Course
-**Method:** PUT
+**Method:** PUT / PATCH
 **URL:** `http://localhost:5000/api/courses/:id`
 **Request Body:** Same as Create
 **Status:** ✅ Working
@@ -106,7 +106,7 @@ This document contains a comprehensive list of all **GET**, **POST**, **PUT**, a
 **Status:** ✅ Working
 
 ### 2.6 Update Module
-**Method:** PUT
+**Method:** PUT / PATCH
 **URL:** `http://localhost:5000/api/courses/modules/:id`
 **Status:** ✅ Working
 
@@ -129,7 +129,7 @@ This document contains a comprehensive list of all **GET**, **POST**, **PUT**, a
 **Status:** ✅ Working
 
 ### 3.2 Update Enrollment Request (Admin)
-**Method:** PUT
+**Method:** PUT / PATCH
 **URL:** `http://localhost:5000/api/enrollments/requests/:id`
 **Request Body:** `{ "status": "approved" }`
 **Status:** ✅ Working
@@ -140,7 +140,7 @@ This document contains a comprehensive list of all **GET**, **POST**, **PUT**, a
 **Status:** ✅ Working
 
 ### 3.4 Update Enrollment Details (Admin)
-**Method:** PUT
+**Method:** PUT / PATCH
 **URL:** `http://localhost:5000/api/enrollments/:id`
 **Request Body:** `{ "student_status": "dropped", "progress": 50 }`
 **Status:** ✅ Working
@@ -164,7 +164,7 @@ This document contains a comprehensive list of all **GET**, **POST**, **PUT**, a
 **Status:** ✅ Working
 
 ### 4.2 Update Lesson
-**Method:** PUT
+**Method:** PUT / PATCH
 **URL:** `http://localhost:5000/api/lessons/:id`
 **Status:** ✅ Working
 
@@ -187,7 +187,7 @@ This document contains a comprehensive list of all **GET**, **POST**, **PUT**, a
 **Status:** ✅ Working
 
 ### 5.2 Update Assignment
-**Method:** PUT
+**Method:** PUT / PATCH
 **URL:** `http://localhost:5000/api/assignments/:id`
 **Status:** ✅ Working
 
@@ -206,7 +206,7 @@ This document contains a comprehensive list of all **GET**, **POST**, **PUT**, a
 **Status:** ✅ Working
 
 ### 5.5 Update Submission
-**Method:** PUT
+**Method:** PUT / PATCH
 **URL:** `http://localhost:5000/api/assignments/submissions/:id`
 **Status:** ✅ Working
 
@@ -216,7 +216,7 @@ This document contains a comprehensive list of all **GET**, **POST**, **PUT**, a
 **Status:** ✅ Working
 
 ### 5.7 Grade Submission (Teacher)
-**Method:** PUT
+**Method:** PUT / PATCH
 **URL:** `http://localhost:5000/api/assignments/submissions/:id/grade`
 **Request Body:** `{ "score": 90, "feedback": "Excellent work!" }`
 **Status:** ✅ Working
@@ -235,7 +235,7 @@ This document contains a comprehensive list of all **GET**, **POST**, **PUT**, a
 **Status:** ✅ Working
 
 ### 6.2 Update Doubt
-**Method:** PUT
+**Method:** PUT / PATCH
 **URL:** `http://localhost:5000/api/doubts/:id`
 **Status:** ✅ Working
 
@@ -245,7 +245,7 @@ This document contains a comprehensive list of all **GET**, **POST**, **PUT**, a
 **Status:** ✅ Working
 
 ### 6.4 Resolve Doubt (Teacher)
-**Method:** PUT
+**Method:** PUT / PATCH
 **URL:** `http://localhost:5000/api/doubts/:id/resolve`
 **Request Body:** `{ "reply": "Sure, props drilling is..." }`
 **Status:** ✅ Working
@@ -264,7 +264,7 @@ This document contains a comprehensive list of all **GET**, **POST**, **PUT**, a
 **Status:** ✅ Working
 
 ### 7.2 Update Interview Schedule
-**Method:** PUT
+**Method:** PUT / PATCH
 **URL:** `http://localhost:5000/api/interviews/:id`
 **Status:** ✅ Working
 
@@ -274,7 +274,7 @@ This document contains a comprehensive list of all **GET**, **POST**, **PUT**, a
 **Status:** ✅ Working
 
 ### 7.4 Complete Interview (Teacher)
-**Method:** PUT
+**Method:** PUT / PATCH
 **URL:** `http://localhost:5000/api/interviews/:id/complete`
 **Request Body:** `{ "score": 8, "notes": "Candidate was strong in Javascript" }`
 **Status:** ✅ Working
@@ -293,7 +293,7 @@ This document contains a comprehensive list of all **GET**, **POST**, **PUT**, a
 **Status:** ✅ Working
 
 ### 8.2 Update User Role
-**Method:** PUT
+**Method:** PUT / PATCH
 **URL:** `http://localhost:5000/api/admin/users/:id/role`
 **Request Body:** `{ "role": "admin" }`
 **Status:** ✅ Working
@@ -313,7 +313,7 @@ This document contains a comprehensive list of all **GET**, **POST**, **PUT**, a
 **Status:** ✅ Working
 
 ### 8.5 Update Transaction
-**Method:** PUT
+**Method:** PUT / PATCH
 **URL:** `http://localhost:5000/api/admin/transactions/:id`
 **Status:** ✅ Working
 
@@ -326,6 +326,13 @@ This document contains a comprehensive list of all **GET**, **POST**, **PUT**, a
 **Method:** GET
 **URL:** `http://localhost:5000/api/admin/students`
 **Status:** ✅ Working (Admin only)
+
+### 8.8 Update Setting
+**Method:** PUT / PATCH
+**URL:** `http://localhost:5000/api/admin/settings/:key`
+**Request Body:** `{ "value": "new-value" }`
+**Status:** ✅ Working
+
 
 
 ---

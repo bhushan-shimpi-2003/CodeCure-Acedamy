@@ -8,6 +8,8 @@ router.get('/course/:courseId', protect, getLessons);
 router.get('/course/:courseId/latest', protect, getLatestLesson);
 router.post('/', protect, authorize('teacher', 'admin'), createLesson);
 router.put('/:id', protect, authorize('teacher', 'admin'), updateLesson);
+router.patch('/:id', protect, authorize('teacher', 'admin'), updateLesson);
+
 router.delete('/:id', protect, authorize('teacher', 'admin'), deleteLesson);
 
 module.exports = router;

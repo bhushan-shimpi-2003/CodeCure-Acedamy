@@ -18,20 +18,24 @@ router.get('/students', getStudents);
 router.get('/staff', getStaff);
 router.post('/staff', createStaff);
 router.put('/users/:id/role', updateUserRole);
+router.patch('/users/:id/role', updateUserRole);
 router.delete('/users/:id', deleteUser);
 
 // Finance
 router.get('/transactions', getTransactions);
 router.post('/transactions', createTransaction);
 router.put('/transactions/:id', updateTransaction);
+router.patch('/transactions/:id', updateTransaction);
 router.delete('/transactions/:id', deleteTransaction);
 
 // Feedback
 router.get('/feedback', getFeedback);
 router.put('/feedback/:id/resolve', resolveComplaint);
+router.patch('/feedback/:id/resolve', resolveComplaint);
 
 // Settings
 router.get('/settings', getSettings);
 router.put('/settings/:key', updateSetting);
+router.patch('/settings/:key', updateSetting);
 
 module.exports = router;
