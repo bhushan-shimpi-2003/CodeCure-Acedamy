@@ -47,10 +47,14 @@ exports.updateUserRole = async (req, res, next) => {
 // @access  Private (admin)
 exports.deleteUser = async (req, res, next) => {
   try {
-    // Note: This should use supabase.auth.admin.deleteUser if you want to delete from auth.users too
-    // For now, removing from profile
-    await UserModel.deleteProfile(req.params.id);
-    res.status(200).json({ success: true, data: {} });
+    const { id } = req.params;
+
+    // Delete from Supabase Auth (this will cascade to public.profiles and other related tables)
+    const { error } = await UserModel.deleteUserCompletely(id);
+    
+    if (error) throw error;
+
+    res.status(200).json({ success: true, message: 'User deleted successfully', data: {} });
   } catch (err) {
     next(err);
   }

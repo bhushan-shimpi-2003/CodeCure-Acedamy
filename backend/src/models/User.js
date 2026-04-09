@@ -53,3 +53,8 @@ exports.deleteProfile = async (userId) => {
   if (error) throw error;
   return true;
 };
+
+exports.deleteUserCompletely = async (userId) => {
+  const { data, error } = await supabase.auth.admin.deleteUser(userId);
+  return { data, error };
+};
