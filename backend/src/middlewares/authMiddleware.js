@@ -14,6 +14,9 @@ exports.protect = async (req, res, next) => {
     req.headers.authorization.startsWith('Bearer')
   ) {
     token = req.headers.authorization.split(' ')[1];
+  } else if (req.session && req.session.token) {
+    // Fallback to session-based token if header is missing
+    token = req.session.token;
   }
 
   if (!token) {

@@ -50,10 +50,21 @@ exports.signup = async (req, res, next) => {
       }
     }
 
+    // Fetch the full profile created by trigger
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('*')
+      .eq('id', data.user.id)
+      .single();
+
+    // Store user data in session
+    req.session.user = profile;
+    req.session.token = data.session.access_token;
+
     res.status(201).json({
       success: true,
       data: {
-        user: data.user,
+        user: profile,
         session: data.session,
       },
     });
@@ -91,6 +102,10 @@ exports.login = async (req, res, next) => {
       .eq('id', data.user.id)
       .single();
 
+    // Store user data in session
+    req.session.user = profile;
+    req.session.token = data.session.access_token;
+
     res.status(200).json({
       success: true,
       data: {
@@ -122,10 +137,15 @@ exports.getMe = async (req, res, next) => {
 // @access  Private
 exports.logout = async (req, res, next) => {
   try {
-    // Server-side logout is a no-op: the frontend simply discards the token.
-    // We do NOT call supabase.auth.signOut() here because that would
-    // sign out the shared service-role client, breaking the entire server.
-    res.status(200).json({ success: true, data: {} });
+    // Destroy server-side session
+    req.session.destroy((err) => {
+      if (err) {
+        console.error('Session destruction error:', err);
+        return res.status(500).json({ success: false, error: 'Could not log out' });
+      }
+      res.clearCookie('connect.sid'); // default express-session cookie name
+      res.status(200).json({ success: true, message: 'Logged out successfully', data: {} });
+    });
   } catch (err) {
     next(err);
   }
