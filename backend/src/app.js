@@ -51,12 +51,12 @@ const allowedOrigins = [
 ].filter(Boolean);
 
 app.use(cors({
-  origin: function(origin, callback) {
+  origin: function (origin, callback) {
     // Allow requests with no origin (like mobile apps or curl requests)
     if (!origin) return callback(null, true);
-    
+
     // In development or if it matches our list
-    const isLocal = origin.startsWith('http://localhost');
+    const isLocal = origin.startsWith('http://localhost') || origin.startsWith('capacitor://') || origin.startsWith('app://');
     const isVercel = origin.endsWith('.vercel.app');
     const isAllowed = allowedOrigins.includes(origin) || isLocal || isVercel;
 
