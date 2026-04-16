@@ -5,6 +5,7 @@ CodeCure Academy is a full-stack web application for online learning, featuring 
 
 ## Project Structure
 
+
 - `frontend/` — React (Vite) app for students, teachers, and admins
 
 - 
