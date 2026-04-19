@@ -59,15 +59,11 @@ export default function Footer() {
             <ul className="space-y-4">
               <li className="flex items-start gap-3">
                 <Mail className="w-4 h-4 text-blue-600 shrink-0 mt-0.5" />
-                <span className="text-slate-600 text-sm">hello@codecureacedamy.com</span>
+                <span className="text-slate-600 text-sm">gaurav.shimpi@codecuredev.com</span>
               </li>
               <li className="flex items-start gap-3">
                 <Phone className="w-4 h-4 text-blue-600 shrink-0 mt-0.5" />
-                <span className="text-slate-600 text-sm">+91 98765 43210</span>
-              </li>
-              <li className="flex items-start gap-3">
-                <MapPin className="w-4 h-4 text-blue-600 shrink-0 mt-0.5" />
-                <span className="text-slate-600 text-sm">Tech Park, Bangalore, India</span>
+                <span className="text-slate-600 text-sm">+91 7743878583</span>
               </li>
             </ul>
           </div>

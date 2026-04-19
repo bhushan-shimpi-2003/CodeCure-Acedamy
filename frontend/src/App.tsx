@@ -16,19 +16,15 @@ import Terms from "./pages/Terms";
 import Privacy from "./pages/Privacy";
 import Refund from "./pages/Refund";
 import NotFound from "./pages/NotFound";
-import Navbar from "./components/Navbar";
-import Footer from "./components/Footer";
-import WhatsAppButton from "./components/WhatsAppButton";
+import { Capacitor } from "@capacitor/core";
+import WebLayout from "./layouts/WebLayout";
+import AppLayout from "./layouts/AppLayout";
 
-// Layout for public pages
-const PublicLayout = ({ children }: { children: React.ReactNode }) => (
-  <div className="min-h-screen bg-slate-50 text-slate-900 font-sans selection:bg-blue-100 selection:text-blue-900">
-    <Navbar />
-    <main>{children}</main>
-    <Footer />
-    <WhatsAppButton />
-  </div>
-);
+// Dynamically choose layout based on platform
+const isApp = Capacitor.isNativePlatform();
+const ResponsiveLayout = ({ children }: { children: React.ReactNode }) => {
+  return isApp ? <AppLayout>{children}</AppLayout> : <WebLayout>{children}</WebLayout>;
+};
 
 // Page wrapper for animations
 const PageWrapper = ({ children }: { children: React.ReactNode }) => (
@@ -74,17 +70,17 @@ const AnimatedRoutes = () => {
     <AnimatePresence mode="wait">
       {/* @ts-expect-error - React Router v7 Routes component type doesn't include key, but React elements accept it */}
       <Routes location={location} key={location.pathname}>
-        <Route path="/" element={<PageWrapper><PublicLayout><LandingPage /></PublicLayout></PageWrapper>} />
-        <Route path="/login" element={<PageWrapper><PublicLayout><Login /></PublicLayout></PageWrapper>} />
-        <Route path="/signup" element={<PageWrapper><PublicLayout><Signup /></PublicLayout></PageWrapper>} />
-        <Route path="/courses" element={<PageWrapper><PublicLayout><Courses /></PublicLayout></PageWrapper>} />
-        <Route path="/courses/:id" element={<PageWrapper><PublicLayout><CourseDetail /></PublicLayout></PageWrapper>} />
-        <Route path="/checkout" element={<PageWrapper><PublicLayout><Checkout /></PublicLayout></PageWrapper>} />
-        <Route path="/about" element={<PageWrapper><PublicLayout><About /></PublicLayout></PageWrapper>} />
-        <Route path="/contact" element={<PageWrapper><PublicLayout><Contact /></PublicLayout></PageWrapper>} />
-        <Route path="/terms" element={<PageWrapper><PublicLayout><Terms /></PublicLayout></PageWrapper>} />
-        <Route path="/privacy" element={<PageWrapper><PublicLayout><Privacy /></PublicLayout></PageWrapper>} />
-        <Route path="/refund" element={<PageWrapper><PublicLayout><Refund /></PublicLayout></PageWrapper>} />
+        <Route path="/" element={<PageWrapper><ResponsiveLayout><LandingPage /></ResponsiveLayout></PageWrapper>} />
+        <Route path="/login" element={<PageWrapper><ResponsiveLayout><Login /></ResponsiveLayout></PageWrapper>} />
+        <Route path="/signup" element={<PageWrapper><ResponsiveLayout><Signup /></ResponsiveLayout></PageWrapper>} />
+        <Route path="/courses" element={<PageWrapper><ResponsiveLayout><Courses /></ResponsiveLayout></PageWrapper>} />
+        <Route path="/courses/:id" element={<PageWrapper><ResponsiveLayout><CourseDetail /></ResponsiveLayout></PageWrapper>} />
+        <Route path="/checkout" element={<PageWrapper><ResponsiveLayout><Checkout /></ResponsiveLayout></PageWrapper>} />
+        <Route path="/about" element={<PageWrapper><ResponsiveLayout><About /></ResponsiveLayout></PageWrapper>} />
+        <Route path="/contact" element={<PageWrapper><ResponsiveLayout><Contact /></ResponsiveLayout></PageWrapper>} />
+        <Route path="/terms" element={<PageWrapper><ResponsiveLayout><Terms /></ResponsiveLayout></PageWrapper>} />
+        <Route path="/privacy" element={<PageWrapper><ResponsiveLayout><Privacy /></ResponsiveLayout></PageWrapper>} />
+        <Route path="/refund" element={<PageWrapper><ResponsiveLayout><Refund /></ResponsiveLayout></PageWrapper>} />
         
         {/* Protected Dashboard Routes */}
         <Route path="/dashboard" element={<ProtectedRoute allowedRoles={['student']}><PageWrapper><Dashboard /></PageWrapper></ProtectedRoute>} />
