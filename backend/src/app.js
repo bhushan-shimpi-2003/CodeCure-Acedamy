@@ -80,7 +80,7 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
-app.options('*', cors(corsOptions));
+app.options(/.*/, cors(corsOptions));
 
 // Static folder for file uploads mapping to \public\uploads
 app.use('/uploads', express.static(path.join(__dirname, '../public/uploads')));
