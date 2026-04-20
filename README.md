@@ -9,7 +9,6 @@ CodeCure Academy is a full-stack web application for online learning, featuring 
 - 
 - `backend/` — Node.js/Express API server with Supabase and file upload support
 ## Deployment
-.
 - **Frontend:** Deploy on [Vercel](https://vercel.com/)
 - **Backend:** Deploy on [Render](https://render.com/)
 
