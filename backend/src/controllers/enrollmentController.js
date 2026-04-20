@@ -92,12 +92,28 @@ exports.getAllEnrollments = async (req, res, next) => {
   }
 };
 
-// @desc    Update enrollment (progress, status)
+// @desc    Update enrollment (progress, completed_lessons, status)
 // @route   PUT /api/enrollments/:id
-// @access  Private (admin)
+// @access  Private (admin, teacher, or student owner)
 exports.updateEnrollment = async (req, res, next) => {
   try {
-    const updated = await EnrollmentModel.updateEnrollment(req.params.id, req.body);
+    const enrollment = await EnrollmentModel.getEnrollmentById(req.params.id);
+    if (!enrollment) {
+      return res.status(404).json({ success: false, message: 'Enrollment not found' });
+    }
+
+    // Permission check: Owners can update progress/lessons. Admins/Teachers can update anything.
+    const isOwner = String(enrollment.student_id) === String(req.user.id);
+    const isStaff = req.user.role === 'admin' || req.user.role === 'teacher';
+
+    if (!isOwner && !isStaff) {
+      return res.status(403).json({ success: false, message: 'Not authorized to update this enrollment' });
+    }
+
+    // Capture the current timestamp if progress is being updated
+    const updates = { ...req.body, updated_at: new Date().toISOString() };
+    
+    const updated = await EnrollmentModel.updateEnrollment(req.params.id, updates);
     res.status(200).json({ success: true, data: updated });
   } catch (err) {
     next(err);

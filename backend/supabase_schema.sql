@@ -127,11 +127,13 @@ CREATE TABLE public.enrollments (
   course_id UUID REFERENCES public.courses(id) ON DELETE CASCADE NOT NULL,
   batch_id UUID REFERENCES public.batches(id) ON DELETE SET NULL,
   progress INTEGER DEFAULT 0,
+  completed_lessons UUID[] DEFAULT '{}',
   student_status student_status DEFAULT 'pending' NOT NULL,
   payment_status payment_status DEFAULT 'pending',
   payment_id TEXT,
   amount_paid NUMERIC DEFAULT 0,
   enrolled_at TIMESTAMPTZ DEFAULT now() NOT NULL,
+  updated_at TIMESTAMPTZ DEFAULT now() NOT NULL,
   UNIQUE(student_id, course_id)
 );
 

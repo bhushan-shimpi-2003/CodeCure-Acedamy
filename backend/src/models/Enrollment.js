@@ -25,6 +25,16 @@ exports.createEnrollment = async (enrollmentData) => {
   return data;
 };
 
+exports.getEnrollmentById = async (id) => {
+  const { data, error } = await supabase
+    .from('enrollments')
+    .select('*')
+    .eq('id', id)
+    .single();
+  if (error && error.code !== 'PGRST116') throw error;
+  return data;
+};
+
 exports.getEnrollmentsByStudent = async (studentId) => {
   const { data, error } = await supabase
     .from('enrollments')
