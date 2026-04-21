@@ -1,5 +1,5 @@
 const express = require('express');
-const { getDashboardStats, getRecentActivity } = require('../controllers/teacherController');
+const { getDashboardStats, getRecentActivity, getCourseStudents } = require('../controllers/teacherController');
 const { protect, authorize } = require('../middlewares/authMiddleware');
 
 const router = express.Router();
@@ -19,5 +19,11 @@ router.get('/dashboard/stats', getDashboardStats);
  * @desc    Get recent student activities relevant to the teacher
  */
 router.get('/dashboard/activity', getRecentActivity);
+
+/**
+ * @route   GET /api/teacher/course/:courseId/students
+ * @desc    Get students in a course
+ */
+router.get('/course/:courseId/students', getCourseStudents);
 
 module.exports = router;

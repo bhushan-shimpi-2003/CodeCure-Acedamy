@@ -142,3 +142,34 @@ exports.getRecentActivity = async (req, res) => {
     res.status(500).json({ success: false, message: 'Server Error' });
   }
 };
+
+/**
+ * @desc    Get students enrolled in a specific course (for teacher)
+ * @route   GET /api/teacher/course/:courseId/students
+ * @access  Private (Teacher)
+ */
+exports.getCourseStudents = async (req, res) => {
+  try {
+    const { courseId } = req.params;
+    const { data, error } = await supabase
+      .from('enrollments')
+      .select('student_id, student_status, profiles!student_id(id, name, email, profile_picture)')
+      .eq('course_id', courseId)
+      .eq('student_status', 'active');
+
+    if (error) throw error;
+
+    const students = data.map(item => ({
+      ...item.profiles,
+      status: item.student_status
+    })).filter(s => s.id);
+
+    res.status(200).json({
+      success: true,
+      data: students
+    });
+  } catch (error) {
+    console.error('getCourseStudents Error:', error);
+    res.status(500).json({ success: false, message: 'Server Error' });
+  }
+};

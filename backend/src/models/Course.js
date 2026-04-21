@@ -21,31 +21,44 @@ exports.getAllPublishedCourses = async () => {
 exports.getCourseById = async (courseId) => {
   const { data, error } = await supabase
     .from('courses')
-    .select('*, profiles!instructor_id(id, name, profile_picture)')
+    .select('*, profiles!instructor_id(id, name, profile_picture), enrollments(*)')
     .eq('id', courseId)
     .single();
   if (error) throw error;
-  return data;
+  
+  return {
+    ...data,
+    students_enrolled: data.enrollments ? data.enrollments.length : 0
+  };
 };
 
 exports.getCourseBySlug = async (slug) => {
   const { data, error } = await supabase
     .from('courses')
-    .select('*, profiles!instructor_id(id, name, profile_picture)')
+    .select('*, profiles!instructor_id(id, name, profile_picture), enrollments(*)')
     .eq('slug', slug)
     .single();
   if (error) throw error;
-  return data;
+  
+  return {
+    ...data,
+    students_enrolled: data.enrollments ? data.enrollments.length : 0
+  };
 };
 
 exports.getCoursesByInstructor = async (instructorId) => {
   const { data, error } = await supabase
     .from('courses')
-    .select('*')
+    .select('*, modules(*), enrollments(*)')
     .eq('instructor_id', instructorId)
     .order('created_at', { ascending: false });
   if (error) throw error;
-  return data;
+  
+  // Format for frontend
+  return data.map(course => ({
+    ...course,
+    students_enrolled: course.enrollments ? course.enrollments.length : 0
+  }));
 };
 
 exports.getAllCourses = async () => {
