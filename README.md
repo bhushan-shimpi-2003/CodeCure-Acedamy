@@ -17,6 +17,7 @@ CodeCure Academy is a full-stack web application for online learning, featuring 
 - `VITE_API_BASE_URL` — URL of your backend API (e.g., `https://your-backend-service.onrender.com`)
 - `APP_URL` — URL where your frontend is hosted (e.g., `https://your-frontend-project.vercel.app`)
 
+
 #### Backend (`backend/.env`)
 - `PORT` — Port to run the server (default: 5000 or 10000 on Render)
 - `SUPABASE_URL`, `SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY` — Supabase project credentials
