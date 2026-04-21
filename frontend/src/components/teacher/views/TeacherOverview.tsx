@@ -26,12 +26,41 @@ export default function TeacherOverview({ setActiveTab }: { setActiveTab?: (tab:
   const [studentsCount, setStudentsCount] = useState(0);
   const [interviewsCount, setInterviewsCount] = useState(0);
   const [pendingDoubtsCount, setPendingDoubtsCount] = useState(0);
+  const [recentActivity, setRecentActivity] = useState<any[]>([]);
+  const [stats, setStats] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     if (!token) return;
     fetchAllMetrics();
+    fetchDashboardData();
   }, [token]);
+
+  const fetchDashboardData = async () => {
+    try {
+      const [statsRes, activityRes] = await Promise.all([
+        fetch(`${API}/teacher/dashboard/stats`, {
+          headers: { Authorization: `Bearer ${token}` }
+        }),
+        fetch(`${API}/teacher/dashboard/activity`, {
+          headers: { Authorization: `Bearer ${token}` }
+        })
+      ]);
+
+      const statsData = await statsRes.json();
+      const activityData = await activityRes.json();
+
+      if (statsData.success) {
+        setStats(statsData.data);
+        setStudentsCount(statsData.data.total_students);
+      }
+      if (activityData.success) {
+        setRecentActivity(activityData.data);
+      }
+    } catch (err) {
+      console.error("Failed to load dashboard data", err);
+    }
+  };
 
   const fetchAllMetrics = async () => {
     setIsLoading(true);
@@ -169,7 +198,7 @@ export default function TeacherOverview({ setActiveTab }: { setActiveTab?: (tab:
         </div>
 
         {/* Info panel / Getting started */}
-        <div className="lg:col-span-1">
+        <div className="lg:col-span-1 space-y-6">
           <h2 className="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
             <GraduationCap className="w-5 h-5 text-blue-600" /> Teaching Guide
           </h2>
@@ -196,6 +225,31 @@ export default function TeacherOverview({ setActiveTab }: { setActiveTab?: (tab:
               </li>
             </ul>
           </motion.div>
+
+          {/* Recent Activity Feed */}
+          <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
+            <h2 className="text-lg font-bold text-slate-800 mb-4">Recent Activity</h2>
+            <div className="space-y-4">
+              {recentActivity.length > 0 ? (
+                recentActivity.map((activity, idx) => (
+                  <div key={idx} className="flex items-start gap-4 p-3 rounded-xl hover:bg-slate-50 transition-colors border border-transparent hover:border-slate-100">
+                    <div className={`p-2 rounded-lg ${activity.type === 'doubt' ? 'bg-amber-100 text-amber-600' : 'bg-blue-100 text-blue-600'}`}>
+                      {activity.type === 'doubt' ? <MessageSquare className="w-4 h-4" /> : <FileText className="w-4 h-4" />}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-bold text-slate-900 truncate">{activity.title}</p>
+                      <p className="text-xs text-slate-500 line-clamp-1">{activity.description}</p>
+                      <p className="text-[10px] text-slate-400 mt-1 font-medium uppercase tracking-wider">{activity.time_ago}</p>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <div className="text-center py-8">
+                  <p className="text-sm text-slate-400">No recent activity found.</p>
+                </div>
+              )}
+            </div>
+          </div>
         </div>
 
       </div>

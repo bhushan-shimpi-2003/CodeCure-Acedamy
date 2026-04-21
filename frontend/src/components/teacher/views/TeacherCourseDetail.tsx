@@ -45,17 +45,16 @@ export default function TeacherCourseDetail({ courseId, onBack }: TeacherCourseD
         }
 
         // 2. Fetch enrollments for this course
-        const enrollRes = await fetch(`${API}/enrollments`, {
+        const enrollRes = await fetch(`${API}/teacher/course/${courseId}/students`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         const enrollData = await enrollRes.json();
         if (enrollData.success) {
-          const filtered = enrollData.data.filter((e: any) => e.course_id === courseId);
-          setStudents(filtered.map((e: any) => ({
-            ...e,
-            student_name: e.profiles?.name || 'N/A',
-            student_email: e.profiles?.email || 'N/A',
-            status: e.student_status || 'unknown'
+          setStudents(enrollData.data.map((s: any) => ({
+            ...s,
+            student_name: s.name || 'N/A',
+            student_email: s.email || 'N/A',
+            status: s.status || 'active'
           })));
         }
       } catch (err) {
