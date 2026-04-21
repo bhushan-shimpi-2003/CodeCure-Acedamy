@@ -12,7 +12,6 @@ CodeCure Academy is a full-stack web application for online learning, featuring 
 - **Backend:** Deploy on [Render](https://render.com/)
 
 ### Environment Variables
-
 #### Frontend (`frontend/.env.example`)
 - `VITE_API_BASE_URL` — URL of your backend API (e.g., `https://your-backend-service.onrender.com`)
 - `APP_URL` — URL where your frontend is hosted (e.g., `https://your-frontend-project.vercel.app`)
