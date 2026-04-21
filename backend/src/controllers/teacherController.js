@@ -10,7 +10,7 @@ exports.getDashboardStats = async (req, res) => {
     const teacherId = req.user.id;
 
     // 1. Total Students across all teacher's courses
-    // We join enrollments -> courses where instructor_id = teacherId
+    // Enrollments only have course_id, so we MUST join courses to filter by instructor_id
     const { data: enrollmentData, error: enrollmentError } = await supabase
       .from('enrollments')
       .select('student_id, courses!inner(instructor_id)')
@@ -18,36 +18,36 @@ exports.getDashboardStats = async (req, res) => {
 
     if (enrollmentError) throw enrollmentError;
 
-    // Create a unique set of user IDs
     const uniqueStudents = new Set(enrollmentData.map(e => e.student_id));
     const total_students = uniqueStudents.size;
 
     // 2. Efficiency / Top Course (Highest average score)
-    // Fetch assignments and their submissions for the teacher's courses
+    // Assignments table has teacher_id, so we can filter directly
     const { data: submissionData, error: submissionError } = await supabase
       .from('assignment_submissions')
-      .select('score, assignments!inner(title, course_id, courses!inner(instructor_id, title))')
-      .eq('assignments.courses.instructor_id', teacherId)
+      .select('score, assignments!inner(title, course_id, teacher_id)')
+      .eq('assignments.teacher_id', teacherId)
       .not('score', 'is', null);
 
     if (submissionError) throw submissionError;
 
-    // Aggregate average scores per course
+    // Aggregate average scores per assignment's course (we'll use title for simplicity or fetch course title)
+    // For now, let's just use assignment titles to calculate top performing topic
     const courseStats = {};
     submissionData.forEach(s => {
-      const courseTitle = s.assignments.courses.title;
-      if (!courseStats[courseTitle]) {
-        courseStats[courseTitle] = { total: 0, count: 0 };
+      const topic = s.assignments.title; 
+      if (!courseStats[topic]) {
+        courseStats[topic] = { total: 0, count: 0 };
       }
-      courseStats[courseTitle].total += s.score;
-      courseStats[courseTitle].count += 1;
+      courseStats[topic].total += s.score;
+      courseStats[topic].count += 1;
     });
 
-    let top_course = 'No active courses';
+    let top_course = 'No active assignments';
     let avg_score = 0;
 
     Object.keys(courseStats).forEach(title => {
-      const avg = Math.round(courseStats[title].total / courseStats[title].count);
+      const avg = Math.round(courseStats[title].total / courseStats[topic = title].count);
       if (avg > avg_score) {
         avg_score = avg;
         top_course = title;
@@ -81,21 +81,22 @@ exports.getRecentActivity = async (req, res) => {
     const teacherId = req.user.id;
 
     // Combine Doubts and Submissions for activity feed
-    // Fetch recent doubts (both pending and resolved)
+    // Doubts table has teacher_id
     const { data: doubts, error: doubtsError } = await supabase
       .from('doubts')
-      .select('id, title, status, created_at, courses!inner(instructor_id)')
-      .eq('courses.instructor_id', teacherId)
+      .select('id, title, status, created_at, teacher_id')
+      .or(`teacher_id.eq.${teacherId},status.eq.pending`)
       .order('created_at', { ascending: false })
       .limit(10);
 
     if (doubtsError) throw doubtsError;
 
     // Fetch recent submissions
+    // Assignments has teacher_id
     const { data: submissions, error: submissionsError } = await supabase
       .from('assignment_submissions')
-      .select('id, status, submitted_at, assignments!inner(title, courses!inner(instructor_id))')
-      .eq('assignments.courses.instructor_id', teacherId)
+      .select('id, status, submitted_at, assignments!inner(title, teacher_id)')
+      .eq('assignments.teacher_id', teacherId)
       .order('submitted_at', { ascending: false })
       .limit(10);
 
