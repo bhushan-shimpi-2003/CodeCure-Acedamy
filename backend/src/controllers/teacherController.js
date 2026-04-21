@@ -1,4 +1,4 @@
-const { getPool } = require('../config/db');
+const supabase = require('../config/supabaseClient');
 
 /**
  * @desc    Get teacher dashboard stats
@@ -8,33 +8,52 @@ const { getPool } = require('../config/db');
 exports.getDashboardStats = async (req, res) => {
   try {
     const teacherId = req.user.id;
-    const pool = getPool();
 
     // 1. Total Students across all teacher's courses
-    const studentCountRes = await pool.query(
-      `SELECT COUNT(DISTINCT e.user_id) as total_students
-       FROM enrollments e
-       JOIN courses c ON e.course_id = c.id
-       WHERE c.teacher_id = $1 AND e.status = 'approved'`,
-      [teacherId]
-    );
+    // We join enrollments -> courses where instructor_id = teacherId
+    const { data: enrollmentData, error: enrollmentError } = await supabase
+      .from('enrollments')
+      .select('user_id, courses!inner(instructor_id)')
+      .eq('courses.instructor_id', teacherId)
+      .eq('status', 'approved');
+
+    if (enrollmentError) throw enrollmentError;
+
+    // Create a unique set of user IDs
+    const uniqueStudents = new Set(enrollmentData.map(e => e.user_id));
+    const total_students = uniqueStudents.size;
 
     // 2. Efficiency / Top Course (Highest average score)
-    const topCourseRes = await pool.query(
-      `SELECT c.title, AVG(s.score) as avg_score
-       FROM assignments a
-       JOIN submissions s ON a.id = s.assignment_id
-       JOIN courses c ON a.course_id = c.id
-       WHERE c.teacher_id = $1
-       GROUP BY c.id, c.title
-       ORDER BY avg_score DESC
-       LIMIT 1`,
-      [teacherId]
-    );
+    // In Supabase, we'll fetch assignments and their submissions for the teacher's courses
+    const { data: submissionData, error: submissionError } = await supabase
+      .from('submissions')
+      .select('score, assignments!inner(title, course_id, courses!inner(instructor_id, title))')
+      .eq('assignments.courses.instructor_id', teacherId)
+      .not('score', 'is', null);
 
-    const total_students = parseInt(studentCountRes.rows[0]?.total_students || 0);
-    const top_course = topCourseRes.rows[0]?.title || 'No active courses';
-    const avg_score = Math.round(parseFloat(topCourseRes.rows[0]?.avg_score || 0));
+    if (submissionError) throw submissionError;
+
+    // Aggregate average scores per course
+    const courseStats = {};
+    submissionData.forEach(s => {
+      const courseTitle = s.assignments.courses.title;
+      if (!courseStats[courseTitle]) {
+        courseStats[courseTitle] = { total: 0, count: 0 };
+      }
+      courseStats[courseTitle].total += s.score;
+      courseStats[courseTitle].count += 1;
+    });
+
+    let top_course = 'No active courses';
+    let avg_score = 0;
+
+    Object.keys(courseStats).forEach(title => {
+      const avg = Math.round(courseStats[title].total / courseStats[title].count);
+      if (avg > avg_score) {
+        avg_score = avg;
+        top_course = title;
+      }
+    });
 
     res.status(200).json({
       success: true,
@@ -61,47 +80,57 @@ exports.getDashboardStats = async (req, res) => {
 exports.getRecentActivity = async (req, res) => {
   try {
     const teacherId = req.user.id;
-    const pool = getPool();
 
     // Combine Doubts and Submissions for activity feed
-    // Limit to 10 most recent
-    const activityRes = await pool.query(
-      `(SELECT 
-          'doubt' as type, 
-          d.id, 
-          d.title, 
-          'New doubt from student' as description, 
-          d.created_at
-        FROM doubts d
-        JOIN courses c ON d.course_id = c.id
-        WHERE c.teacher_id = $1 AND d.status = 'pending')
-       UNION ALL
-       (SELECT 
-          'submission' as type, 
-          s.id, 
-          a.title, 
-          'New assignment submission' as description, 
-          s.submitted_at as created_at
-        FROM submissions s
-        JOIN assignments a ON s.assignment_id = a.id
-        JOIN courses c ON a.course_id = c.id
-        WHERE c.teacher_id = $1 AND s.status = 'pending')
-       ORDER BY created_at DESC
-       LIMIT 10`,
-      [teacherId]
-    );
+    // Fetch recent doubts (both pending and resolved)
+    const { data: doubts, error: doubtsError } = await supabase
+      .from('doubts')
+      .select('id, title, status, created_at, courses!inner(instructor_id)')
+      .eq('courses.instructor_id', teacherId)
+      .order('created_at', { ascending: false })
+      .limit(10);
 
-    const activities = activityRes.rows.map(row => {
-      const diff = new Date() - new Date(row.created_at);
+    if (doubtsError) throw doubtsError;
+
+    // Fetch recent submissions
+    const { data: submissions, error: submissionsError } = await supabase
+      .from('submissions')
+      .select('id, status, submitted_at, assignments!inner(title, courses!inner(instructor_id))')
+      .eq('assignments.courses.instructor_id', teacherId)
+      .order('submitted_at', { ascending: false })
+      .limit(10);
+
+    if (submissionsError) throw submissionsError;
+
+    // Merge and sort
+    const activityFeed = [
+      ...doubts.map(d => ({
+        id: d.id,
+        type: 'doubt',
+        title: d.title,
+        description: d.status === 'resolved' ? 'Resolved student query' : 'New doubt from student',
+        status: d.status,
+        created_at: d.created_at
+      })),
+      ...submissions.map(s => ({
+        id: s.id,
+        type: 'submission',
+        title: s.assignments.title,
+        description: s.status === 'graded' ? 'Assignment graded' : 'New assignment submission',
+        status: s.status,
+        created_at: s.submitted_at
+      }))
+    ].sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+    .slice(0, 10);
+
+    const activities = activityFeed.map(item => {
+      const diff = new Date() - new Date(item.created_at);
       const hours = Math.floor(diff / (1000 * 60 * 60));
-      const time_ago = hours === 0 ? 'Just now' : `${hours}h ago`;
+      const time_ago = hours === 0 ? 'Just now' : (hours < 24 ? `${hours}h ago` : `${Math.floor(hours/24)}d ago`);
 
       return {
-        id: row.id,
-        type: row.type,
-        title: row.title,
-        description: row.description,
-        time_ago: time_ago
+        ...item,
+        time_ago
       };
     });
 
