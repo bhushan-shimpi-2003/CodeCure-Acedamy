@@ -16,6 +16,7 @@ const assignmentRoutes = require('./routes/assignmentRoutes');
 const doubtRoutes = require('./routes/doubtRoutes');
 const interviewRoutes = require('./routes/interviewRoutes');
 const adminRoutes = require('./routes/adminRoutes');
+const teacherRoutes = require('./routes/teacherRoutes');
 const publicRoutes = require('./routes/publicRoutes');
 const uploadRoutes = require('./routes/uploadRoutes');
 const path = require('path');
@@ -99,6 +100,7 @@ app.use('/api/assignments', assignmentRoutes);
 app.use('/api/doubts', doubtRoutes);
 app.use('/api/interviews', interviewRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/teacher', teacherRoutes);
 app.use('/api/upload', uploadRoutes);
 app.use('/api', publicRoutes);
 
