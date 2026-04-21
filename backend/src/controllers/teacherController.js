@@ -13,20 +13,19 @@ exports.getDashboardStats = async (req, res) => {
     // We join enrollments -> courses where instructor_id = teacherId
     const { data: enrollmentData, error: enrollmentError } = await supabase
       .from('enrollments')
-      .select('user_id, courses!inner(instructor_id)')
-      .eq('courses.instructor_id', teacherId)
-      .eq('status', 'approved');
+      .select('student_id, courses!inner(instructor_id)')
+      .eq('courses.instructor_id', teacherId);
 
     if (enrollmentError) throw enrollmentError;
 
     // Create a unique set of user IDs
-    const uniqueStudents = new Set(enrollmentData.map(e => e.user_id));
+    const uniqueStudents = new Set(enrollmentData.map(e => e.student_id));
     const total_students = uniqueStudents.size;
 
     // 2. Efficiency / Top Course (Highest average score)
-    // In Supabase, we'll fetch assignments and their submissions for the teacher's courses
+    // Fetch assignments and their submissions for the teacher's courses
     const { data: submissionData, error: submissionError } = await supabase
-      .from('submissions')
+      .from('assignment_submissions')
       .select('score, assignments!inner(title, course_id, courses!inner(instructor_id, title))')
       .eq('assignments.courses.instructor_id', teacherId)
       .not('score', 'is', null);
@@ -94,7 +93,7 @@ exports.getRecentActivity = async (req, res) => {
 
     // Fetch recent submissions
     const { data: submissions, error: submissionsError } = await supabase
-      .from('submissions')
+      .from('assignment_submissions')
       .select('id, status, submitted_at, assignments!inner(title, courses!inner(instructor_id))')
       .eq('assignments.courses.instructor_id', teacherId)
       .order('submitted_at', { ascending: false })
