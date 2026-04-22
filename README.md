@@ -2,7 +2,6 @@
 ## Overview  
 CodeCure Academy is a full-stack web application for online learning, featuring a React (Vite) frontend and a Node.js/Express backend with Supabase integration.
 
-
 ## Project Structure
 - `frontend/` — React (Vite) app for students, teachers, and admins
 - `backend/` — Node.js/Express API server with Supabase and file upload support
