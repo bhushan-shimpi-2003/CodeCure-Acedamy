@@ -2,7 +2,7 @@ import { API_URL, API_BASE_URL } from '../../../config';
 import { useState, useEffect } from "react";
 import { motion } from "motion/react";
 import { Play, Calendar, Users, Terminal, Youtube, BookOpen, CheckCircle, GraduationCap, Loader2, FileText, Video, MessageSquare, ArrowRight } from "lucide-react";
-import { useAuth } from "../../../context/AuthContext";
+import { useAuth } from "../../../context/useAuth";
 
 export default function Overview({ setActiveTab }: { setActiveTab?: (tab: string) => void }) {
   const { user, token } = useAuth();

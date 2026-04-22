@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { motion } from "motion/react";
 import { PlayCircle, Edit, Trash2, LayoutDashboard, Loader2, Save, X, BookOpen } from "lucide-react";
 import Select from "../../ui/Select";
-import { useAuth } from "../../../context/AuthContext";
+import { useAuth } from "../../../context/useAuth";
 
 const API = API_URL;
 

@@ -2,7 +2,7 @@ import { API_URL, API_BASE_URL } from '../../config';
 import { motion } from "motion/react";
 import { LayoutDashboard, PlayCircle, FileText, Briefcase, MessageSquare, X, LogOut, GraduationCap, User, BookOpen } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
-import { useAuth } from "../../context/AuthContext";
+import { useAuth } from "../../context/useAuth";
 
 export default function Sidebar({ activeTab, setActiveTab, isOpen, setIsOpen }: any) {
   const { logout, token } = useAuth();

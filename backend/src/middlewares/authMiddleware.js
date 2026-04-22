@@ -35,7 +35,7 @@ exports.protect = async (req, res, next) => {
     const error = authResult.error;
 
     if (error || !user) {
-      console.error('Supabase getUser error:', error?.message || 'Unauthorized');
+      console.error('Supabase getUser error:', error?.message || 'Unauthorized', 'token length:', token?.length);
       return res.status(401).json({
         success: false,
         error: 'Not authorized - invalid token',
@@ -51,7 +51,7 @@ exports.protect = async (req, res, next) => {
       .single();
 
     if (profileError || !profile) {
-      console.error('Supabase profile fetch error:', profileError);
+      console.error('Supabase profile fetch error:', profileError?.message || 'No profile');
       return res.status(401).json({
         success: false,
         error: 'User profile not found',
@@ -63,7 +63,7 @@ exports.protect = async (req, res, next) => {
     req.user = profile;
     next();
   } catch (err) {
-    console.error('Catch error in protect:', err);
+    console.error('Catch error in protect:', err.message);
     return res.status(401).json({
       success: false,
       error: 'Not authorized - token verification failed',

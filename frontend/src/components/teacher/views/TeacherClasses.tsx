@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { motion } from "motion/react";
 import { BookOpen, Eye, GraduationCap, Loader2, Users, ExternalLink } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../../../context/AuthContext";
+import { useAuth } from "../../../context/useAuth";
 
 import { API_URL } from '../../../config';
 const API = API_URL;

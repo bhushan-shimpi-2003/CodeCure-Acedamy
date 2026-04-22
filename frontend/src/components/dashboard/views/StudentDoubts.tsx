@@ -2,7 +2,7 @@ import { API_URL, API_BASE_URL } from '../../../config';
 import React, { useState, useEffect } from "react";
 import { motion } from "motion/react";
 import { MessageSquare, Send, Search, HelpCircle, Loader2 } from "lucide-react";
-import { useAuth } from "../../../context/AuthContext";
+import { useAuth } from "../../../context/useAuth";
 
 export default function StudentDoubts() {
   const { token } = useAuth();

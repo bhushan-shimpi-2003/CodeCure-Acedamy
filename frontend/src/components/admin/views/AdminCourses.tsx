@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { motion } from "motion/react";
 import { BookOpen, Plus, Edit, Trash2, LayoutDashboard, Layers, ArrowLeft, Save, IndianRupee, Loader2, Users, Upload, UserCog, Activity } from "lucide-react";
 import Select from "../../ui/Select";
-import { useAuth } from "../../../context/AuthContext";
+import { useAuth } from "../../../context/useAuth";
 
 interface Lesson {
   id: string;

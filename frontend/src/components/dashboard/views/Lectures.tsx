@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { motion } from "motion/react";
 import { PlayCircle, FileText, Lock, MessageSquare, Send, BookOpen, Loader2 } from "lucide-react";
 import Select from "../../ui/Select";
-import { useAuth } from "../../../context/AuthContext";
+import { useAuth } from "../../../context/useAuth";
 
 import { API_URL } from '../../../config';
 const API = API_URL;

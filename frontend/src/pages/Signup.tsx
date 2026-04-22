@@ -4,7 +4,7 @@ import { GraduationCap, Lock, Mail, User, ArrowRight, Loader2, Phone } from "luc
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "../components/ui/button";
 import { API_URL } from "../config";
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../context/useAuth";
 
 export default function Signup() {
   const [name, setName] = useState("");

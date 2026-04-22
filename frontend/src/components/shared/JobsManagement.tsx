@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "motion/react";
 import { Briefcase, Building, MapPin, DollarSign, Link as LinkIcon, Plus, Loader2, Trash2 } from "lucide-react";
-import { useAuth } from "../../context/AuthContext";
+import { useAuth } from "../../context/useAuth";
 import { API_URL } from '../../config';
 
 export default function JobsManagement({ role = "Admin" }: { role?: "Admin" | "Teacher" }) {

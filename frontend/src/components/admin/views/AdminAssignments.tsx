@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { motion } from "motion/react";
 import { FileCode2, LayoutDashboard, Search, Loader2, Eye } from "lucide-react";
-import { useAuth } from "../../../context/AuthContext";
+import { useAuth } from "../../../context/useAuth";
 
 import { API_URL } from '../../../config';
 const API = API_URL;

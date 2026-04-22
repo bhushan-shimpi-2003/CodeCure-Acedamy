@@ -4,7 +4,7 @@ import { createPortal } from "react-dom";
 import { motion } from "motion/react";
 import { UserCog, Plus, Loader2, Shield, X, Mail, Lock, User } from "lucide-react";
 import Select from "../../ui/Select";
-import { useAuth } from "../../../context/AuthContext";
+import { useAuth } from "../../../context/useAuth";
 
 const API = API_URL;
 

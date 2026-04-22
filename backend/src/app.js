@@ -98,7 +98,7 @@ const corsOptions = {
   maxAge: 86400, // 24 hours
 };
 
-// Apply CORS middleware
+// Apply CORS middleware (automatically handles OPTIONS preflight requests)
 app.use(cors(corsOptions));
 
 // Static folder for file uploads mapping to \public\uploads

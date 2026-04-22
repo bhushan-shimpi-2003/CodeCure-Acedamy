@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { motion } from "motion/react";
 import { CheckCircle, Link as LinkIcon, Type, FileText, LayoutDashboard, Loader2, BookOpen, Video, Film } from "lucide-react";
 import Select from "../../ui/Select";
-import { useAuth } from "../../../context/AuthContext";
+import { useAuth } from "../../../context/useAuth";
 
 const API = API_URL;
 

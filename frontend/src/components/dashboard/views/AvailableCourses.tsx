@@ -2,7 +2,7 @@ import { API_URL, API_BASE_URL } from '../../../config';
 import { useState, useEffect } from "react";
 import { motion } from "motion/react";
 import { Terminal, GraduationCap, Loader2, CheckCircle, BookOpen } from "lucide-react";
-import { useAuth } from "../../../context/AuthContext";
+import { useAuth } from "../../../context/useAuth";
 
 export default function AvailableCourses() {
   const { token } = useAuth();

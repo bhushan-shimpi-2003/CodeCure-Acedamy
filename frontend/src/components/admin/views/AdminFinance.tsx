@@ -2,7 +2,7 @@ import { API_URL, API_BASE_URL } from '../../../config';
 import { useState, useEffect } from "react";
 import { motion } from "motion/react";
 import { DollarSign, ArrowUpRight, LayoutDashboard, CreditCard, Loader2 } from "lucide-react";
-import { useAuth } from "../../../context/AuthContext";
+import { useAuth } from "../../../context/useAuth";
 
 const API = API_URL;
 
