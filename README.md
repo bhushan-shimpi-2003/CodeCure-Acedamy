@@ -8,7 +8,6 @@ CodeCure Academy is a full-stack web application for online learning, featuring 
 ## Deployment
 - **Frontend:** Deploy on [Vercel](https://vercel.com/)
 - **Backend:** Deploy on [Render](https://render.com/)
-
 ### Environment Variables
 
 #### Frontend (`frontend/.env.example`)
