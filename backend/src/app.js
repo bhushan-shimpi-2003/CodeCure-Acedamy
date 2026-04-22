@@ -46,46 +46,60 @@ app.use(session({
 }));
 
 // Enable CORS
-const allowedOrigins = new Set(
-  [
-    'https://www.codecuredev.com',
-    'https://codecuredev.com',
-    process.env.FRONTEND_URL,
-    'http://localhost:5173',
-    'http://localhost:3000',
-  ]
-    .map(normalizeOrigin)
-    .filter(Boolean)
-);
+const allowedOrigins = [
+  'https://www.codecuredev.com',
+  'https://codecuredev.com',
+  'http://localhost:5173',
+  'http://localhost:3000',
+  'http://localhost:5000',
+];
+
+// Add FRONTEND_URL if set in environment
+if (process.env.FRONTEND_URL) {
+  const normalized = normalizeOrigin(process.env.FRONTEND_URL);
+  if (normalized && !allowedOrigins.includes(normalized)) {
+    allowedOrigins.push(normalized);
+  }
+}
 
 const corsOptions = {
   origin: function (origin, callback) {
     // Allow requests with no origin (like mobile apps or curl requests)
-    if (!origin) return callback(null, true);
+    if (!origin) {
+      return callback(null, true);
+    }
 
     const normalizedOrigin = normalizeOrigin(origin);
+    
+    // Check if origin is allowed
+    const isAllowed = allowedOrigins.some(allowed => {
+      const normalizedAllowed = normalizeOrigin(allowed);
+      return normalizedOrigin === normalizedAllowed;
+    });
+    
+    // Allow local development and mobile app requests
     const isLocal =
       normalizedOrigin.startsWith('http://localhost') ||
       normalizedOrigin.startsWith('capacitor://') ||
       normalizedOrigin.startsWith('app://');
 
-    if (allowedOrigins.has(normalizedOrigin) || isLocal) {
-      // Return the origin (not true) so CORS header is sent with that specific origin
-      return callback(null, origin);
+    if (isAllowed || isLocal) {
+      return callback(null, true);
     }
 
     console.error('CORS Blocked for Origin:', origin);
-    return callback(new Error('CORS Policy: Access denied from this origin.'), false);
+    return callback(new Error('CORS Policy: Access denied from this origin.'));
   },
   credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+  exposedHeaders: ['Content-Type'],
   optionsSuccessStatus: 200,
   maxAge: 86400, // 24 hours
 };
 
+// Apply CORS middleware
 app.use(cors(corsOptions));
-app.options('*', cors(corsOptions));
 
 // Static folder for file uploads mapping to \public\uploads
 app.use('/uploads', express.static(path.join(__dirname, '../public/uploads')));
