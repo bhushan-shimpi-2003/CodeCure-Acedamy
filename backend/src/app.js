@@ -70,7 +70,8 @@ const corsOptions = {
       normalizedOrigin.startsWith('app://');
 
     if (allowedOrigins.has(normalizedOrigin) || isLocal) {
-      return callback(null, true);
+      // Return the origin (not true) so CORS header is sent with that specific origin
+      return callback(null, origin);
     }
 
     console.error('CORS Blocked for Origin:', origin);
@@ -79,10 +80,12 @@ const corsOptions = {
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+  optionsSuccessStatus: 200,
+  maxAge: 86400, // 24 hours
 };
 
 app.use(cors(corsOptions));
-app.options(/.*/, cors(corsOptions));
+app.options('*', cors(corsOptions));
 
 // Static folder for file uploads mapping to \public\uploads
 app.use('/uploads', express.static(path.join(__dirname, '../public/uploads')));
