@@ -16,6 +16,7 @@ CREATE TYPE interview_status AS ENUM ('scheduled', 'completed', 'cancelled');
 CREATE TYPE transaction_type AS ENUM ('credit', 'debit');
 CREATE TYPE feedback_type AS ENUM ('teacher_rating', 'platform_feedback', 'complaint');
 CREATE TYPE course_status AS ENUM ('active', 'draft');
+CREATE TYPE notification_type AS ENUM ('course', 'assignment', 'message', 'system', 'general');
 
 
 -- ============================================================
@@ -298,7 +299,29 @@ INSERT INTO public.platform_settings (key, value, description) VALUES
 
 
 -- ============================================================
--- STEP 18: ENABLE ROW LEVEL SECURITY (RLS)
+-- STEP 18: NOTIFICATIONS TABLE
+-- ============================================================
+CREATE TABLE public.notifications (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  user_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE NOT NULL,
+  title TEXT NOT NULL,
+  message TEXT NOT NULL,
+  type notification_type DEFAULT 'general' NOT NULL,
+  related_entity_id UUID,
+  related_entity_type TEXT,
+  is_read BOOLEAN DEFAULT false NOT NULL,
+  created_at TIMESTAMPTZ DEFAULT now() NOT NULL,
+  read_at TIMESTAMPTZ
+);
+
+-- Create index for faster queries on user_id and created_at
+CREATE INDEX idx_notifications_user_id ON public.notifications(user_id);
+CREATE INDEX idx_notifications_is_read ON public.notifications(user_id, is_read);
+CREATE INDEX idx_notifications_created_at ON public.notifications(created_at DESC);
+
+
+-- ============================================================
+-- STEP 19: ENABLE ROW LEVEL SECURITY (RLS)
 -- ============================================================
 ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.courses ENABLE ROW LEVEL SECURITY;
@@ -315,6 +338,7 @@ ALTER TABLE public.job_openings ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.transactions ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.feedback ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.contact_messages ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.notifications ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.platform_settings ENABLE ROW LEVEL SECURITY;
 
 
