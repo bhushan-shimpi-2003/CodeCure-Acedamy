@@ -1,5 +1,6 @@
 const CourseModel = require('../models/Course');
 const ModuleModel = require('../models/Module');
+const NotificationModel = require('../models/Notification');
 const supabase = require('../config/supabaseClient');
 const { saveFile } = require('../utils/fileHelper');
 
@@ -120,6 +121,18 @@ exports.createCourse = async (req, res, next) => {
       await saveModulesAndLessons(course.id, modules);
     }
 
+    // Send notification to instructor if created by admin
+    if (req.user.role === 'admin' && instructor_id !== req.user.id) {
+      await NotificationModel.sendNotification({
+        user_id: instructor_id,
+        title: 'New Course Assigned',
+        message: `Admin has created and assigned a new course to you: ${course.title}`,
+        type: 'course',
+        related_entity_id: course.id,
+        related_entity_type: 'course'
+      });
+    }
+
     res.status(201).json({ success: true, data: course });
   } catch (err) {
     next(err);
@@ -169,6 +182,18 @@ exports.updateCourse = async (req, res, next) => {
 
     if (modules && Array.isArray(modules)) {
       await saveModulesAndLessons(req.params.id, modules);
+    }
+
+    // Send notification to instructor if updated by admin
+    if (req.user.role === 'admin' && updated.instructor_id !== req.user.id) {
+      await NotificationModel.sendNotification({
+        user_id: updated.instructor_id,
+        title: 'Course Updated',
+        message: `Admin has updated your course: ${updated.title}`,
+        type: 'course',
+        related_entity_id: updated.id,
+        related_entity_type: 'course'
+      });
     }
 
     res.status(200).json({ success: true, data: updated });
