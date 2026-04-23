@@ -91,7 +91,19 @@ exports.createCourse = async (req, res, next) => {
       instructor_id,
       thumbnail: (typeof req.body.thumbnail === 'string' && !req.body.thumbnail.includes('[object Object]')) ? req.body.thumbnail : null
     };
-    const { modules, ...courseUpdateData } = courseData;
+
+    let { modules, ...courseUpdateData } = courseData;
+    
+    // Parse modules if string (FormData)
+    if (typeof modules === 'string') {
+      try { modules = JSON.parse(modules); } catch (e) { modules = []; }
+    }
+
+    // Ensure price is numeric
+    if (courseUpdateData.price) {
+      courseUpdateData.price = Number(String(courseUpdateData.price).replace(/,/g, ''));
+    }
+
     const course = await CourseModel.createCourse(courseUpdateData);
 
     if (modules && Array.isArray(modules)) {
@@ -119,10 +131,22 @@ exports.updateCourse = async (req, res, next) => {
       return res.status(403).json({ success: false, error: 'Not authorized to update this course' });
     }
 
-    const { modules, ...updateData } = req.body;
+    let { modules, ...updateData } = req.body;
+    
+    // Parse modules if string (FormData)
+    if (typeof modules === 'string') {
+      try { modules = JSON.parse(modules); } catch (e) { modules = []; }
+    }
+
     if (updateData.thumbnail !== undefined) {
       updateData.thumbnail = (typeof updateData.thumbnail === 'string' && !updateData.thumbnail.includes('[object Object]')) ? updateData.thumbnail : null;
     }
+
+    // Ensure price is numeric
+    if (updateData.price) {
+      updateData.price = Number(String(updateData.price).replace(/,/g, ''));
+    }
+
     const updated = await CourseModel.updateCourse(req.params.id, updateData);
 
     if (modules && Array.isArray(modules)) {
