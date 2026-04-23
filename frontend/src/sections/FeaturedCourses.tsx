@@ -72,7 +72,7 @@ export default function FeaturedCourses() {
                 <div className="relative h-56 overflow-hidden bg-slate-100 flex items-center justify-center">
                   {course.thumbnail && course.thumbnail !== 'no-course-photo.jpg' ? (
                     <img 
-                      src={course.thumbnail.startsWith('http') ? course.thumbnail : `${API_BASE_URL}/uploads/${course.thumbnail}`} 
+                      src={(typeof course.thumbnail === 'string' && course.thumbnail.startsWith('http')) ? course.thumbnail : (typeof course.thumbnail === 'string' && !course.thumbnail.includes('[object Object]')) ? `${API_BASE_URL}/uploads/${course.thumbnail}` : '/no-course-photo.jpg'} 
                       alt={course.title} 
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
                     />

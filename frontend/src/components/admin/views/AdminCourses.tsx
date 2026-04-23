@@ -130,7 +130,7 @@ export default function AdminCourses() {
        description: selectedCourse.description,
        status: selectedCourse.status,
        price: Number(selectedCourse.price) || 0,
-       thumbnail: selectedCourse.thumbnail || null,
+       thumbnail: (typeof selectedCourse.thumbnail === 'string' && !selectedCourse.thumbnail.includes('[object Object]')) ? selectedCourse.thumbnail : null,
         modules: selectedCourse.modules || []
      };
 
@@ -495,7 +495,7 @@ export default function AdminCourses() {
              
              {course.thumbnail ? (
                <div className="w-full h-32 mb-4 rounded-xl overflow-hidden relative border border-slate-100 ml-1">
-                 <img src={course.thumbnail} alt={course.title} className="w-full h-full object-cover" />
+                 <img src={(typeof course.thumbnail === 'string' && course.thumbnail.startsWith('http')) ? course.thumbnail : `${API_BASE_URL}/uploads/${course.thumbnail}`} alt={course.title} className="w-full h-full object-cover" />
                </div>
              ) : (
                <div className="w-full h-32 mb-4 rounded-xl overflow-hidden relative border border-slate-100 bg-slate-50 flex items-center justify-center ml-1">

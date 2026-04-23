@@ -89,6 +89,7 @@ exports.createCourse = async (req, res, next) => {
     const courseData = {
       ...req.body,
       instructor_id,
+      thumbnail: (typeof req.body.thumbnail === 'string' && !req.body.thumbnail.includes('[object Object]')) ? req.body.thumbnail : null
     };
     const { modules, ...courseUpdateData } = courseData;
     const course = await CourseModel.createCourse(courseUpdateData);
@@ -119,6 +120,9 @@ exports.updateCourse = async (req, res, next) => {
     }
 
     const { modules, ...updateData } = req.body;
+    if (updateData.thumbnail !== undefined) {
+      updateData.thumbnail = (typeof updateData.thumbnail === 'string' && !updateData.thumbnail.includes('[object Object]')) ? updateData.thumbnail : null;
+    }
     const updated = await CourseModel.updateCourse(req.params.id, updateData);
 
     if (modules && Array.isArray(modules)) {

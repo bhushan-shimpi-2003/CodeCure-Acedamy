@@ -171,7 +171,7 @@ export default function CourseDetail() {
               {course.thumbnail && course.thumbnail !== 'no-course-photo.jpg' ? (
                 <>
                   <img 
-                    src={course.thumbnail.startsWith('http') ? course.thumbnail : `${API_BASE_URL}/uploads/${course.thumbnail}`} 
+                    src={(typeof course.thumbnail === 'string' && course.thumbnail.startsWith('http')) ? course.thumbnail : (typeof course.thumbnail === 'string' && !course.thumbnail.includes('[object Object]')) ? `${API_BASE_URL}/uploads/${course.thumbnail}` : '/no-course-photo.jpg'} 
                     alt={course.title} 
                     className="w-full h-full object-cover" 
                   />
