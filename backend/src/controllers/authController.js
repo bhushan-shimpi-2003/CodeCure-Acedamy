@@ -1,6 +1,7 @@
 const supabase = require('../config/supabaseClient');
 const { createClient } = require('@supabase/supabase-js');
 const UserModel = require('../models/User');
+const { saveFile } = require('../utils/fileHelper');
 
 // Create a temporary, session-isolated Supabase client for auth operations
 // This prevents signInWithPassword/signUp from polluting the shared service-role client
@@ -161,7 +162,17 @@ exports.updateMe = async (req, res, next) => {
 
     if (name) updates.name = name;
     if (phone !== undefined) updates.phone = phone;
-    if (profile_picture !== undefined) updates.profile_picture = profile_picture;
+    if (profile_picture !== undefined) {
+      updates.profile_picture = (typeof profile_picture === 'string' && !profile_picture.includes('[object Object]')) ? profile_picture : null;
+    }
+
+    // Handle file upload if present
+    if (req.files && req.files.length > 0) {
+      const avatarFile = req.files.find(f => f.fieldname === 'profile_picture' || f.fieldname === 'avatar');
+      if (avatarFile) {
+        updates.profile_picture = await saveFile(avatarFile);
+      }
+    }
 
     // 1. Update Auth user (email, password)
     const authUpdates = {};

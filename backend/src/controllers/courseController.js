@@ -1,6 +1,7 @@
 const CourseModel = require('../models/Course');
 const ModuleModel = require('../models/Module');
 const supabase = require('../config/supabaseClient');
+const { saveFile } = require('../utils/fileHelper');
 
 const saveModulesAndLessons = async (courseId, modules) => {
   // 1. Delete existing modules unconditionally to avoid complex diff logic for demo
@@ -86,10 +87,19 @@ exports.createCourse = async (req, res, next) => {
     if (req.user.role === 'admin' && req.body.instructor_id) {
       instructor_id = req.body.instructor_id;
     }
+    // Handle file upload if present
+    let thumbnail = (typeof req.body.thumbnail === 'string' && !req.body.thumbnail.includes('[object Object]')) ? req.body.thumbnail : null;
+    if (req.files && req.files.length > 0) {
+      const thumbnailFile = req.files.find(f => f.fieldname === 'thumbnail');
+      if (thumbnailFile) {
+        thumbnail = await saveFile(thumbnailFile);
+      }
+    }
+
     const courseData = {
       ...req.body,
       instructor_id,
-      thumbnail: (typeof req.body.thumbnail === 'string' && !req.body.thumbnail.includes('[object Object]')) ? req.body.thumbnail : null
+      thumbnail
     };
 
     let { modules, ...courseUpdateData } = courseData;
@@ -140,6 +150,14 @@ exports.updateCourse = async (req, res, next) => {
 
     if (updateData.thumbnail !== undefined) {
       updateData.thumbnail = (typeof updateData.thumbnail === 'string' && !updateData.thumbnail.includes('[object Object]')) ? updateData.thumbnail : null;
+    }
+
+    // Handle file upload if present
+    if (req.files && req.files.length > 0) {
+      const thumbnailFile = req.files.find(f => f.fieldname === 'thumbnail');
+      if (thumbnailFile) {
+        updateData.thumbnail = await saveFile(thumbnailFile);
+      }
     }
 
     // Ensure price is numeric
