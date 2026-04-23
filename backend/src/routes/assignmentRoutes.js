@@ -1,4 +1,5 @@
 const express = require('express');
+const multer = require('multer');
 const {
   createAssignment, getAssignmentsByCourse, getAllAssignments,
   submitAssignment, getMySubmissions, getMyAssignments, gradeSubmission, getSubmissionsByAssignment,
@@ -7,11 +8,12 @@ const {
 const { protect, authorize } = require('../middlewares/authMiddleware');
 
 const router = express.Router();
+const upload = multer();
 
 // Teacher
-router.post('/', protect, authorize('teacher', 'admin'), createAssignment);
-router.put('/:id', protect, authorize('teacher', 'admin'), updateAssignment);
-router.patch('/:id', protect, authorize('teacher', 'admin'), updateAssignment);
+router.post('/', protect, authorize('teacher', 'admin'), upload.any(), createAssignment);
+router.put('/:id', protect, authorize('teacher', 'admin'), upload.any(), updateAssignment);
+router.patch('/:id', protect, authorize('teacher', 'admin'), upload.any(), updateAssignment);
 router.delete('/:id', protect, authorize('teacher', 'admin'), deleteAssignment);
 router.get('/:id/submissions', protect, authorize('teacher', 'admin'), getSubmissionsByAssignment);
 

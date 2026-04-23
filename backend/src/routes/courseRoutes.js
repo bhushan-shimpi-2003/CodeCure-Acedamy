@@ -1,4 +1,5 @@
 const express = require('express');
+const multer = require('multer');
 const {
   getCourses, getCourse, createCourse, updateCourse, deleteCourse,
   getAllCoursesAdmin, getMyCourses, getModules, addModule, updateModule, deleteModule,
@@ -6,6 +7,7 @@ const {
 const { protect, authorize } = require('../middlewares/authMiddleware');
 
 const router = express.Router();
+const upload = multer();
 
 // Public - list all
 router.get('/', getCourses);
@@ -26,9 +28,9 @@ router.get('/:idOrSlug', getCourse);
 router.get('/:courseId/modules', getModules);
 
 // Create / Update / Delete
-router.post('/', protect, authorize('teacher', 'admin'), createCourse);
-router.put('/:id', protect, authorize('teacher', 'admin'), updateCourse);
-router.patch('/:id', protect, authorize('teacher', 'admin'), updateCourse);
+router.post('/', protect, authorize('teacher', 'admin'), upload.any(), createCourse);
+router.put('/:id', protect, authorize('teacher', 'admin'), upload.any(), updateCourse);
+router.patch('/:id', protect, authorize('teacher', 'admin'), upload.any(), updateCourse);
 router.delete('/:id', protect, authorize('admin'), deleteCourse);
 
 // Modules

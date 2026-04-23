@@ -31,6 +31,7 @@ const normalizeOrigin = (value) => (value ? value.trim().replace(/\/+$/, '') : v
 
 // Body parser
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 // Session configuration
