@@ -17,15 +17,15 @@ exports.getModulesByCourse = async (courseId) => {
 };
 
 exports.createModule = async (moduleData) => {
-  const { data, error } = await supabase.from('modules').insert(moduleData).select().single();
+  const { data, error } = await supabase.from('modules').insert(moduleData).select();
   if (error) throw error;
-  return data;
+  return data && data.length > 0 ? data[0] : null;
 };
 
 exports.updateModule = async (moduleId, updates) => {
-  const { data, error } = await supabase.from('modules').update(updates).eq('id', moduleId).select().single();
+  const { data, error } = await supabase.from('modules').update(updates).eq('id', moduleId).select();
   if (error) throw error;
-  return data;
+  return data && data.length > 0 ? data[0] : null;
 };
 
 exports.deleteModule = async (moduleId) => {

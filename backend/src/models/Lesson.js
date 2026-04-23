@@ -35,15 +35,15 @@ exports.getLatestLessonByCourse = async (courseId) => {
 };
 
 exports.createLesson = async (lessonData) => {
-  const { data, error } = await supabase.from('lessons').insert(lessonData).select().single();
+  const { data, error } = await supabase.from('lessons').insert(lessonData).select();
   if (error) throw error;
-  return data;
+  return data && data.length > 0 ? data[0] : null;
 };
 
 exports.updateLesson = async (lessonId, updates) => {
-  const { data, error } = await supabase.from('lessons').update(updates).eq('id', lessonId).select().single();
+  const { data, error } = await supabase.from('lessons').update(updates).eq('id', lessonId).select();
   if (error) throw error;
-  return data;
+  return data && data.length > 0 ? data[0] : null;
 };
 
 exports.deleteLesson = async (lessonId) => {

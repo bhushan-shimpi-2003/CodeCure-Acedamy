@@ -17,14 +17,15 @@ const saveModulesAndLessons = async (courseId, modules) => {
         duration: m.duration || null,
         module_order: i
       })
-      .select().single();
+      .select();
       
-    if (modError) continue;
+    if (modError || !modData || modData.length === 0) continue;
+    const insertedModule = modData[0];
 
     if (m.lessons && m.lessons.length > 0) {
       const lessonsToInsert = m.lessons.map((l, lIdx) => ({
         course_id: courseId,
-        module_id: modData.id,
+        module_id: insertedModule.id,
         title: l.title || `Lesson ${lIdx+1}`,
         video_url: l.video_url || null,
         duration: l.duration || null,

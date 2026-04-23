@@ -28,15 +28,15 @@ exports.getAllAssignments = async () => {
 };
 
 exports.createAssignment = async (assignmentData) => {
-  const { data, error } = await supabase.from('assignments').insert(assignmentData).select().single();
+  const { data, error } = await supabase.from('assignments').insert(assignmentData).select();
   if (error) throw error;
-  return data;
+  return data && data.length > 0 ? data[0] : null;
 };
 
 exports.updateAssignment = async (assignmentId, updates) => {
-  const { data, error } = await supabase.from('assignments').update(updates).eq('id', assignmentId).select().single();
+  const { data, error } = await supabase.from('assignments').update(updates).eq('id', assignmentId).select();
   if (error) throw error;
-  return data;
+  return data && data.length > 0 ? data[0] : null;
 };
 
 exports.deleteAssignment = async (assignmentId) => {

@@ -16,15 +16,15 @@ exports.getActiveJobOpenings = async () => {
 };
 
 exports.createJobOpening = async (jobData) => {
-  const { data, error } = await supabase.from('job_openings').insert(jobData).select().single();
+  const { data, error } = await supabase.from('job_openings').insert(jobData).select();
   if (error) throw error;
-  return data;
+  return data && data.length > 0 ? data[0] : null;
 };
 
 exports.updateJobOpening = async (jobId, updates) => {
-  const { data, error } = await supabase.from('job_openings').update(updates).eq('id', jobId).select().single();
+  const { data, error } = await supabase.from('job_openings').update(updates).eq('id', jobId).select();
   if (error) throw error;
-  return data;
+  return data && data.length > 0 ? data[0] : null;
 };
 
 exports.deleteJobOpening = async (jobId) => {

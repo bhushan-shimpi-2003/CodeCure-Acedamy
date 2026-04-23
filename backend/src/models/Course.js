@@ -77,9 +77,9 @@ exports.getAllCourses = async () => {
 };
 
 exports.createCourse = async (courseData) => {
-  const { data, error } = await supabase.from('courses').insert(courseData).select().single();
+  const { data, error } = await supabase.from('courses').insert(courseData).select();
   if (error) throw error;
-  return data;
+  return data && data.length > 0 ? data[0] : null;
 };
 
 exports.updateCourse = async (courseId, updates) => {
@@ -87,10 +87,9 @@ exports.updateCourse = async (courseId, updates) => {
     .from('courses')
     .update({ ...updates, updated_at: new Date().toISOString() })
     .eq('id', courseId)
-    .select()
-    .single();
+    .select();
   if (error) throw error;
-  return data;
+  return data && data.length > 0 ? data[0] : null;
 };
 
 exports.deleteCourse = async (courseId) => {

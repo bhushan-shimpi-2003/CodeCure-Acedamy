@@ -33,7 +33,7 @@ router.delete('/:id', notificationController.deleteNotification);
  */
 
 // POST /api/notifications/send - Send notification to users/roles (Admin only)
-router.post('/send', notificationController.sendNotification);
+router.post('/send', authorize('admin'), notificationController.sendNotification);
 
 // DELETE /api/notifications - Delete all notifications for a user (Admin only)
 router.delete('/', notificationController.deleteAllNotifications);
