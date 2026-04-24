@@ -32,8 +32,8 @@ router.delete('/:id', notificationController.deleteNotification);
  * Admin/Teacher routes
  */
 
-// POST /api/notifications/send - Send notification to users/roles (Admin/Teacher only)
-router.post('/send', authorize('admin', 'teacher'), notificationController.sendNotification);
+// POST /api/notifications/send - Send notification to users/roles (Admin/Teacher/Student)
+router.post('/send', authorize('admin', 'teacher', 'student'), notificationController.sendNotification);
 
 // DELETE /api/notifications - Delete all notifications for a user (Admin only)
 router.delete('/', notificationController.deleteAllNotifications);
