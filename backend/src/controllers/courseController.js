@@ -122,7 +122,7 @@ exports.createCourse = async (req, res, next) => {
     }
 
     // Send notification to instructor if created by admin
-    if (req.user.role === 'admin' && instructor_id !== req.user.id) {
+    if (req.user.role === 'admin' && instructor_id) {
       await NotificationModel.sendNotification({
         user_id: instructor_id,
         title: 'New Course Assigned',

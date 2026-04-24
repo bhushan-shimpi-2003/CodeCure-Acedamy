@@ -1,11 +1,26 @@
 const DoubtModel = require('../models/Doubt');
+const { saveFile } = require('../utils/fileHelper');
 
 // @desc    Create a doubt (student)
 // @route   POST /api/doubts
 // @access  Private (student)
 exports.createDoubt = async (req, res, next) => {
   try {
-    const doubt = await DoubtModel.createDoubt({ ...req.body, student_id: req.user.id });
+    let attachment = null;
+    if (req.files && req.files.length > 0) {
+      const file = req.files.find(f => f.fieldname === 'attachment' || f.fieldname === 'image');
+      if (file) {
+        attachment = await saveFile(file);
+      }
+    }
+
+    const doubtData = {
+      ...req.body,
+      student_id: req.user.id,
+      attachment: attachment || req.body.attachment || null
+    };
+
+    const doubt = await DoubtModel.createDoubt(doubtData);
     res.status(201).json({ success: true, data: doubt });
   } catch (err) {
     next(err);
