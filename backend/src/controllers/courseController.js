@@ -30,7 +30,7 @@ const saveModulesAndLessons = async (courseId, modules) => {
         module_id: insertedModule.id,
         title: l.title || `Lesson ${lIdx+1}`,
         video_url: l.video_url || null,
-        duration: l.duration || null,
+        content: l.content || null,
         lesson_order: lIdx
       }));
       await supabase.from('lessons').insert(lessonsToInsert);

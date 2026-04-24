@@ -22,6 +22,7 @@ interface Module {
 interface Course {
  id: string;
  title: string;
+ slug?: string;
  description: string;
  modules: Module[];
  students?: number;
@@ -29,6 +30,10 @@ interface Course {
  price: string | number;
  instructor_id?: string;
  thumbnail?: string;
+ level?: string;
+ duration?: string;
+ category?: string;
+ features?: string[];
  profiles?: { id?: string; name?: string; email?: string };
 }
 

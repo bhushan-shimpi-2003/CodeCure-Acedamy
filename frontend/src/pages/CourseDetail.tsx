@@ -53,13 +53,13 @@ export default function CourseDetail() {
     );
   }
 
-  // Fallbacks for optional fields
-  const level = course.level || "Advanced";
-  const duration = course.duration_weeks ? `${course.duration_weeks} Weeks` : "Flexible";
+  // Data from schema fields
+  const level = course.level || "Beginner";
+  const duration = course.duration || "Flexible";
   const price = course.price ? `₹${course.price}` : "Free";
-  const rating = 4.9;
-  const students = 1240;
-  const features = [
+  const rating = course.rating || 0;
+  const students = course.students_enrolled || 0;
+  const features = (course.features && course.features.length > 0) ? course.features : [
     "Detailed Video Content",
     "Real-world Project Implementation",
     "Doubt Resolution",
@@ -129,7 +129,7 @@ export default function CourseDetail() {
               </div>
               <div>
                 <div className="text-sm text-slate-500 font-medium">Enrolled</div>
-                <div className="text-base text-slate-900 font-bold">{students}+</div>
+                <div className="text-base text-slate-900 font-bold">{students}</div>
               </div>
             </div>
           </div>

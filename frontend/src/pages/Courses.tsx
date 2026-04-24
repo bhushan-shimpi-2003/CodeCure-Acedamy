@@ -114,10 +114,10 @@ export default function Courses() {
               <div className="p-6 flex-1 flex flex-col">
                 <h3 className="text-xl font-bold text-slate-900 mb-4 group-hover:text-blue-600 transition-colors line-clamp-2">{course.title}</h3>
                 
-                <div className="flex flex-wrap items-center gap-4 text-sm text-slate-600 mb-6 font-medium">
-                  <div className="flex items-center gap-1.5"><Clock className="w-4 h-4 text-blue-500" /> {course.duration_weeks ? `${course.duration_weeks} Weeks` : "Flexible"}</div>
-                  <div className="flex items-center gap-1.5"><Star className="w-4 h-4 text-amber-400 fill-amber-400" /> 4.8</div>
-                  <div className="flex items-center gap-1.5"><BookOpen className="w-4 h-4 text-blue-500" /> Modules</div>
+                <div className="flex wrap items-center gap-4 text-sm text-slate-600 mb-6 font-medium">
+                  <div className="flex items-center gap-1.5"><Clock className="w-4 h-4 text-blue-500" /> {course.duration || "Flexible"}</div>
+                  <div className="flex items-center gap-1.5"><Star className="w-4 h-4 text-amber-400 fill-amber-400" /> {course.rating || "0.0"}</div>
+                  <div className="flex items-center gap-1.5"><BookOpen className="w-4 h-4 text-blue-500" /> {course.modules?.length || 0} Modules</div>
                 </div>
 
                 <div className="mt-auto pt-6 border-t border-slate-100 flex items-center justify-between">

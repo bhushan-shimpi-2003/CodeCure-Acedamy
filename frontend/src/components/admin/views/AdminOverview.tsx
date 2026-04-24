@@ -31,6 +31,8 @@ interface PlatformStats {
   transactions: number;
   totalRevenue: number;
   totalPayouts: number;
+  batches: number;
+  liveClasses: number;
 }
 
 export default function AdminOverview({ setActiveTab }: { setActiveTab?: (tab: string) => void }) {
@@ -41,6 +43,7 @@ export default function AdminOverview({ setActiveTab }: { setActiveTab?: (tab: s
     assignments: 0, doubtsTotal: 0, doubtsPending: 0, doubtsResolved: 0,
     interviews: 0, interviewsScheduled: 0, interviewsCompleted: 0,
     feedbackCount: 0, openComplaints: 0, transactions: 0, totalRevenue: 0, totalPayouts: 0,
+    batches: 0, liveClasses: 0,
   });
   const [recentDoubts, setRecentDoubts] = useState<any[]>([]);
   const [recentEnrollments, setRecentEnrollments] = useState<any[]>([]);
@@ -54,7 +57,7 @@ export default function AdminOverview({ setActiveTab }: { setActiveTab?: (tab: s
     setIsLoading(true);
     const headers = { Authorization: `Bearer ${token}` };
     try {
-      const [studentsRes, staffRes, coursesRes, enrollRes, requestsRes, assignRes, doubtsRes, interviewsRes, feedbackRes, txnRes] = await Promise.all([
+      const [studentsRes, staffRes, coursesRes, enrollRes, requestsRes, assignRes, doubtsRes, interviewsRes, feedbackRes, txnRes, batchesRes, liveRes] = await Promise.all([
         fetch(`${API}/admin/students`, { headers }),
         fetch(`${API}/admin/staff`, { headers }),
         fetch(`${API}/courses/admin/all`, { headers }),
@@ -65,11 +68,14 @@ export default function AdminOverview({ setActiveTab }: { setActiveTab?: (tab: s
         fetch(`${API}/interviews`, { headers }),
         fetch(`${API}/admin/feedback`, { headers }),
         fetch(`${API}/admin/transactions`, { headers }),
+        fetch(`${API}/batches`, { headers }),
+        fetch(`${API}/live-classes/course/all`, { headers }), // Need to add this endpoint or handle it
       ]);
 
-      const [students, staff, courses, enrollments, requests, assignments, doubts, interviews, feedback, txns] = await Promise.all([
+      const [students, staff, courses, enrollments, requests, assignments, doubts, interviews, feedback, txns, batches, live] = await Promise.all([
         studentsRes.json(), staffRes.json(), coursesRes.json(), enrollRes.json(), requestsRes.json(),
         assignRes.json(), doubtsRes.json(), interviewsRes.json(), feedbackRes.json(), txnRes.json(),
+        batchesRes.json(), liveRes.json(),
       ]);
 
       const sData = students.success ? students.data : [];
@@ -82,6 +88,8 @@ export default function AdminOverview({ setActiveTab }: { setActiveTab?: (tab: s
       const iData = interviews.success ? (interviews.data || []) : [];
       const fData = feedback.success ? (feedback.data || []) : [];
       const tData = txns.success ? (txns.data || []) : [];
+      const bData = batches.success ? (batches.data || []) : [];
+      const lData = live.success ? (live.data || []) : [];
 
       setStats({
         students: sData.length,
@@ -104,6 +112,8 @@ export default function AdminOverview({ setActiveTab }: { setActiveTab?: (tab: s
         transactions: tData.length,
         totalRevenue: tData.filter((t: any) => t.type === 'credit').reduce((s: number, t: any) => s + (Number(t.amount) || 0), 0),
         totalPayouts: tData.filter((t: any) => t.type === 'debit').reduce((s: number, t: any) => s + (Number(t.amount) || 0), 0),
+        batches: bData.length,
+        liveClasses: lData.length,
       });
 
       setRecentDoubts(dData.slice(0, 5));
@@ -144,7 +154,7 @@ export default function AdminOverview({ setActiveTab }: { setActiveTab?: (tab: s
     { label: "Total Students", value: stats.students, icon: Users, color: "text-blue-600", bg: "bg-blue-50", border: "border-blue-200" },
     { label: "Staff / Teachers", value: stats.teachers, icon: UserCheck, color: "text-indigo-600", bg: "bg-indigo-50", border: "border-indigo-200" },
     { label: "Active Courses", value: stats.publishedCourses, icon: BookOpen, color: "text-emerald-600", bg: "bg-emerald-50", border: "border-emerald-200", sub: `${stats.draftCourses} draft` },
-    { label: "Total Enrollments", value: stats.enrollments, icon: GraduationCap, color: "text-violet-600", bg: "bg-violet-50", border: "border-violet-200", sub: `${stats.activeEnrollments} active` },
+    { label: "Live Batches", value: stats.batches, icon: Layers, color: "text-amber-600", bg: "bg-amber-50", border: "border-amber-200", sub: `${stats.liveClasses} classes` },
   ];
 
   return (
@@ -416,7 +426,7 @@ export default function AdminOverview({ setActiveTab }: { setActiveTab?: (tab: s
           <div>
             <h3 className="text-lg font-bold">Platform Health</h3>
             <p className="text-blue-100 text-sm mt-1">
-              {stats.courses} courses · {stats.assignments} assignments · {stats.transactions} transactions recorded
+              {stats.courses} courses · {stats.batches} batches · {stats.liveClasses} live classes · {stats.transactions} transactions
             </p>
           </div>
           <div className="flex items-center gap-6 flex-wrap">
