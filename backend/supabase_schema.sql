@@ -195,7 +195,7 @@ CREATE TABLE public.doubts (
   teacher_id UUID REFERENCES public.profiles(id) ON DELETE SET NULL,
   course_id UUID REFERENCES public.courses(id) ON DELETE SET NULL,
   lesson_id UUID REFERENCES public.lessons(id) ON DELETE SET NULL,
-  subject TEXT NOT NULL,
+  title TEXT NOT NULL,
   description TEXT,
   status doubt_status DEFAULT 'pending' NOT NULL,
   reply TEXT,

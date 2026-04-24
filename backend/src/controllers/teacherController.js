@@ -82,7 +82,7 @@ exports.getRecentActivity = async (req, res) => {
     // Fetch Doubts assigned to teacher OR unassigned (pending)
     const { data: doubts, error: doubtsError } = await supabase
       .from('doubts')
-      .select('id, subject, status, created_at')
+      .select('id, title, status, created_at')
       .or(`teacher_id.eq.${teacherId},status.eq.pending`)
       .order('created_at', { ascending: false })
       .limit(15);
@@ -103,7 +103,7 @@ exports.getRecentActivity = async (req, res) => {
     const doubtActivities = (doubts || []).map(d => ({
       id: d.id,
       type: 'doubt',
-      title: d.subject || 'Student Doubt',
+      title: d.title || 'Student Doubt',
       description: d.status === 'resolved' ? 'Resolved student query' : 'New doubt from student',
       status: d.status,
       created_at: d.created_at || new Date().toISOString()
