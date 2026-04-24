@@ -105,8 +105,8 @@ export default function TeacherCourseDetail({ courseId, onBack }: TeacherCourseD
           <div>
             <h1 className="text-2xl font-bold text-slate-900 mb-1">{course.title}</h1>
             <div className="flex items-center gap-3 text-sm text-slate-500">
-              <span className={`px-2 py-0.5 rounded-full text-xs font-bold ${course.status === 'active' ? 'bg-green-50 text-green-700' : 'bg-slate-100 text-slate-600'}`}>
-                {course.status === 'active' ? 'Published' : 'Draft'}
+              <span className={`px-2 py-0.5 rounded-full text-xs font-bold ${course.status === 'published' ? 'bg-green-50 text-green-700' : 'bg-slate-100 text-slate-600'}`}>
+                {course.status === 'published' ? 'Published' : 'Draft'}
               </span>
               <span>•</span>
               <span className="flex items-center gap-1"><GraduationCap className="w-4 h-4" /> {course.level || "Intermediate"}</span>

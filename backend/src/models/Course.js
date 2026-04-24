@@ -12,7 +12,7 @@ exports.getAllPublishedCourses = async () => {
   const { data, error } = await supabase
     .from('courses')
     .select('*, profiles!instructor_id(id, name, profile_picture)')
-    .eq('status', 'active')
+    .eq('status', 'published')
     .order('created_at', { ascending: false });
   if (error) throw error;
   return data;

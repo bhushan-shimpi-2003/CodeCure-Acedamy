@@ -67,7 +67,7 @@ export default function TeacherClasses({ onSelectCourse }: { onSelectCourse: (id
               <div className="flex justify-between items-start mb-6 pl-4">
                 <div>
                   <h3 className="font-bold text-slate-900 text-lg">{course.title}</h3>
-                  <p className="text-sm text-blue-600 font-semibold mt-1">{course.status === 'active' ? 'Published' : 'Draft'}</p>
+                  <p className="text-sm text-blue-600 font-semibold mt-1">{course.status === 'published' ? 'Published' : 'Draft'}</p>
                 </div>
                 <div className="bg-blue-50 p-2 rounded-lg">
                   <BookOpen className="w-5 h-5 text-blue-600" />

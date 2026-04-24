@@ -95,7 +95,7 @@ export default function AdminOverview({ setActiveTab }: { setActiveTab?: (tab: s
         students: sData.length,
         teachers: stData.length,
         courses: cData.length,
-        publishedCourses: cData.filter((c: any) => c.status === 'active' || c.status === 'published').length,
+        publishedCourses: cData.filter((c: any) => c.status === 'published').length,
         draftCourses: cData.filter((c: any) => c.status === 'draft').length,
         enrollments: eData.length,
         activeEnrollments: eData.filter((e: any) => e.student_status === 'active').length,

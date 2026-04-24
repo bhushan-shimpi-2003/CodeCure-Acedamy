@@ -26,7 +26,7 @@ interface Course {
  description: string;
  modules: Module[];
  students?: number;
- status: "active" | "draft";
+ status: "published" | "draft";
  price: string | number;
  instructor_id?: string;
  thumbnail?: string;
@@ -357,7 +357,7 @@ export default function AdminCourses() {
                  value={selectedCourse.status} 
                  onChange={(e) => handleUpdateField('status', e.target.value as any)} 
                >
-                 <option value="active">Active (Published)</option>
+                 <option value="published">Published</option>
                  <option value="draft">Draft (Hidden)</option>
                </Select>
              </div>
@@ -513,8 +513,8 @@ export default function AdminCourses() {
                  <h3 className="font-bold text-slate-900 text-lg line-clamp-1" title={course.title}>{course.title}</h3>
                  <p className="text-xs text-blue-600 font-bold mt-1">{course.id.slice(0, 8)}</p>
                </div>
-               <span className={`px-2 py-0.5 text-[10px] font-bold border shrink-0 ${course.status === 'active' ? 'bg-blue-50 text-blue-700 border-blue-200' : 'bg-amber-50 text-amber-700 border-amber-200'}`}>
-                 {course.status}
+               <span className={`px-2 py-0.5 text-[10px] font-bold border shrink-0 ${course.status === 'published' ? 'bg-blue-50 text-blue-700 border-blue-200' : 'bg-amber-50 text-amber-700 border-amber-200'}`}>
+                 {course.status === 'published' ? 'Published' : 'Draft'}
                </span>
              </div>
              
