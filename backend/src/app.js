@@ -31,6 +31,17 @@ const app = express();
 
 const normalizeOrigin = (value) => (value ? value.trim().replace(/\/+$/, '') : value);
 
+// Health check route
+app.get('/health', (req, res) => {
+  res.status(200).json({ status: 'UP', timestamp: new Date().toISOString() });
+});
+
+// Logging middleware for debugging requests
+app.use((req, res, next) => {
+  console.log(`[Request] ${req.method} ${req.url} - Origin: ${req.headers.origin || 'N/A'}`);
+  next();
+});
+
 // Body parser
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

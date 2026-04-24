@@ -20,13 +20,16 @@ exports.getNotificationsByUserId = async (userId, limit = 20, offset = 0) => {
 
 // Get unread notifications count for a user
 exports.getUnreadCount = async (userId) => {
-  const { data, error, count } = await supabase
+  const { error, count } = await supabase
     .from('notifications')
-    .select('*', { count: 'exact' })
+    .select('id', { count: 'exact', head: true })
     .eq('user_id', userId)
     .eq('is_read', false);
   
-  if (error) throw error;
+  if (error) {
+    console.error('[NotificationModel] getUnreadCount error:', error.message);
+    return 0;
+  }
   return count || 0;
 };
 

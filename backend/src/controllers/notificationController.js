@@ -8,6 +8,7 @@ const NotificationModel = require('../models/Notification');
 exports.getMyNotifications = async (req, res, next) => {
   try {
     const userId = req.user?.id;
+    console.log('[Notifications] Fetching for user:', userId);
     
     if (!userId) {
       return res.status(401).json({ success: false, error: 'Unauthorized' });
@@ -17,8 +18,14 @@ exports.getMyNotifications = async (req, res, next) => {
     const limit = parseInt(req.query.limit, 10) || 20;
     const offset = (page - 1) * limit;
 
-    const notifications = await NotificationModel.getNotificationsByUserId(userId, limit, offset);
-    const unreadCount = await NotificationModel.getUnreadCount(userId);
+    console.log(`[Notifications] Request - Page: ${page}, Limit: ${limit}, Offset: ${offset}`);
+
+    const [notifications, unreadCount] = await Promise.all([
+      NotificationModel.getNotificationsByUserId(userId, limit, offset),
+      NotificationModel.getUnreadCount(userId)
+    ]);
+
+    console.log(`[Notifications] Success - Found ${notifications?.length || 0} items, Unread: ${unreadCount}`);
 
     res.status(200).json({
       success: true,
@@ -28,7 +35,8 @@ exports.getMyNotifications = async (req, res, next) => {
       limit,
     });
   } catch (error) {
-    console.error('Error fetching notifications:', error);
+    console.error('[Notifications] Error in getMyNotifications:', error.message);
+    if (error.stack) console.error(error.stack);
     next(error);
   }
 };
