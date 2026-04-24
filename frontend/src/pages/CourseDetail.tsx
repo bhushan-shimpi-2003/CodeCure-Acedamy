@@ -167,7 +167,7 @@ export default function CourseDetail() {
             animate={{ opacity: 1, x: 0 }}
             className="bg-white border border-slate-200 rounded-3xl shadow-xl sticky top-24 overflow-hidden"
           >
-            <div className="relative h-56 overflow-hidden bg-slate-100 flex items-center justify-center">
+            <div className="relative h-64 overflow-hidden bg-slate-50">
               {course.thumbnail && course.thumbnail !== 'no-course-photo.jpg' ? (
                 <>
                   <img 
@@ -182,7 +182,9 @@ export default function CourseDetail() {
                   </div>
                 </>
               ) : (
-                <GraduationCap className="w-20 h-20 text-slate-300" />
+                <div className="w-full h-full flex items-center justify-center bg-slate-100">
+                  <GraduationCap className="w-20 h-20 text-slate-300" />
+                </div>
               )}
             </div>
             

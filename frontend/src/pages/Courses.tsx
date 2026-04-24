@@ -94,15 +94,17 @@ export default function Courses() {
               transition={{ delay: i * 0.1 }}
               className="bg-white border border-slate-200 rounded-3xl overflow-hidden group hover:shadow-xl hover:border-blue-200 transition-all flex flex-col"
             >
-              <div className="relative h-48 overflow-hidden bg-slate-100 flex items-center justify-center">
+              <div className="relative h-52 overflow-hidden bg-slate-50">
                 {course.thumbnail && course.thumbnail !== 'no-course-photo.jpg' ? (
                   <img 
                     src={(typeof course.thumbnail === 'string' && course.thumbnail.startsWith('http')) ? course.thumbnail : (typeof course.thumbnail === 'string' && !course.thumbnail.includes('[object Object]')) ? `${API_BASE_URL}/uploads/${course.thumbnail}` : '/no-course-photo.jpg'} 
                     alt={course.title} 
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" 
                   />
                 ) : (
-                  <GraduationCap className="w-16 h-16 text-slate-300" />
+                  <div className="w-full h-full flex items-center justify-center bg-slate-100">
+                    <GraduationCap className="w-16 h-16 text-slate-300" />
+                  </div>
                 )}
                 <div className="absolute top-4 left-4 z-20">
                   <span className="px-3 py-1 bg-white/90 backdrop-blur-sm text-blue-700 text-xs font-bold rounded-full shadow-sm capitalize">

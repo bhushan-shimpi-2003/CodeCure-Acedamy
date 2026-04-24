@@ -118,14 +118,18 @@ export default function AvailableCourses() {
               return (
                 <div key={course.id} className="bg-white border border-slate-200 rounded-2xl overflow-hidden hover:border-blue-300 transition-colors shadow-sm flex flex-col">
                   {course.thumbnail ? (
-                    <div className="w-full h-48 bg-slate-100 overflow-hidden relative">
-                      <img src={course.thumbnail} alt={course.title} className="w-full h-full object-cover" />
+                    <div className="w-full h-52 overflow-hidden relative">
+                      <img 
+                        src={(typeof course.thumbnail === 'string' && course.thumbnail.startsWith('http')) ? course.thumbnail : (typeof course.thumbnail === 'string' && !course.thumbnail.includes('[object Object]')) ? `${API_BASE_URL}/uploads/${course.thumbnail}` : course.thumbnail} 
+                        alt={course.title} 
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
+                      />
                       <div className="absolute top-4 left-4 bg-slate-900/80 backdrop-blur-sm text-white px-3 py-1 text-xs font-bold rounded-full">
                         {course.duration || "8 Weeks"}
                       </div>
                     </div>
                   ) : (
-                    <div className="w-full h-48 bg-gradient-to-br from-slate-100 to-blue-50 flex flex-col items-center justify-center relative">
+                    <div className="w-full h-52 bg-gradient-to-br from-slate-100 to-blue-50 flex flex-col items-center justify-center relative">
                       <Terminal className="w-12 h-12 text-blue-200" />
                       <div className="absolute top-4 left-4 bg-slate-900/80 backdrop-blur-sm text-white px-3 py-1 text-xs font-bold rounded-full">
                         {course.duration || "8 Weeks"}
