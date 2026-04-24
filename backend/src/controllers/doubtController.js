@@ -6,18 +6,9 @@ const { saveFile } = require('../utils/fileHelper');
 // @access  Private (student)
 exports.createDoubt = async (req, res, next) => {
   try {
-    let attachment = null;
-    if (req.files && req.files.length > 0) {
-      const file = req.files.find(f => f.fieldname === 'attachment' || f.fieldname === 'image');
-      if (file) {
-        attachment = await saveFile(file);
-      }
-    }
-
     const doubtData = {
       ...req.body,
-      student_id: req.user.id,
-      attachment: attachment || req.body.attachment || null
+      student_id: req.user.id
     };
 
     const doubt = await DoubtModel.createDoubt(doubtData);

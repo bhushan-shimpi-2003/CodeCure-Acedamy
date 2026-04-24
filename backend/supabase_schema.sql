@@ -15,8 +15,8 @@ CREATE TYPE doubt_status AS ENUM ('pending', 'resolved');
 CREATE TYPE interview_status AS ENUM ('scheduled', 'completed', 'cancelled');
 CREATE TYPE transaction_type AS ENUM ('credit', 'debit');
 CREATE TYPE feedback_type AS ENUM ('teacher_rating', 'platform_feedback', 'complaint');
-CREATE TYPE course_status AS ENUM ('active', 'draft');
-CREATE TYPE notification_type AS ENUM ('course', 'assignment', 'message', 'system', 'general');
+CREATE TYPE course_status AS ENUM ('published', 'draft');
+CREATE TYPE notification_type AS ENUM ('course', 'assignment', 'message', 'system', 'general', 'academy', 'resolution', 'doubt', 'info', 'job', 'admin');
 
 
 -- ============================================================
@@ -359,3 +359,11 @@ CREATE INDEX idx_doubts_teacher ON public.doubts(teacher_id);
 CREATE INDEX idx_interviews_student ON public.mock_interviews(student_id);
 CREATE INDEX idx_transactions_type ON public.transactions(type);
 CREATE INDEX idx_feedback_student ON public.feedback(student_id);
+
+-- 20. NEW PERFORMANCE INDEXES (Optimized for CodeCure Academy)
+CREATE INDEX IF NOT EXISTS idx_profiles_role ON public.profiles(role);
+CREATE INDEX IF NOT EXISTS idx_profiles_email ON public.profiles(email);
+CREATE INDEX IF NOT EXISTS idx_courses_status ON public.courses(status);
+CREATE INDEX IF NOT EXISTS idx_courses_category ON public.courses(category);
+CREATE INDEX IF NOT EXISTS idx_enrollments_status ON public.enrollments(student_status);
+CREATE INDEX IF NOT EXISTS idx_doubts_status ON public.doubts(status);
