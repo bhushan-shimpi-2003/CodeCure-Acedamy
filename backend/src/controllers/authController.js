@@ -3,20 +3,8 @@ const { createClient } = require('@supabase/supabase-js');
 const UserModel = require('../models/User');
 const { saveFile } = require('../utils/fileHelper');
 
-// Create a temporary, session-isolated Supabase client for auth operations
-// This prevents signInWithPassword/signUp from polluting the shared service-role client
-function createAuthClient() {
-  return createClient(
-    process.env.SUPABASE_URL,
-    process.env.SUPABASE_ANON_KEY,
-    {
-      auth: {
-        autoRefreshToken: false,
-        persistSession: false,
-      },
-    }
-  );
-}
+// Pre-initialized public client for auth operations
+// Note: We use supabase.supabasePublic which is already configured in supabaseClient.js
 
 // @desc    Register user (signup)
 // @route   POST /api/auth/signup
@@ -29,9 +17,8 @@ exports.signup = async (req, res, next) => {
       return res.status(400).json({ success: false, error: 'Please provide name, email, and password' });
     }
 
-    // Use a per-request client so signUp doesn't pollute the shared service-role client
-    const authClient = createAuthClient();
-    const { data, error } = await authClient.auth.signUp({
+    // Use the pre-configured public client
+    const { data, error } = await supabase.supabasePublic.auth.signUp({
       email,
       password,
       options: {
@@ -43,20 +30,17 @@ exports.signup = async (req, res, next) => {
       return res.status(400).json({ success: false, error: error.message });
     }
 
-    if (phone) {
-      try {
-        await supabase.from('profiles').update({ phone }).eq('id', data.user.id);
-      } catch (e) {
-        console.error("Failed to update phone on signup", e);
-      }
-    }
-
-    // Fetch the full profile created by trigger
-    const { data: profile } = await supabase
-      .from('profiles')
-      .select('*')
-      .eq('id', data.user.id)
-      .single();
+    // Parallel execution for profile update and final fetch
+    const [updateResult, profileResult] = await Promise.all([
+      phone ? supabase.from('profiles').update({ phone }).eq('id', data.user.id) : Promise.resolve({ error: null }),
+      supabase
+        .from('profiles')
+        .select('id, name, email, role, phone, profile_picture, created_at')
+        .eq('id', data.user.id)
+        .single()
+    ]);
+    
+    const profile = profileResult.data;
 
     // Store user data in session
     req.session.user = profile;
@@ -85,9 +69,8 @@ exports.login = async (req, res, next) => {
       return res.status(400).json({ success: false, error: 'Please provide email and password' });
     }
 
-    // Use a per-request client so signInWithPassword doesn't set session on the shared client
-    const authClient = createAuthClient();
-    const { data, error } = await authClient.auth.signInWithPassword({
+    // Use the pre-configured public client
+    const { data, error } = await supabase.supabasePublic.auth.signInWithPassword({
       email,
       password,
     });
@@ -96,10 +79,10 @@ exports.login = async (req, res, next) => {
       return res.status(401).json({ success: false, error: 'Invalid credentials' });
     }
 
-    // Fetch profile (with role) for the frontend using the service-role client (bypasses RLS)
+    // Fetch profile with only necessary fields
     const { data: profile } = await supabase
       .from('profiles')
-      .select('*')
+      .select('id, name, email, role, phone, profile_picture, created_at')
       .eq('id', data.user.id)
       .single();
 
