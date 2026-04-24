@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const notificationController = require('../controllers/notificationController');
-const { protect } = require('../middlewares/authMiddleware');
+const { protect, authorize } = require('../middlewares/authMiddleware');
 
 // All routes require authentication
 router.use(protect);
@@ -29,11 +29,11 @@ router.put('/read-all', notificationController.markAllAsRead);
 router.delete('/:id', notificationController.deleteNotification);
 
 /**
- * Admin-only routes
+ * Admin/Teacher routes
  */
 
-// POST /api/notifications/send - Send notification to users/roles (Admin only)
-router.post('/send', authorize('admin'), notificationController.sendNotification);
+// POST /api/notifications/send - Send notification to users/roles (Admin/Teacher only)
+router.post('/send', authorize('admin', 'teacher'), notificationController.sendNotification);
 
 // DELETE /api/notifications - Delete all notifications for a user (Admin only)
 router.delete('/', notificationController.deleteAllNotifications);
