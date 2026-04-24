@@ -78,23 +78,23 @@ exports.getRecentActivity = async (req, res) => {
   try {
     const teacherId = req.user.id;
 
-    // Fetch Doubts
+    // Fetch Doubts assigned to teacher OR unassigned (pending)
     const { data: doubts, error: doubtsError } = await supabase
       .from('doubts')
       .select('id, subject, status, created_at')
-      .or(`teacher_id.eq.${teacherId},status.eq.pending`)
+      .or(`teacher_id.eq."${teacherId}",status.eq.pending`)
       .order('created_at', { ascending: false })
-      .limit(10);
+      .limit(15);
 
     if (doubtsError) throw doubtsError;
 
-    // Fetch Submissions
+    // Fetch Submissions for assignments created by this teacher
     const { data: submissions, error: submissionsError } = await supabase
       .from('assignment_submissions')
       .select('id, status, submitted_at, assignments!inner(title, teacher_id)')
       .eq('assignments.teacher_id', teacherId)
       .order('submitted_at', { ascending: false })
-      .limit(10);
+      .limit(15);
 
     if (submissionsError) throw submissionsError;
 
@@ -102,36 +102,35 @@ exports.getRecentActivity = async (req, res) => {
     const doubtActivities = (doubts || []).map(d => ({
       id: d.id,
       type: 'doubt',
-      title: d.subject,
+      title: d.subject || 'Student Doubt',
       description: d.status === 'resolved' ? 'Resolved student query' : 'New doubt from student',
       status: d.status,
-      created_at: d.created_at
+      created_at: d.created_at || new Date().toISOString()
     }));
 
     const submissionActivities = (submissions || [])
-      .filter(s => s.assignments) // Ensure join worked
+      .filter(s => s.assignments)
       .map(s => ({
         id: s.id,
         type: 'submission',
-        title: s.assignments.title,
+        title: s.assignments.title || 'Assignment Submission',
         description: s.status === 'graded' ? 'Assignment graded' : 'New assignment submission',
         status: s.status,
-        created_at: s.submitted_at
+        created_at: s.submitted_at || new Date().toISOString()
       }));
 
-    const activityFeed = [...doubtActivities, ...submissionActivities]
-      .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
-      .slice(0, 10);
+    const activities = [...doubtActivities, ...submissionActivities]
+      .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+      .slice(0, 10)
+      .map(item => {
+        const diff = new Date().getTime() - new Date(item.created_at).getTime();
+        const hours = Math.floor(diff / (1000 * 60 * 60));
+        let time_ago = 'Just now';
+        if (hours > 0 && hours < 24) time_ago = `${hours}h ago`;
+        else if (hours >= 24) time_ago = `${Math.floor(hours / 24)}d ago`;
 
-    const activities = activityFeed.map(item => {
-      const diff = new Date() - new Date(item.created_at);
-      const hours = Math.floor(diff / (1000 * 60 * 60));
-      let time_ago = 'Just now';
-      if (hours > 0 && hours < 24) time_ago = `${hours}h ago`;
-      else if (hours >= 24) time_ago = `${Math.floor(hours/24)}d ago`;
-
-      return { ...item, time_ago };
-    });
+        return { ...item, time_ago };
+      });
 
     res.status(200).json({
       success: true,
@@ -139,7 +138,7 @@ exports.getRecentActivity = async (req, res) => {
     });
   } catch (error) {
     console.error('getRecentActivity Error:', error);
-    res.status(500).json({ success: false, message: 'Server Error' });
+    res.status(500).json({ success: false, message: 'Internal Server Error', details: error.message });
   }
 };
 

@@ -98,6 +98,7 @@ CREATE TABLE public.lessons (
   title TEXT NOT NULL,
   video_url TEXT,
   content TEXT,
+  duration TEXT,
   lesson_order INTEGER NOT NULL DEFAULT 0,
   is_free_preview BOOLEAN DEFAULT false,
   is_live BOOLEAN DEFAULT false,
