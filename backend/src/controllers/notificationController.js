@@ -176,9 +176,9 @@ exports.sendNotification = async (req, res, next) => {
   try {
     const userRole = req.user?.role;
 
-    // Only admin or teacher can send notifications
-    if (userRole !== 'admin' && userRole !== 'teacher') {
-      return res.status(403).json({ success: false, error: 'Only admin or teacher can send notifications' });
+    // Allow admin, teacher, or student to trigger notifications
+    if (userRole !== 'admin' && userRole !== 'teacher' && userRole !== 'student') {
+      return res.status(403).json({ success: false, error: 'Only authorized roles can send notifications' });
     }
 
     const { user_id, role, title, message, type, related_entity_id, related_entity_type } = req.body;
