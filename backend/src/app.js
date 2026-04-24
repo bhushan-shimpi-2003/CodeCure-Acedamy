@@ -55,6 +55,8 @@ const allowedOrigins = [
   'http://localhost:5173',
   'http://localhost:3000',
   'http://localhost:5000',
+  'http://localhost:8081',
+  'http://localhost:8082',
 ];
 
 // Add FRONTEND_URL if set in environment
@@ -90,8 +92,8 @@ const corsOptions = {
       return callback(null, true);
     }
 
-    console.error('CORS Blocked for Origin:', origin);
-    return callback(new Error('CORS Policy: Access denied from this origin.'));
+    console.warn(`[CORS] Blocked Origin: ${origin}`);
+    return callback(new Error(`CORS Policy: Origin ${origin} not allowed.`));
   },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],

@@ -11,7 +11,14 @@ server.listen(PORT, () => {
 
 // Handle unhandled promise rejections
 process.on('unhandledRejection', (err, promise) => {
-  console.log(`Error: ${err.message}`);
-  // Close server & exit process
-  server.close(() => process.exit(1));
+  console.error('[Unhandled Rejection] at:', promise, 'reason:', err);
+  if (err.stack) console.error(err.stack);
+  // In production, we might want to exit, but let's just log for now to identify the crash
+  // server.close(() => process.exit(1));
+});
+
+process.on('uncaughtException', (err) => {
+  console.error('[Uncaught Exception]:', err.message);
+  if (err.stack) console.error(err.stack);
+  // server.close(() => process.exit(1));
 });

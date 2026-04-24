@@ -83,7 +83,7 @@ exports.getRecentActivity = async (req, res) => {
     const { data: doubts, error: doubtsError } = await supabase
       .from('doubts')
       .select('id, subject, status, created_at')
-      .or(`teacher_id.eq."${teacherId}",status.eq.pending`)
+      .or(`teacher_id.eq.${teacherId},status.eq.pending`)
       .order('created_at', { ascending: false })
       .limit(15);
 

@@ -30,18 +30,20 @@ exports.protect = async (req, res, next) => {
     // Verify the token with Supabase Auth
     // Use the public client for verification to avoid "Auth session missing" errors 
     // common when using the service-role client on the server.
+    console.log('[Auth] Verifying token...');
     const authResult = await supabase.supabasePublic.auth.getUser(token);
     const user = authResult.data?.user;
     const error = authResult.error;
 
     if (error || !user) {
-      console.error('Supabase getUser error:', error?.message || 'Unauthorized', 'token length:', token?.length);
+      console.warn('[Auth] Supabase getUser failed:', error?.message || 'No user', 'token length:', token?.length);
       return res.status(401).json({
         success: false,
         error: 'Not authorized - invalid token',
         details: error ? error.message : 'No user returned from Supabase',
       });
     }
+    console.log('[Auth] Token verified for user:', user.id);
 
     // Fetch the user's profile (which includes their RBAC role)
     const { data: profile, error: profileError } = await supabase
