@@ -12,18 +12,19 @@ exports.getDashboardStats = async (req, res) => {
     // 1. Total Students
     const { data: enrollmentData, error: enrollmentError } = await supabase
       .from('enrollments')
-      .select('student_id, courses!inner(instructor_id)')
+      .select('student_id, courses:course_id!inner(instructor_id)')
       .eq('courses.instructor_id', teacherId);
 
     if (enrollmentError) throw enrollmentError;
 
-    const uniqueStudents = new Set(enrollmentData.filter(e => e.courses).map(e => e.student_id));
+    // Use a Set to count unique students across all courses taught by this teacher
+    const uniqueStudents = new Set((enrollmentData || []).map(e => e.student_id));
     const total_students = uniqueStudents.size;
 
-    // 2. Efficiency
+    // 2. Efficiency (based on graded assignments)
     const { data: submissionData, error: submissionError } = await supabase
       .from('assignment_submissions')
-      .select('score, assignments!inner(title, teacher_id)')
+      .select('score, assignments:assignment_id!inner(title, teacher_id)')
       .eq('assignments.teacher_id', teacherId)
       .not('score', 'is', null);
 
