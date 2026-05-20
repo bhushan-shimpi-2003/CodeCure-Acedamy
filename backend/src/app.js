@@ -7,6 +7,9 @@ const cookieParser = require('cookie-parser');
 // Load environment variables
 dotenv.config();
 
+// Speed Insights configuration
+const { speedInsightsConfig } = require('./config/speedInsights');
+
 // Route files
 const authRoutes = require('./routes/authRoutes');
 const courseRoutes = require('./routes/courseRoutes');
@@ -122,7 +125,17 @@ app.use('/uploads', express.static(path.join(__dirname, '../public/uploads')));
 
 // Health check
 app.get('/api', (req, res) => {
-  res.status(200).json({ success: true, message: 'CodeCure Academy API is running' });
+  res.status(200).json({ 
+    success: true, 
+    message: 'CodeCure Academy API is running',
+    speedInsights: {
+      enabled: true,
+      config: {
+        debug: speedInsightsConfig.debug,
+        sampleRate: speedInsightsConfig.sampleRate
+      }
+    }
+  });
 });
 
 // Mount routers
