@@ -18,6 +18,7 @@ const interviewRoutes = require('./routes/interviewRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const teacherRoutes = require('./routes/teacherRoutes');
 const publicRoutes = require('./routes/publicRoutes');
+const healthRoutes = require('./routes/healthRoutes');
 const uploadRoutes = require('./routes/uploadRoutes');
 const notificationRoutes = require('./routes/notificationRoutes');
 const batchRoutes = require('./routes/batchRoutes');
@@ -31,10 +32,9 @@ const app = express();
 
 const normalizeOrigin = (value) => (value ? value.trim().replace(/\/+$/, '') : value);
 
-// Health check route
-app.get('/health', (req, res) => {
-  res.status(200).json({ status: 'UP', timestamp: new Date().toISOString() });
-});
+// Health check route — must be registered BEFORE CORS/auth middleware
+// so it is reachable by external uptime monitors without credentials
+app.use('/health', healthRoutes);
 
 // Logging middleware for debugging requests
 app.use((req, res, next) => {

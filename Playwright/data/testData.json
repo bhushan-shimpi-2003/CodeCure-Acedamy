@@ -1,0 +1,18 @@
+{
+    "student": {
+        "email": "shimpibhushan2503@gmail.com",
+        "password": "Pass@123"
+    },
+    "invalidUser": {
+        "email": "invalid@example.com",
+        "password": "wrongpassword"
+    },
+    "teacher": {
+        "email": "gaurav@gmail.com",
+        "password": "Pass@123"
+    },
+    "admin": {
+        "email": "admin@gmail.com",
+        "password": "Pass@123"
+    }
+}

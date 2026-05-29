@@ -1,5 +1,6 @@
 const app = require('./app');
 const http = require('http');
+const { startKeepAlive } = require('./utils/keepAlive');
 
 const PORT = process.env.PORT || 5000;
 
@@ -7,6 +8,7 @@ const server = http.createServer(app);
 
 server.listen(PORT, () => {
   console.log(`Server is running in ${process.env.NODE_ENV || 'development'} mode on port ${PORT}`);
+  startKeepAlive();
 });
 
 // Handle unhandled promise rejections
